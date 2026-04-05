@@ -898,12 +898,20 @@
 }
 
 @media (max-width: 1024px) {
-    .videoLayout {
-        padding: 24px 32px 40px 32px;
+    .videoHeader {
+        padding: 80px 0 40px 0;
+    }
+
+    .headerContent {
+        padding: 0 32px;
     }
 
     .videoTitle {
-        font-size: 32px;
+        font-size: 36px;
+    }
+
+    .videoLayout {
+        padding: 24px 32px 40px 32px;
     }
 
     .practiceGrid {
@@ -920,16 +928,37 @@
 }
 
 @media (max-width: 768px) {
-    .videoTitle {
-        font-size: 36px;
-    }
-
     .videoHeader {
-        padding: 48px 0 36px 0;
+        padding: 80px 0 32px 0;
     }
 
     .headerContent {
-        padding: 0 24px;
+        padding: 0 20px;
+    }
+
+    .videoTitle {
+        font-size: 26px;
+        letter-spacing: -0.2px;
+        margin: 0 0 12px 0;
+    }
+
+    .videoObjective {
+        font-size: 15px;
+        margin: 0 0 16px 0;
+    }
+
+    .videoMeta {
+        gap: 10px;
+    }
+
+    .metaItem {
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+
+    .unitLabel {
+        font-size: 11px;
+        margin-bottom: 10px;
     }
 
     .videoLayout {
@@ -956,11 +985,11 @@
 
 @media (max-width: 480px) {
     .videoHeader {
-        padding: 40px 0 32px 0;
+        padding: 90px 0 28px 0;
     }
 
     .headerContent {
-        padding: 0 20px;
+        padding: 0 16px;
     }
 
     .videoLayout {
