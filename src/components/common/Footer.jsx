@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import './Footer.css';
-import equalizerLogo from '../../assets/equalizer.png';
+import equalizerfooter from '../../assets/EqualizerFooter.png';
 
 
 function Footer() {
@@ -11,7 +11,7 @@ function Footer() {
                     {/* Column 1: About */}
                     <div className="footer-column">
                         <div className="footer-logo">
-                          <img src={equalizerLogo} alt="Equalizer Learning Hub" />
+                          <img src={equalizerfooter} alt="Equalizer Learning Hub" />
                             <p>Learning Hub</p>
                         </div>
                         <p className="footer-description">

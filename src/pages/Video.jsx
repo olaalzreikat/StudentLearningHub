@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { addActivity, checkAndAwardAchievements, getProgress } from '../utils/localStorage';
-import { videosData } from '../data/resourcesData';
+import { videosData, problemsData } from '../data/resourcesData';
 import styles from './Video.module.css';
 
 function Video() {
@@ -161,13 +161,14 @@ function Video() {
     };
 
     const openPracticeProblems = (difficulty) => {
-        localStorage.setItem('practiceContext', JSON.stringify({
-            from: 'video',
-            videoId: currentVideo.id,
-            videoTitle: currentVideo.title,
-            topic: currentVideo.topic || currentVideo.class,
-            difficulty: difficulty
-        }));
+        const topic = currentVideo.topic || currentVideo.class;
+        // Find a problem set matching topic and difficulty, fall back to topic only
+        const problemSet =
+            problemsData.find(p => p.topic === topic && p.difficulty === difficulty) ||
+            problemsData.find(p => p.topic === topic) ||
+            problemsData.find(p => p.difficulty === difficulty) ||
+            problemsData[0];
+        localStorage.setItem('currentProblemSet', JSON.stringify(problemSet));
         window.open('/problems', '_blank');
     };
 
