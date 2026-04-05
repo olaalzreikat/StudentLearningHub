@@ -532,8 +532,8 @@
 .practiceBtn:hover {
     background: #1d1f7c;
     color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.45);
 }
 
 .practiceBtn:active {
@@ -724,8 +724,9 @@
 }
 
 .btnComplete:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(168, 85, 247, 0.4);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(168, 85, 247, 0.45);
+    filter: brightness(1.1);
 }
 
 .btnComplete:active {

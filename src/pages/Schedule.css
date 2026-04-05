@@ -60,9 +60,9 @@
 }
 
 .book-btn:hover {
-    background: #1e3a8a;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(30, 64, 175, 0.4);
+    background: #2563eb;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(30, 64, 175, 0.45);
 }
 
 .book-btn:active {
@@ -346,9 +346,9 @@
 }
 
 .tutor-list-btn:hover {
-  background: #1e3a8a;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(30, 64, 175, 0.4);
+  background: #2563eb;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(30, 64, 175, 0.45);
 }
 
 .show-more-btn {
@@ -545,8 +545,9 @@
 }
 
 .gsc-btn-join:hover {
-  opacity: 0.88;
-  transform: translateY(-1px);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(30, 64, 175, 0.45);
+  filter: brightness(1.1);
 }
 
 .gsc-btn-cancel {
@@ -558,6 +559,8 @@
 .gsc-btn-cancel:hover {
   background: #dc2626;
   color: white;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.45);
 }
 
 .gsc-btn-full {

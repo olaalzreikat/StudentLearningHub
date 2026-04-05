@@ -766,7 +766,9 @@
 }
 
 .btnComplete:hover {
-    background: #059669;
+    background: #10b981;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.45);
 }
 
 .btnComplete.completed {

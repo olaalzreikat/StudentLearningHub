@@ -385,8 +385,9 @@
 }
 
 .lesson-start-btn:hover {
-    background: #041a48;
-    transform: translateY(-1px);
+    background: #1e40af;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(30, 64, 175, 0.45);
 }
 
 .lesson-item.completed .lesson-start-btn {
@@ -394,7 +395,9 @@
 }
 
 .lesson-item.completed .lesson-start-btn:hover {
-    background: #059669;
+    background: #10b981;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.45);
 }
 
 /* Progress Bar Fixed at Bottom */
