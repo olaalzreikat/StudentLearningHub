@@ -5,6 +5,7 @@
     background: #F1F5F9;
     position: relative;
     padding: 0;
+    overflow-x: hidden;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Helvetica Neue', sans-serif;
 }
 
@@ -962,24 +963,29 @@
     }
 
     .videoLayout {
-        padding: 24px 20px 40px 20px;
+        grid-template-columns: 1fr;
+        padding: 20px 16px 40px 16px;
+        gap: 20px;
+    }
+
+    .videoSidebar {
+        position: static;
+        width: 100%;
     }
 
     .tabContent {
-        padding: 28px 20px;
+        padding: 20px 16px;
     }
 
     .practiceGrid {
         grid-template-columns: 1fr;
     }
 
-    .videoMeta {
-        gap: 12px;
-    }
-
-    .metaItem {
+    .closeTabBtn {
+        top: 12px;
+        right: 12px;
+        padding: 8px 14px;
         font-size: 13px;
-        padding: 6px 12px;
     }
 }
 
