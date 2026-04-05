@@ -790,6 +790,24 @@
     }
 }
 
+@media (max-width: 1024px) {
+    .problemsLayout {
+        padding: 24px 32px 40px 32px;
+    }
+
+    .problemBox {
+        padding: 32px;
+    }
+
+    .problemsTitle {
+        font-size: 40px;
+    }
+
+    .answerInput {
+        font-size: 17px;
+    }
+}
+
 @media (max-width: 768px) {
     .problemsTitle {
         font-size: 36px;

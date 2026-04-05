@@ -1236,6 +1236,30 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .welcome-content-enhanced {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .welcome-stats {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .quick-actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stats-grid-small {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 1200px) {
     .dashboard-grid {
         grid-template-columns: 1fr;

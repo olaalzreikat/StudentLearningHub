@@ -620,3 +620,68 @@
     border-radius: 100px;
     transition: width 0.3s ease;
 }
+@media (max-width: 1024px) {
+    .schedule-hero {
+        height: 300px;
+    }
+
+    .hero-text h1 {
+        font-size: 40px;
+    }
+
+    .hero-text p {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .schedule-hero {
+        height: 240px;
+    }
+
+    .hero-text h1 {
+        font-size: 28px;
+    }
+
+    .hero-text p {
+        font-size: 14px;
+    }
+
+    .tutor-list-card {
+        flex-wrap: wrap;
+        gap: 14px;
+    }
+
+    .tutor-list-actions {
+        width: 100%;
+        align-items: stretch;
+    }
+
+    .tutor-list-btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .group-sessions-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .gsc-card {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .schedule-hero {
+        height: 200px;
+    }
+
+    .hero-text h1 {
+        font-size: 22px;
+    }
+
+    .session-date-time {
+        flex-direction: column;
+        gap: 4px;
+    }
+}

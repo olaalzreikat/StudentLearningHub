@@ -991,6 +991,29 @@
     }
 }
 
+@media (max-width: 1024px) {
+    .lessonLayout {
+        padding: 24px 32px;
+    }
+
+    .headerContent {
+        padding: 0 32px;
+    }
+
+    .materialBox {
+        padding: 32px;
+    }
+
+    .lessonTitle {
+        font-size: 36px;
+    }
+
+    .toolsPanel {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+}
+
 @media (max-width: 768px) {
     .lessonTitle {
         font-size: 32px;

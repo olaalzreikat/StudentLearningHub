@@ -37,3 +37,49 @@
     object-fit: cover;
     border-radius: 50%;
 }
+
+@media (max-width: 1024px) {
+    .tutor-pfp {
+        width: 140px;
+        height: 140px;
+    }
+
+    .tutor-book {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .tutor-pfp {
+        width: 100px;
+        height: 100px;
+    }
+
+    .tutorModal-description {
+        font-size: 14px;
+    }
+
+    .tutorModal-description-section {
+        margin: 6px;
+    }
+
+    .tutor-book {
+        font-size: 15px;
+    }
+
+    .tutor-image span {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .tutor-pfp {
+        width: 80px;
+        height: 80px;
+    }
+
+    .tutorModal-description {
+        font-size: 13px;
+        margin-bottom: 16px;
+    }
+}

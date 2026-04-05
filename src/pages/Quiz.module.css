@@ -785,6 +785,24 @@
     }
 }
 
+@media (max-width: 1024px) {
+    .quizLayout {
+        padding: 24px 32px 40px 32px;
+    }
+
+    .questionBox {
+        padding: 32px;
+    }
+
+    .quizTitle {
+        font-size: 40px;
+    }
+
+    .answerOption {
+        padding: 16px;
+    }
+}
+
 @media (max-width: 768px) {
     .quizTitle {
         font-size: 36px;

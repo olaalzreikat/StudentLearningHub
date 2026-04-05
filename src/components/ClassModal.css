@@ -432,6 +432,25 @@
 }
 
 /* Responsive */
+@media (max-width: 1024px) {
+    .modal-content {
+        max-width: 90vw;
+    }
+
+    .modal-header {
+        padding: 24px 28px;
+    }
+
+    .class-image {
+        width: 220px;
+        height: 130px;
+    }
+
+    .resource-links {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
     .modal-content {
         max-height: 95vh;

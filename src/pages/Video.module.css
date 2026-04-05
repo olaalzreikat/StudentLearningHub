@@ -897,6 +897,28 @@
     }
 }
 
+@media (max-width: 1024px) {
+    .videoLayout {
+        padding: 24px 32px 40px 32px;
+    }
+
+    .videoTitle {
+        font-size: 32px;
+    }
+
+    .practiceGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .detailGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .tabContent {
+        padding: 28px;
+    }
+}
+
 @media (max-width: 768px) {
     .videoTitle {
         font-size: 36px;
