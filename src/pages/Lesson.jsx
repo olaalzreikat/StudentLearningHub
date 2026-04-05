@@ -1,5 +1,5 @@
-// Lesson page — opens in a new tab, walks the student through a 5-section lesson
-// Sections: Warm-Up → Instruction → Guided Practice → Independent Practice → Exit Ticket
+// Lesson page opens in a new tab, walks the student through a 5 section lesson
+// Sections: Warm Up, Instruction, Guided Practice, Independent Practice, Exit Ticket
 import { useState, useEffect } from 'react';
 import { addActivity, checkAndAwardAchievements, getProgress } from '../utils/localStorage';
 import styles from './Lesson.module.css';
@@ -207,7 +207,7 @@ function Lesson() {
             </button>
 
             <div className={styles.lessonWrapper}>
-                {/* HEADER SECTION - Full Width Purple Background */}
+                {/* HEADER SECTION Full Width Purple Background */}
                 <div className={styles.lessonHeader}>
                     <div className={styles.headerContent}>
                         {currentLesson.topic && (
@@ -229,9 +229,9 @@ function Lesson() {
                     </div>
                 </div>
 
-                {/* CONTENT SECTION - Light Gray Background with 3 Columns */}
+                {/* CONTENT SECTION Light Gray Background with 3 Columns */}
                 <div className={styles.lessonLayout}>
-                    {/* LEFT SIDEBAR - Table of Contents */}
+                    {/* LEFT SIDEBAR Table of Contents */}
                     <div className={styles.lessonSidebar}>
                         <h3>Table of contents</h3>
                         <div className={styles.tocList}>
@@ -248,7 +248,7 @@ function Lesson() {
                         </div>
                     </div>
 
-                    {/* MAIN CONTENT - Center Column */}
+                    {/* MAIN CONTENT Center Column */}
                     <div className={styles.lessonMain}>
                         <div className={styles.materialBox}>
                             <div className="section-content">
@@ -287,7 +287,7 @@ function Lesson() {
                         </div>
                     </div>
 
-                    {/* RIGHT SIDEBAR - Tools */}
+                    {/* RIGHT SIDEBAR Tools */}
                     <div className={styles.lessonSidebar}>
                         <h3>Tools</h3>
                         
@@ -396,7 +396,7 @@ function Lesson() {
 // Generates the 5 lesson section objects (title + JSX content) from the lesson data
 function generateLessonSections(lesson, styles) {
     return [
-        // SECTION 1: WARM-UP
+        // SECTION 1: WARM UP
         {
             title: "Warm-Up",
             content: (

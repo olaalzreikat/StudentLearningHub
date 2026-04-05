@@ -29,7 +29,7 @@ function ClassModal({ classData, onClose, onLessonStart }) {
         return () => {
             window.removeEventListener('focus', handleFocus);
         };
-    }, [classData]); // Re-run when classData changes (modal opens)
+    }, [classData]); // Reruns when classData changes (modal opens)
 
     const toggleUnit = (unitId) => {
         if (expandedUnits.includes(unitId)) {

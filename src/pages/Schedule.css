@@ -229,7 +229,7 @@
     100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.5) rotate(360deg); opacity: 0; }
 }
 
-/* ── Tutor list card (Preply-style) ───────────────────────── */
+/* Tutor list card Preply style */
 
 .tutor-list-grid {
   display: flex;

@@ -2,8 +2,8 @@
 export const lessonsData = [
 
     // ====================================================================================================
-    // ALGEBRA 1 (alg1-u1-l1 through alg1-u4-l2)
-    // Based on: Units 1-9 covering Foundations, Equations, Functions, Linear Equations, Systems,
+    // ALGEBRA 1 (alg1 u1 l1 through alg1 u4 l2)
+    // Based on: Units 1 to 9 covering Foundations, Equations, Functions, Linear Equations, Systems,
     // Exponents, Polynomials, Quadratics, Data Analysis
     // ====================================================================================================
 
@@ -256,7 +256,7 @@ export const lessonsData = [
     },
 
     // ====================================================================================================
-    // STATISTICS - COMPLETE 5 UNITS (15 LESSONS)
+    // STATISTICS COMPLETE 5 UNITS (15 LESSONS)
     // Based on AP Statistics curriculum you provided
     // ====================================================================================================
 
@@ -354,7 +354,7 @@ export const lessonsData = [
         }
     },
 
-    // UNIT 2: TWO-VARIABLE DATA
+    // UNIT 2: TWO VARIABLE DATA
     {
         id: 'stats-u2-l1',
         title: "Scatterplots and Correlation",
@@ -731,7 +731,7 @@ export const lessonsData = [
     },
 
     // ====================================================================================================
-    // GEOMETRY HONORS - COMPLETE 9 UNITS
+    // GEOMETRY HONORS COMPLETE 9 UNITS
     // Based on curriculum: Foundations, Parallel Lines, Transformations, Triangles, etc.
     // ====================================================================================================
 

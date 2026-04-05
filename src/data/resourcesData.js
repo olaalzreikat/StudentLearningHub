@@ -10,7 +10,7 @@ export const videosData = [
         level: "beginner",
         duration: "15:30",
         views: "1,245",
-        videoUrl: "https://www.youtube.com/embed/grnP3mduZkM" // Khan Academy - Intro to Algebra
+        videoUrl: "https://www.youtube.com/embed/grnP3mduZkM" // Khan Academy Intro to Algebra
     },
     {
         id: 'video-alg1-2',
@@ -118,7 +118,7 @@ export const videosData = [
         videoUrl: "https://www.youtube.com/embed/IQhLH42UG7E" // Circles
     },
 
-    // PRE-CALCULUS VIDEOS
+    // PRECALCULUS VIDEOS
     {
         id: 'video-precalc-1',
         title: "Trigonometry - Unit Circle",

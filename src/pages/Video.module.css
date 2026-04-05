@@ -444,7 +444,7 @@
     transform: translateY(0);
 }
 
-/* Practice Grid - Modern Cards */
+/* Practice Grid Modern Cards */
 .practiceGrid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -699,7 +699,7 @@
     top: 24px;
 }
 
-/* Course Card - Premium Look */
+/* Course Card Premium Look */
 .courseCard {
     background: white;
     border: 1px solid #E2E8F0;
@@ -776,7 +776,7 @@
     font-size: 18px;
 }
 
-/* Related Videos - Refined */
+/* Related Videos Refined */
 .relatedSection {
     background: white;
     border: 1px solid #E2E8F0;

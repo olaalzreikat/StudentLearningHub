@@ -157,7 +157,7 @@ function Dashboard() {
         return new Date().toLocaleDateString('en-US', options);
     };
 
-    // Returns a time-based greeting (morning / afternoon / evening)
+    // Returns a time based greeting (morning / afternoon / evening)
     const getGreeting = () => {
         const hour = new Date().getHours();
         if (hour < 12) return 'Good morning!';
@@ -352,7 +352,7 @@ function Dashboard() {
     return (
         <div className="dashboard-page">
             <div className="dashboard-container">
-                {/* Notification — aria-live makes screen readers announce it automatically */}
+                {/* Notification aria-live makes screen readers announce it automatically */}
                 <div role="status" aria-live="polite" aria-atomic="true">
                     {showNotification && (
                         <div className="notification">
@@ -361,7 +361,7 @@ function Dashboard() {
                     )}
                 </div>
 
-                {/* Welcome Banner - Enhanced */}
+                {/* Welcome Banner Enhanced */}
                 <div className="welcome-banner-enhanced">
                     <div className="welcome-content-enhanced">
                         <div className="welcome-text-section">

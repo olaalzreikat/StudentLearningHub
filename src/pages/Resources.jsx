@@ -21,10 +21,10 @@ function Resources() {
     // Progress completion map per class id
     const [classProgress, setClassProgress] = useState({});
 
-    // Show-more toggle for videos
+    // Show more toggle for videos
     const [showAllVideos, setShowAllVideos] = useState(false);
 
-    // Trigger to re-read progress after returning from a lesson/quiz tab
+    // Trigger to reread progress after returning from a lesson/quiz tab
     const [refreshTrigger, setRefreshTrigger] = useState(0);
 
     // Toast notification

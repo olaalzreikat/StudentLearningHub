@@ -30,7 +30,7 @@ function Schedule() {
   const [videoFilter, setVideoFilter] = useState("all");
   const [guideFilter, setGuideFilter] = useState("all");
 
-  // Show-more toggles for tutors and sessions lists
+  // Show more toggles for tutors and sessions lists
   const [showAllTutors, setShowAllTutors] = useState(false);
   const [showAllSessions, setShowAllSessions] = useState(false);
   const [showAllVideos, setShowAllVideos] = useState(false);
@@ -318,7 +318,7 @@ function Schedule() {
 
   return (
     <div className="resources-page">
-      {/* Notification — aria-live announces it to screen readers automatically */}
+      {/* Notification aria-live announces it to screen readers automatically */}
       <div role="status" aria-live="polite" aria-atomic="true">
         {showNotification && (
           <div className="notification">

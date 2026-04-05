@@ -27,9 +27,9 @@ body {
     padding-top: 0; /* No navbar, so no padding needed */
 }
 
-/* ── Accessibility ─────────────────────────────────────────── */
+/* Accessibility */
 
-/* Skip-to-main link — only visible when focused via keyboard */
+/* Skip to main link only visible when focused via keyboard */
 .skip-to-main {
     position: absolute;
     top: -100%;
@@ -50,14 +50,14 @@ body {
     outline-offset: 2px;
 }
 
-/* Keyboard focus ring — shown only when navigating with keyboard, not mouse */
+/* Keyboard focus ring shown only when navigating with keyboard not mouse */
 :focus-visible {
     outline: 3px solid #1e40af;
     outline-offset: 2px;
     border-radius: 4px;
 }
 
-/* Screen-reader-only text — invisible but read aloud by assistive tech */
+/* Screen reader only text invisible but read aloud by assistive tech */
 .sr-only {
     position: absolute;
     width: 1px;

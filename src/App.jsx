@@ -21,7 +21,7 @@ function AppContent() {
 
     return (
       <div className="app">
-        {/* Skip link — lets keyboard/screen-reader users jump past the navbar */}
+        {/* Skip link lets keyboard and screen reader users jump past the navbar */}
         <a href="#main-content" className="skip-to-main">Skip to main content</a>
         {!isStandalone && <Navbar />}
         <main id="main-content" className={isStandalone ? "standalone-content" : "main-content"}>

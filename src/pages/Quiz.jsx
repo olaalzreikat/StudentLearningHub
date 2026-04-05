@@ -14,7 +14,7 @@ function Quiz() {
     const [showResults, setShowResults] = useState(false);
     const [score, setScore] = useState(0);
 
-    // Per-question answer state — selection, submission, and correctness
+    // Per question answer state selection, submission, and correctness
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [hasSubmittedAnswer, setHasSubmittedAnswer] = useState(false);
     const [isAnsweredCorrectly, setIsAnsweredCorrectly] = useState(false);
@@ -302,7 +302,7 @@ function Quiz() {
 
                 {/* CONTENT SECTION */}
                 <div className={styles.quizLayout}>
-                    {/* LEFT COLUMN - MAIN CONTENT */}
+                    {/* LEFT COLUMN MAIN CONTENT */}
                     <div className={styles.quizMainContent}>
                         <div className={styles.questionBox}>
                             <h2 className={styles.questionTitle}>
@@ -310,7 +310,7 @@ function Quiz() {
                             </h2>
                             <p className={styles.questionText}>{question.question}</p>
 
-                            {/* Answer Options - DON'T SHOW CORRECT UNTIL THEY GET IT RIGHT */}
+                            {/* Answer Options DONT SHOW CORRECT UNTIL THEY GET IT RIGHT */}
                             {/* role="radiogroup" makes screen readers announce this as a group of choices */}
                             <div className={styles.answersGrid} role="radiogroup" aria-label="Answer choices">
                                 {question.options.map((option, index) => {

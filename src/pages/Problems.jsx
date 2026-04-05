@@ -290,7 +290,7 @@ function Problems() {
 
                 {/* CONTENT SECTION */}
                 <div className={styles.problemsLayout}>
-                    {/* LEFT COLUMN - MAIN CONTENT */}
+                    {/* LEFT COLUMN MAIN CONTENT */}
                     <div className={styles.problemsMainContent}>
                         <div className={styles.problemBox}>
                             <h2 className={styles.problemTitle}>
