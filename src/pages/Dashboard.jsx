@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getProgress } from '../utils/localStorage';
+import { subjects } from '../utils/subjectColors';
 import { videosData, quizzesData, problemsData, lessonsData, guidesData } from '../data/resourcesData';
 import './Dashboard.css';
 
@@ -297,13 +298,6 @@ function Dashboard() {
     const completedResources = completedVideos + completedLessons + completedQuizzes + completedProblems + completedGuides;
 
     // Calculate subject progress
-    const subjects = [
-        { name: 'Algebra', icon: 'A', color: '#1e40af' },
-        { name: 'Geometry', icon: 'G', color: '#7c3aed' },
-        { name: 'Calculus', icon: 'C', color: '#059669' },
-        { name: 'Trigonometry', icon: 'T', color: '#dc2626' },
-        { name: 'Statistics', icon: 'S', color: '#d97706' }
-    ];
 
     const getSubjectProgress = (subject) => {
         const subjectVideos = videosData.filter(v => v.topic === subject);

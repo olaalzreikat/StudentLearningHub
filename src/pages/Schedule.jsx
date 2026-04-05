@@ -10,6 +10,7 @@ import { classesData } from "../data/classesData";
 import { tutorsData } from "../data/tutorsData";
 import { groupSessionData } from "../data/groupSessionData";
 import { lessonsData } from "../data/lessonsData";
+import { getSubjectColor } from "../utils/subjectColors";
 import {
   getProgress,
   markAsComplete,
@@ -66,16 +67,7 @@ function Schedule() {
     setTimeout(() => setSessionBurstId(null), 900);
   };
 
-  // Returns a color based on subject topic for session cards
-  const getTopicColor = (topic) => {
-    const t = topic.toLowerCase();
-    if (t.includes('algebra')) return '#1e40af';
-    if (t.includes('geometry')) return '#7c3aed';
-    if (t.includes('calculus')) return '#059669';
-    if (t.includes('statistics')) return '#d97706';
-    if (t.includes('trigonometry')) return '#dc2626';
-    return '#081040';
-  };
+  const getTopicColor = getSubjectColor;
 
   const progress = getProgress();
 
