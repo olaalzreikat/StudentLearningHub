@@ -929,32 +929,43 @@
 }
 
 @media (max-width: 768px) {
+    .videoPage {
+        overflow-x: hidden;
+    }
+
+    .videoWrapper {
+        width: 100%;
+        overflow: hidden;
+    }
+
     .videoHeader {
-        padding: 80px 0 32px 0;
+        padding: 72px 0 28px 0;
     }
 
     .headerContent {
-        padding: 0 20px;
+        padding: 0 16px;
     }
 
     .videoTitle {
-        font-size: 26px;
+        font-size: 22px;
         letter-spacing: -0.2px;
-        margin: 0 0 12px 0;
+        margin: 0 0 10px 0;
     }
 
     .videoObjective {
-        font-size: 15px;
-        margin: 0 0 16px 0;
+        font-size: 14px;
+        margin: 0 0 14px 0;
+        line-height: 1.6;
     }
 
     .videoMeta {
-        gap: 10px;
+        gap: 8px;
+        flex-wrap: wrap;
     }
 
     .metaItem {
-        font-size: 13px;
-        padding: 6px 12px;
+        font-size: 12px;
+        padding: 5px 10px;
     }
 
     .unitLabel {
@@ -964,8 +975,20 @@
 
     .videoLayout {
         grid-template-columns: 1fr;
-        padding: 20px 16px 40px 16px;
-        gap: 20px;
+        padding: 16px 12px 32px 12px;
+        gap: 16px;
+        max-width: 100%;
+    }
+
+    .videoMainContent {
+        gap: 16px;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .videoPlayerBox {
+        width: 100%;
+        border-radius: 10px;
     }
 
     .videoSidebar {
@@ -973,52 +996,106 @@
         width: 100%;
     }
 
+    .tabsContainer {
+        border-radius: 12px;
+    }
+
+    .tabsHeader {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 0;
+        scrollbar-width: none;
+    }
+
+    .tabsHeader::-webkit-scrollbar {
+        display: none;
+    }
+
+    .tabBtn {
+        flex: 0 0 auto;
+        padding: 14px 18px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
     .tabContent {
-        padding: 20px 16px;
+        padding: 16px 14px;
+        min-height: unset;
+    }
+
+    .instructorBox {
+        flex-direction: row;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .instructorAvatar {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
     }
 
     .practiceGrid {
         grid-template-columns: 1fr;
     }
 
+    .detailGrid {
+        grid-template-columns: 1fr;
+    }
+
     .closeTabBtn {
-        top: 12px;
-        right: 12px;
-        padding: 8px 14px;
-        font-size: 13px;
+        top: 10px;
+        right: 10px;
+        padding: 8px 12px;
+        font-size: 12px;
+        border-radius: 8px;
+    }
+
+    .aboutSection h3,
+    .learningSection h3,
+    .detailsSection h3,
+    .notesSection h3,
+    .practiceSection h3,
+    .discussionsSection h3 {
+        font-size: 17px;
     }
 }
 
 @media (max-width: 480px) {
     .videoHeader {
-        padding: 90px 0 28px 0;
+        padding: 68px 0 24px 0;
     }
 
     .headerContent {
-        padding: 0 16px;
+        padding: 0 14px;
     }
 
     .videoLayout {
-        padding: 20px 16px 32px 16px;
+        padding: 12px 10px 28px 10px;
     }
 
     .videoTitle {
-        font-size: 28px;
+        font-size: 20px;
     }
 
     .videoObjective {
-        font-size: 16px;
+        font-size: 13px;
+    }
+
+    .tabBtn {
+        padding: 12px 14px;
+        font-size: 12px;
     }
 
     .tabContent {
-        padding: 20px 16px;
+        padding: 14px 12px;
     }
 
     .closeTabBtn {
-        top: 16px;
-        right: 16px;
-        padding: 10px 18px;
-        font-size: 13px;
+        top: 8px;
+        right: 8px;
+        padding: 7px 10px;
+        font-size: 12px;
     }
 }
 
