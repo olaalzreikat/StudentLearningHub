@@ -1,0 +1,1059 @@
+
+.lessonPage {
+    min-height: 100vh;
+    background: #F8FAFC;
+    position: relative;
+    padding: 0;
+}
+
+.closeTabBtn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background: white;
+    color: #64748b;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    z-index: 1000;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.closeTabBtn:hover {
+    background: #abadae;
+    border-color: #CBD5E1;
+    color: #ffffff;
+}
+
+
+.lessonWrapper {
+    padding: 0;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.lessonHeader {
+    width: 100%;
+    background: linear-gradient(135deg, #dbeafe 0%, #e0f2fe 100%);
+    padding: 60px 0 40px 0;
+    margin: 0;
+    border-bottom: 1px solid #bfdbfe;
+}
+
+.headerContent {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 60px;
+}
+
+.unitLabel {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.topicPill {
+    display: inline-block;
+    background: #1e40af;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+}
+
+.lessonTitle {
+    font-size: 42px;
+    font-weight: 700;
+    color: rgb(5, 16, 41);
+    margin: 0 0 16px 0;
+    line-height: 1.2;
+}
+
+.lessonObjective {
+    font-size: 16px;
+    color: rgba(24, 19, 66, 0.9);
+    margin: 0 0 32px 0;
+    line-height: 1.6;
+    max-width: 800px;
+}
+
+.lessonProgressBar {
+    width: 100%;
+    max-width: 400px;
+    height: 10px;
+    background: rgba(0, 0, 0, 0.12);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 24px;
+}
+
+.lessonProgressFill {
+    height: 100%;
+    background: #3b82f6;
+    border-radius: 6px;
+    transition: width 0.6s ease;
+}
+
+.lessonProgressText {
+    font-size: 12px;
+    color: rgba(0, 1, 4, 0.9);
+    font-weight: 500;
+    margin-top: 8px;
+}
+
+
+.lessonLayout {
+    background: #ffffff;
+    min-height: calc(100vh - 200px);
+    padding: 32px 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 280px 1fr 220px;
+    gap: 24px;
+    align-items: start;
+
+}
+
+
+.lessonSidebar {
+    background: white;
+    border-radius: 12px;
+    padding: 24px 0;
+    position: sticky;
+    top: 20px;
+}
+
+.lessonSidebar h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #64748b;
+    margin: 0 0 16px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0 20px;
+}
+
+.tocList {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.tocItem {
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    border-left: 3px solid transparent;
+    font-size: 14px;
+    color: #475569;
+    font-weight: 500;
+}
+
+.tocItem:hover {
+    background: #F8FAFC;
+    color: #1e293b;
+}
+
+.tocItem.active {
+    background: #EFF6FF;
+    border-left-color: #3b82f6;
+    color: #1e40af;
+    font-weight: 600;
+}
+
+.tocItem.completed {
+    color: #178560;
+}
+
+.tocTitle {
+    font-size: 14px;
+    display: block;
+    line-height: 1.4;
+}
+
+.tocCheck {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #216e55;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+
+.lessonMain {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    overflow: hidden;
+}
+
+.materialBox {
+    background: white;
+    border-radius: 12px;
+    padding: 48px;
+  
+    min-height: 600px;
+}
+
+.sectionTitle {
+    font-size: 32px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 24px 0;
+    line-height: 1.3;
+}
+
+.sectionBody {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #475569;
+}
+
+.objectiveBox {
+    background: #F0F9FF;
+    border: 1px solid #BAE6FD;
+    border-left: 4px solid #0EA5E9;
+    padding: 20px 24px;
+    border-radius: 8px;
+    margin-bottom: 32px;
+}
+
+.objectiveBox h3 {
+    margin: 0 0 8px 0;
+    color: #0c4a6e;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.objective {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #0f172a;
+    font-weight: 500;
+}
+
+.warmUpBox {
+    background: #FFFBEB;
+    padding: 20px 24px;
+    border-radius: 8px;
+    border: 1px solid #fff9e0;
+    border-left: 4px solid #3d2f18;
+}
+
+.warmUpBox h3 {
+    margin: 0 0 12px 0;
+    color: #78350f;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.warmUpBox p {
+    margin: 0;
+    font-size: 15px;
+    color: #451a03;
+    line-height: 1.6;
+}
+
+/* Instruction Box */
+.instructionBox {
+    background: white;
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    border-radius: 8px;
+    padding: 28px;
+    margin-bottom: 24px;
+}
+
+.instructionBox h3 {
+    margin: 0 0 20px 0;
+    color: #0f172a;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.conceptItem {
+    background: #F8FAFC;
+    padding: 16px 20px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    border-left: 3px solid #CBD5E1;
+    transition: all 0.2s ease;
+}
+
+.conceptItem:hover {
+    border-left-color: #3b82f6;
+    background: #EFF6FF;
+}
+
+.conceptText {
+    margin: 0;
+    line-height: 1.7;
+    color: #1e293b;
+    font-size: 15px;
+}
+
+.conceptText strong {
+    color: #1e40af;
+    font-weight: 600;
+}
+
+.examplesBox {
+    background: #f0fdf4;
+    padding: 24px;
+    border-radius: 8px;
+    margin-top: 24px;
+    border: 1px solid #bbf7d0;
+    border-left: 4px solid #22c55e;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.examplesBox h3 {
+    margin: 0 0 16px 0;
+    color: #065f46;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.simpleExample {
+    background: white;
+    padding: 16px 20px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    border: 1px solid #d1fae5;
+}
+
+.exampleProblem {
+    margin: 0 0 8px 0;
+    color: #0f172a;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.exampleSolution {
+    margin: 0;
+    color: #127f5c;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 10px 12px;
+    background: #eefff8;
+    border: 1px solid #072b1848;
+    border-radius: 4px;
+}
+
+/* Guided Practice */
+.guidedBox {
+    background: white;
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    border-radius: 8px;
+    padding: 28px;
+}
+
+.guidedBox h3 {
+    margin: 0 0 20px 0;
+    color: #0f172a;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.guidedProblem {
+    background: #FAFBFC;
+    border: 1px solid #0000003b;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.problemNumber {
+    font-weight: 700;
+    color: #64748b;
+    margin: 0 0 8px 0;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.problemText {
+    font-size: 16px;
+    color: #0f172a;
+    margin: 0 0 16px 0;
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+/* Dropdowns - Minimal Style */
+.stepsDropdown,
+.hintDropdown,
+.answerDropdown,
+.exitAnswer {
+    margin-top: 12px;
+}
+
+.stepsDropdown summary {
+    padding: 12px 16px;
+    background: #1e40af;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    list-style: none;
+    user-select: none;
+    transition: all 0.2s ease;
+}
+
+.stepsDropdown summary:hover {
+    background: #1d3a9e;
+}
+
+.stepsDropdown[open] summary {
+    border-radius: 6px 6px 0 0;
+}
+
+.stepsList {
+    padding: 16px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+}
+
+.step {
+    margin: 12px 0;
+    line-height: 1.6;
+    color: #1e293b;
+    padding: 10px 12px;
+    background: white;
+    border-radius: 4px;
+    font-size: 14px;
+    border: 1px solid rgba(0, 0, 0, 0.223);
+}
+
+.step strong {
+    color: #1e40af;
+}
+
+.answer {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: #ECFDF5;
+    border-left: 3px solid #023d29;
+    border-radius: 4px;
+    color: #065f46;
+    font-weight: 600;
+}
+
+/* Practice Box */
+.practiceBox {
+    background: white;
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    border-radius: 8px;
+    padding: 28px;
+    margin-bottom: 24px;
+}
+
+.practiceBox h3 {
+    margin: 0 0 20px 0;
+    color: #0f172a;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.practiceProblemBox {
+    background: #FAFBFC;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    border: 1px solid #06153258;
+}
+
+.practiceNum {
+    font-weight: 700;
+    color: #64748b;
+    margin: 0 0 8px 0;
+    font-size: 13px;
+}
+
+.practiceQuestion {
+    font-size: 16px;
+    color: #0f172a;
+    margin: 0 0 16px 0;
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+/* Hint Dropdowns */
+.hintDropdown summary {
+    padding: 10px 14px;
+    background: #FFFBEB;
+    color: #92400e;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    list-style: none;
+    user-select: none;
+    border: 1px solid #4d3f0a;
+    transition: all 0.2s ease;
+}
+
+.hintDropdown summary:hover {
+    background: #FEF3C7;
+}
+
+.hintDropdown[open] summary {
+    border-radius: 6px 6px 0 0;
+}
+
+.hintContent {
+    padding: 14px;
+    background: white;
+    border: 1px solid #FDE68A;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+}
+
+.hintContent p {
+    margin: 0;
+    line-height: 1.6;
+    color: #78350f;
+    font-size: 14px;
+}
+
+/* Answer Dropdown */
+.answerDropdown summary {
+    padding: 10px 14px;
+    background: rgb(255, 255, 255);
+    border: 1px solid #040f1b;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    color: #1e40af;
+    list-style: none;
+    transition: all 0.2s ease;
+}
+
+.answerDropdown summary:hover {
+    background: #F8FAFC;
+    border-color: #3b82f6;
+}
+
+.answerDropdown[open] summary {
+    border-radius: 6px 6px 0 0;
+}
+
+.correctAnswer {
+    padding: 14px 16px;
+    background: #ECFDF5;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    margin: 0;
+    color: #065f46;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* Tip Box */
+.tipBox {
+    background: #FFFBEB;
+    border-left: 4px solid #F59E0B;
+    padding: 20px;
+    border-radius: 6px;
+    border: 1px solid #FDE68A;
+}
+
+.tipBox h4 {
+    margin: 0 0 12px 0;
+    color: #92400e;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tipBox ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.tipBox li {
+    margin-bottom: 8px;
+    color: #78350f;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+/* Exit Ticket */
+.exitTicketBox {
+    background: white;
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    border-radius: 8px;
+    padding: 28px;
+    margin-bottom: 24px;
+}
+
+.exitTicketBox h3 {
+    margin: 0 0 16px 0;
+    color: #0f172a;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.exitQuestion {
+    background: #F8FAFC;
+    padding: 20px;
+    border-radius: 6px;
+    border: 1px solid #07285249;
+    font-weight: 500;
+    color: #1d2b4c;
+    font-size: 16px;
+    margin-bottom: 16px;
+    line-height: 1.6;
+}
+
+.exitAnswer summary {
+    padding: 12px 16px;
+    background: #1e40af;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    list-style: none;
+    transition: all 0.2s ease;
+}
+
+.exitAnswer summary:hover {
+    background: #1d3a9e;
+}
+
+.exitAnswer[open] summary {
+    border-radius: 6px 6px 0 0;
+}
+
+.exitAnswer div {
+    padding: 16px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+}
+
+.exitAnswer div p {
+    margin: 10px 0;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.finalExitAnswer {
+    margin-top: 16px !important;
+    padding: 12px 16px;
+    background: #ECFDF5;
+    border-left: 3px solid #10b981;
+    border-radius: 4px;
+    color: #065f46;
+    font-weight: 600;
+}
+
+/* Real World Box */
+.realWorldBox {
+    background: #F0F9FF;
+    border-left: 4px solid #0EA5E9;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 24px;
+    border: 1px solid #BAE6FD;
+}
+
+.realWorldBox h4 {
+    margin: 0 0 10px 0;
+    color: #0c4a6e;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.realWorldBox p {
+    margin: 0;
+    line-height: 1.6;
+    color: #0f172a;
+    font-size: 14px;
+}
+
+
+
+.completionText {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+/* ============================================
+   8. NAVIGATION BUTTONS
+   ============================================ */
+
+.sectionNavigation {
+    display: flex;
+    gap: 12px;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid #E5E7EB;
+}
+
+.btnNav {
+    flex: 1;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: capitalize;
+}
+
+.btnPrevious,
+.btnNext {
+    background: #174ead;
+    color: white;
+}
+
+.btnPrevious:hover,
+.btnNext:hover {
+    background: #1e418c;
+}
+
+.btnPrevious:disabled,
+.btnNext:disabled {
+    background: #CBD5E1;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.btnComplete {
+    background: #1f7d5e;
+    color: white;
+}
+
+.btnComplete:hover {
+    background: #059669;
+}
+
+.btnComplete.completed {
+    background: #6B7280;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* ============================================
+   9. TOOLS SIDEBAR (Right)
+   ============================================ */
+
+.toolIconBtn {
+    width: 100%;
+    padding: 14px 12px;
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.toolIconBtn span {
+    font-size: 24px;
+}
+
+.toolIconBtn:hover {
+    border-color: #3b82f6;
+    background: #EFF6FF;
+}
+
+
+.floatingTool {
+    position: fixed;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    z-index: 2000;
+    min-width: 320px;
+    border: 1px solid #E5E7EB;
+}
+
+.toolHeader {
+    background: #113a7b;
+    color: white;
+    padding: 14px 18px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: move;
+    user-select: none;
+}
+
+.toolHeader span {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.toolHeader button {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-weight: bold;
+}
+
+.toolHeader button:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.toolBody {
+    padding: 20px;
+}
+
+/* Calculator */
+.calculatorPopup {
+    width: 300px;
+}
+
+.calcDisplay {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    font-size: 22px;
+    font-weight: 600;
+    text-align: right;
+    margin-bottom: 10px;
+    background: #F8FAFC;
+    color: #0f172a;
+}
+
+.calcResult {
+    text-align: right;
+    color: #10b981;
+    font-weight: 600;
+    margin-bottom: 14px;
+    font-size: 18px;
+}
+
+.calcButtons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.calcBtn {
+    padding: 14px;
+    background: #F8FAFC;
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 16px;
+    color: #1e293b;
+}
+
+.calcBtn:hover {
+    background: #EFF6FF;
+    border-color: #3b82f6;
+}
+
+.calcBtn.clear {
+    background: #FEE2E2;
+    border-color: #FCA5A5;
+    color: #DC2626;
+}
+
+.calcBtn.clear:hover {
+    background: #FECACA;
+}
+
+/* Notes */
+.notesPopup {
+    width: 450px;
+    max-height: 550px;
+}
+
+.notesTextarea {
+    width: 100%;
+    min-height: 300px;
+    padding: 14px;
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    margin-bottom: 14px;
+    line-height: 1.6;
+}
+
+.notesTextarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.saveNotesBtn {
+    width: 100%;
+    padding: 12px;
+    background: #36b087;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.saveNotesBtn:hover {
+    background: #1f5242;
+}
+
+/* ============================================
+   11. RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 1200px) {
+    .lessonLayout {
+        grid-template-columns: 1fr;
+        padding: 24px 40px;
+    }
+
+    .headerContent {
+        padding: 0 40px;
+    }
+
+    .lessonSidebar {
+        position: static;
+    }
+
+    .tocList {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 8px;
+    }
+
+    .floatingTool {
+        left: 50% !important;
+        transform: translateX(-50%);
+    }
+}
+
+@media (max-width: 768px) {
+    .lessonTitle {
+        font-size: 32px;
+    }
+
+    .lessonHeader {
+        padding: 40px 0 32px 0;
+    }
+
+    .headerContent {
+        padding: 0 24px;
+    }
+
+    .lessonLayout {
+        padding: 24px 20px;
+    }
+
+    .materialBox {
+        padding: 28px;
+    }
+
+    .sectionNavigation {
+        flex-direction: column;
+    }
+
+    .notesPopup {
+        width: 90vw;
+        max-width: 450px;
+    }
+
+    .calculatorPopup {
+        width: 90vw;
+        max-width: 320px;
+    }
+
+    .sectionTitle {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .lessonHeader {
+        padding: 32px 0 24px 0;
+    }
+
+    .headerContent {
+        padding: 0 20px;
+    }
+
+    .lessonLayout {
+        padding: 20px 16px;
+    }
+
+    .materialBox {
+        padding: 20px;
+    }
+
+    .lessonTitle {
+        font-size: 28px;
+    }
+}
+
+.helpSection {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 14px;
+}

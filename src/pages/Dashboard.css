@@ -1,0 +1,1344 @@
+.dashboard-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 2rem 1rem;
+}
+
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Notification */
+.notification {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    background: #081040;
+    color: white;
+    padding: 14px 20px 14px 16px;
+    border-radius: 12px;
+    border-left: 4px solid #3b82f6;
+    box-shadow: 0 8px 32px rgba(8, 16, 64, 0.35);
+    z-index: 2000;
+    animation: slideInRight 0.4s ease-out, fadeOut 0.4s ease-out 2.6s;
+    font-weight: 500;
+    font-size: 14px;
+    max-width: 360px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* Loading & Error States */
+.loading-state, .error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 1rem;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #e5e7eb;
+    border-top-color: #1e40af;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.welcome-banner-enhanced {
+    background: rgb(226, 243, 255);
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+   position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(30, 64, 175, 0.15);
+}
+
+.welcome-banner-enhanced::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.welcome-content-enhanced {
+    position: relative;
+    z-index: 1;
+}
+
+.welcome-text-section h1 {
+    color: rgb(7, 15, 52);
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.welcome-text-section > p {
+    color: rgba(21, 5, 57, 0.9);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.welcome-stats {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.stat-bubble {
+    background: rgba(11, 5, 59, 0.072);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(30, 64, 175, 0.2);
+    border-radius: 15px;
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 120px;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.stat-bubble-icon {
+    font-size: 1.4rem;
+    margin-bottom: 0.1rem;
+}
+
+.stat-bubble:hover {
+    transform: translateY(-5px);
+    background: rgba(5, 15, 54, 0.137);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: rgb(14, 5, 43);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: rgba(12, 5, 49, 0.9);
+}
+
+/* Quick Actions Section */
+.quick-actions-section {
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1F2937;
+    margin-bottom: 1rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.quick-action-card {
+    background: rgb(255, 255, 255);
+    border: 1px solid #08193c;
+    border-left: 4px solid #0c176c;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.quick-action-card:hover {
+    transform: translateX(5px);
+    filter: brightness(0.95);
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15);
+}
+
+
+.action-label {
+    flex: 1;
+    font-weight: 600;
+    color: #1F2937;
+    font-size: 1.1rem;
+}
+
+.action-arrow {
+    font-size: 1.5rem;
+    color: #9ca3af;
+    transition: transform 0.3s ease;
+}
+
+.quick-action-card:hover .action-arrow {
+    transform: translateX(5px);
+}
+
+/* Dashboard Grid Layout */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+/* Section Styling */
+.section {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.section-header h2, .section-header h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1F2937;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.more-btn, .add-btn {
+    background: transparent;
+    color: #1b1685;
+    border: 1px solid #1f199d;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.more-btn:hover, .add-btn:hover {
+    background: #1e40af;
+    color: white;
+    transform: scale(1.05);
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+}
+
+.icon-btn:hover {
+    background: #f3f4f6;
+}
+
+/* Study Goals Card */
+.study-goals-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+/* Daily Tasks Card */
+.daily-tasks-card {
+    background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+}
+
+.task-progress-header {
+    margin-bottom: 1.5rem;
+}
+
+.task-progress-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.task-progress-pct {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #1e40af;
+}
+
+.task-progress-bar {
+    height: 14px;
+    background: #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.task-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #1e40af 0%, #2563eb 100%);
+    border-radius: 10px;
+    transition: width 0.6s ease;
+}
+
+.task-progress-text {
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+.tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.task-item:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transform: translateX(3px);
+}
+
+.task-checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #1e40af;
+    flex-shrink: 0;
+}
+
+.task-text {
+    flex: 1;
+    font-size: 1rem;
+    color: #1F2937;
+    transition: all 0.3s ease;
+    cursor: pointer; /* It's a <label> — clicking the text toggles the checkbox */
+}
+
+.task-text.completed {
+    text-decoration: line-through;
+    color: #9ca3af;
+}
+
+.remove-task-btn {
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.remove-task-btn:hover {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.goal-progress {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 1rem 0;
+}
+
+.goal-circle {
+    flex-shrink: 0;
+}
+
+.goal-details {
+    flex: 1;
+}
+
+.goal-time {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1F2937;
+    margin-bottom: 0.5rem;
+}
+
+.goal-label {
+    font-size: 1rem;
+    color: #6b7280;
+}
+
+/* Courses Grid */
+.courses-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.course-card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 0.75rem 1rem;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.course-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.1);
+    background: white;
+}
+
+.course-icon {
+    grid-row: 1 / 3;
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.course-info {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.course-info h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1F2937;
+    margin-bottom: 0.25rem;
+}
+
+.course-info p {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.course-percentage {
+    grid-column: 3;
+    grid-row: 1;
+    font-weight: 700;
+    color: #1e40af;
+    font-size: 1.1rem;
+}
+
+.course-progress-bar {
+    grid-column: 2 / 4;
+    grid-row: 2;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.course-progress-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.6s ease;
+}
+
+/* Recent Activity / Lessons List */
+.lessons-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.lesson-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.lesson-item:hover {
+    background: white;
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.lesson-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.lesson-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.lesson-info h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1F2937;
+    margin-bottom: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lesson-meta {
+    font-size: 0.85rem;
+    color: #4b5563; /* Upgraded from #6b7280 — passes WCAG AA contrast (6.5:1 on light bg) */
+}
+
+.lesson-date {
+    font-size: 0.85rem;
+    color: #6b7280; /* Upgraded from #9ca3af — passes WCAG AA */
+    white-space: nowrap;
+}
+
+.no-lessons {
+    text-align: center;
+    padding: 2rem;
+    color: #6b7280;
+}
+
+/* Achievements Section */
+.achievements-section {
+    background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%);
+}
+
+.achievement-count {
+    background: #1e40af;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.achievement-card {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.achievement-card.earned {
+    border-color: #1e40af;
+    background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+}
+
+.achievement-card.locked {
+    opacity: 0.5;
+    filter: grayscale(100%);
+}
+
+.achievement-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.2);
+}
+
+.achievement-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.achievement-info h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1F2937;
+    margin-bottom: 0.25rem;
+}
+
+.achievement-info p {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.earned-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #10b981;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+/* Right Column Styling */
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Statistics Card */
+.statistics-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.stats-header h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1F2937;
+    margin-bottom: 1.5rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.week-progress-bar {
+    margin-bottom: 1.5rem;
+}
+
+.progress-bar-container {
+    height: 12px;
+    background: #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #1e40af 0%, #2563eb 100%);
+    border-radius: 10px;
+    transition: width 0.6s ease;
+}
+
+.progress-text {
+    font-size: 0.9rem;
+    color: #6b7280;
+    text-align: center;
+}
+
+.stats-grid-small {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.stat-box {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 1.25rem;
+    text-align: center;
+}
+
+.stat-box-label {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.stat-box-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e40af;
+}
+
+.stat-box-sublabel {
+    font-size: 0.8rem;
+    color: #6b7280; /* Upgraded from #9ca3af — passes WCAG AA */
+    margin-top: 0.25rem;
+}
+
+/* Agenda Card */
+.agenda-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.agenda-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.agenda-header h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1F2937;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.agenda-date {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.agenda-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.agenda-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.agenda-item:hover {
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.agenda-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.agenda-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.agenda-details h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1F2937;
+    margin-bottom: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.group-session-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+}
+
+.agenda-time {
+    font-size: 0.85rem;
+    color: #4b5563; /* Upgraded for WCAG AA on light card backgrounds */
+}
+
+.remove-agenda-btn {
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.remove-agenda-btn:hover {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.no-sessions {
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.no-sessions p {
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.no-sessions-hint {
+    color: #9ca3af;
+    font-size: 0.9rem;
+}
+
+/* Overall Progress Card */
+.progress-overview-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+    text-align: center;
+}
+
+.progress-overview-card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1F2937;
+    margin-bottom: 1.5rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.circular-progress {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.progress-breakdown-simple {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 10px;
+}
+
+.breakdown-simple-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.95rem;
+    color: #4b5563;
+}
+
+.breakdown-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+/* Modal Styling */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 16px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1F2937;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.modal-close {
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none; /* Custom ring replaces browser default */
+    border-color: #1e40af;
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.25); /* Visible focus ring — meets WCAG 2.4.11 */
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.cancel-btn,
+.submit-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.cancel-btn {
+    background: white;
+    border: 1px solid #d1d5db;
+    color: #374151;
+}
+
+.cancel-btn:hover {
+    background: #f9fafb;
+}
+
+.submit-btn {
+    background: #1e40af;
+    border: 1px solid #4F46E5;
+    color: white;
+}
+
+.submit-btn:hover {
+    background: #4338ca;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+
+.submit-btn:disabled {
+    background: #9ca3af;
+    border-color: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ── Platform Analytics Section ─────────────────────────────── */
+
+.analytics-section {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.analytics-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.analytics-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1F2937;
+    margin: 0 0 0.25rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.analytics-subtitle {
+    font-size: 0.9rem;
+    color: #4b5563;
+    margin: 0;
+}
+
+.analytics-live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.analytics-live-badge::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #10b981;
+    animation: livePulse 1.8s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.4); }
+}
+
+/* 2×2 grid for the four analytics cards */
+.analytics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+}
+
+.analytics-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.analytics-card:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.analytics-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+    padding-left: 12px;
+    border-left: 4px solid #1e40af; /* overridden per card via inline style */
+}
+
+.analytics-card-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+.analytics-card-header h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1F2937;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.analytics-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.analytics-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.6rem 0.75rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    font-size: 0.875rem;
+}
+
+.analytics-label {
+    color: #374151;
+    font-weight: 500;
+    flex: 1;
+    min-width: 0;
+}
+
+.analytics-value {
+    font-weight: 700;
+    color: #111827;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Green up arrows for positive trends */
+.analytics-delta.positive {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #059669;
+    background: #ecfdf5;
+    border-radius: 4px;
+    padding: 1px 5px;
+}
+
+/* Green "✓ Target met" badges */
+.analytics-target.pass {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #065f46;
+    background: #d1fae5;
+    border-radius: 4px;
+    padding: 2px 6px;
+    white-space: nowrap;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .analytics-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .achievements-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-page {
+        padding: 1rem 0.5rem;
+    }
+
+    .welcome-banner-enhanced {
+        padding: 1.5rem;
+    }
+
+    .welcome-text-section h1 {
+        font-size: 1.8rem;
+    }
+
+    .welcome-stats {
+        gap: 1rem;
+    }
+
+    .stat-bubble {
+        min-width: 100px;
+        padding: 0.75rem 1rem;
+    }
+
+    .quick-actions-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .course-card {
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto auto;
+    }
+
+    .course-percentage {
+        grid-column: 2;
+        grid-row: 2;
+        text-align: right;
+    }
+
+    .course-progress-bar {
+        grid-column: 1 / 3;
+        grid-row: 3;
+    }
+
+    .achievements-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .goal-progress {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .stats-grid-small {
+        grid-template-columns: 1fr;
+    }
+
+    .task-item {
+        padding: 0.75rem;
+    }
+
+    .notification {
+        top: 1rem;
+        right: 1rem;
+        max-width: calc(100vw - 2rem);
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .welcome-text-section h1 {
+        font-size: 1.5rem;
+    }
+
+    .section-title {
+        font-size: 1.2rem;
+    }
+
+    .section-header h2,
+    .section-header h3 {
+        font-size: 1.1rem;
+    }
+
+    .lesson-item {
+        padding: 0.75rem;
+    }
+
+    .lesson-info h4 {
+        font-size: 0.9rem;
+    }
+}

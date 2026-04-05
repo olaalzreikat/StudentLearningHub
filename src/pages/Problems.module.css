@@ -1,0 +1,858 @@
+
+
+.problemsPage {
+    min-height: 100vh;
+    background: #F1F5F9;
+    position: relative;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Helvetica Neue', sans-serif;
+}
+
+.closeTabBtn {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    padding: 12px 24px;
+    background: white;
+    color: #475569;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.closeTabBtn:hover {
+    background: #F8FAFC;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+}
+
+.closeTabBtn:active {
+    transform: translateY(0);
+}
+
+
+.problemsWrapper {
+    padding: 0;
+    margin: 0;
+}
+
+.problemsHeader {
+    width: 100%;
+    background: #cae1fe ;
+    padding: 72px 0 48px 0;
+    margin: 0;
+    color: rgb(6, 4, 48);
+    position: relative;
+    overflow: hidden;
+}
+
+.problemsHeader::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.headerContent {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 60px;
+    position: relative;
+    z-index: 1;
+}
+
+.unitLabel {
+    font-size: 13px;
+    color: rgba(5, 24, 57, 0.85);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    display: inline-block;
+    margin-bottom: 16px;
+    background: rgba(8, 22, 84, 0.15);
+    padding: 6px 14px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.problemsTitle {
+    font-size: 48px;
+    font-weight: 800;
+    color: rgb(6, 11, 53);
+    margin: 0 0 20px 0;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.problemsObjective {
+    font-size: 18px;
+    color: rgba(6, 6, 65, 0.95);
+    margin: 0 0 24px 0;
+    line-height: 1.7;
+    max-width: 850px;
+    font-weight: 400;
+}
+
+.problemsProgressBar {
+    width: 100%;
+    max-width: 400px;
+    height: 6px;
+    background: rgba(189, 186, 186, 0.771);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 24px;
+}
+
+.problemsProgressFill {
+    height: 100%;
+    background: rgb(44, 30, 207);
+    border-radius: 3px;
+    transition: width 0.6s ease;
+}
+
+.problemsProgressText {
+    font-size: 12px;
+    color: rgba(4, 12, 56, 0.9);
+    font-weight: 500;
+    margin-top: 8px;
+}
+
+
+.problemsLayout {
+    background: #F1F5F9;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 60px 60px 60px;
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 40px;
+    align-items: start;
+}
+
+
+.problemsMainContent {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.problemBox {
+    background: white;
+    border-radius: 16px;
+    padding: 48px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #E2E8F0;
+    transition: all 0.3s ease;
+}
+
+.problemBox:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: #CBD5E1;
+}
+
+.problemTitle {
+    font-size: 14px;
+    font-weight: 800;
+    color: #64748B;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0 0 16px 0;
+}
+
+.problemText {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0F172A;
+    margin: 0 0 32px 0;
+    line-height: 1.5;
+}
+
+/* Answer Input Section */
+.answerSection {
+    position: relative;
+    margin-bottom: 32px;
+}
+
+.answerInput {
+    width: 100%;
+    padding: 20px 24px;
+    border: 2px solid #E2E8F0;
+    border-radius: 14px;
+    font-size: 18px;
+    font-weight: 600;
+    font-family: inherit;
+    transition: all 0.3s ease;
+}
+
+.answerInput:focus {
+    outline: none;
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.answerInput.correct {
+    background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+    border-color: #10B981;
+}
+
+.answerInput.incorrect {
+    background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+    border-color: #EF4444;
+}
+
+.answerInput:disabled {
+    cursor: not-allowed;
+    background: #F8FAFC;
+}
+
+.answerBadge {
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 6px 14px;
+    background: #10B981;
+    color: white;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 800;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.answerBadgeWrong {
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 6px 14px;
+    background: #EF4444;
+    color: white;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 800;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+
+.explanationSection {
+    margin-top: 32px;
+    animation: slideDown 0.4s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.correctFeedback,
+.incorrectFeedback {
+    padding: 28px;
+    border-radius: 14px;
+    border: 2px solid;
+}
+
+.correctFeedback {
+    background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+    border-color: #10B981;
+}
+
+.incorrectFeedback {
+    background: linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%);
+    border-color: #EF4444;
+}
+
+.feedbackHeader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.feedbackIcon {
+    font-size: 32px;
+}
+
+.feedbackHeader h3 {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0F172A;
+    margin: 0;
+}
+
+.workShown {
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.workShown h4 {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0F172A;
+    margin: 0 0 12px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.workShown p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #334155;
+    margin: 0;
+    white-space: pre-line;
+}
+
+
+.problemNavigation {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 2px solid #F1F5F9;
+}
+
+.btnNav {
+    flex: 1;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btnPrevious,
+.btnNext {
+    background: white;
+    color: #1E40AF;
+    border: 2px solid #1E40AF;
+}
+
+.btnPrevious:hover:not(:disabled),
+.btnNext:hover:not(:disabled) {
+    background: #06174e;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+
+.btnPrevious:active,
+.btnNext:active {
+    transform: translateY(0);
+}
+
+.btnPrevious:disabled,
+.btnNext:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.btnCheck {
+    background: rgb(17, 17, 122);
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btnCheck:hover {
+    transform: translateY(-2px);
+}
+
+.btnCheck:active {
+    transform: translateY(0);
+}
+
+.btnTryAgain {
+    background: #9f5a0b;
+    color: white;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.btnTryAgain:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+}
+
+.btnTryAgain:active {
+    transform: translateY(0);
+}
+
+.btnSubmit {
+    background:  #059669 ;
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btnSubmit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+.btnSubmit:active {
+    transform: translateY(0);
+}
+
+
+
+.problemsSidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    position: sticky;
+    top: 24px;
+}
+
+/* Problem Navigator Card */
+.problemNavCard {
+    background: white;
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.problemNavCard h3 {
+    font-size: 17px;
+    font-weight: 800;
+    color: #0F172A;
+    margin: 0 0 20px 0;
+    letter-spacing: -0.2px;
+}
+
+.problemNav {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.problemNavItem {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F8FAFC;
+    border: 2px solid #E2E8F0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    font-weight: 700;
+    color: #64748B;
+    font-size: 13px;
+}
+
+.problemNavItem:hover {
+    border-color: #1E40AF;
+    background: #EFF6FF;
+    transform: scale(1.05);
+}
+
+.problemNavItem.active {
+    background: rgb(15, 15, 101);
+    color: white;
+    border-color: #1E40AF;
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+
+.problemNavItem.answered {
+    background: #D1FAE5;
+    border-color: #10B981;
+    color: #065F46;
+}
+
+.problemNavItem.answered.active {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.problemNumber {
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.problemCheck {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 9px;
+    color: #10B981;
+}
+
+/* Tools Card */
+.toolsCard {
+    background: white;
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.toolsCard h3 {
+    font-size: 17px;
+    font-weight: 800;
+    color: #0F172A;
+    margin: 0 0 16px 0;
+    letter-spacing: -0.2px;
+}
+
+.toolIconBtn {
+    width: 100%;
+    padding: 16px 12px;
+    background: #F8FAFC;
+    border: 2px solid #E2E8F0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+}
+
+.toolIconBtn span {
+    font-size: 28px;
+}
+
+.toolIconBtn:hover {
+    border-color: #1E40AF;
+    background: #EFF6FF;
+    transform: translateY(-2px);
+}
+
+.toolIconBtn:last-child {
+    margin-bottom: 0;
+}
+
+
+
+.floatingTool {
+    position: fixed;
+    background: white;
+    border: 2px solid #1E40AF;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    min-width: 280px;
+}
+
+.toolHeader {
+    padding: 14px 18px;
+    background: rgb(19, 19, 112);
+    color: white;
+    border-radius: 14px 14px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: move;
+    user-select: none;
+}
+
+.toolHeader span {
+    font-weight: 800;
+    font-size: 15px;
+}
+
+.toolHeader button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.toolHeader button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.toolBody {
+    padding: 20px;
+}
+
+/* Calculator */
+.calcDisplay {
+    width: 100%;
+    padding: 14px;
+    font-size: 22px;
+    text-align: right;
+    border: 2px solid #E2E8F0;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
+    font-weight: 600;
+}
+
+.calcResult {
+    text-align: right;
+    color: #1E40AF;
+    font-weight: 800;
+    font-size: 20px;
+    margin-bottom: 14px;
+    font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
+}
+
+.calcButtons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.calcBtn {
+    padding: 16px;
+    background: #F8FAFC;
+    border: 2px solid #E2E8F0;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #0F172A;
+}
+
+.calcBtn:hover {
+    background: #DBEAFE;
+    border-color: #3B82F6;
+    transform: scale(1.05);
+}
+
+.calcBtn.clear {
+    background: #FEE2E2;
+    border-color: #EF4444;
+    color: #DC2626;
+}
+
+.calcBtn.clear:hover {
+    background: #FECACA;
+}
+
+/* Notes */
+.notesTextarea {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #E2E8F0;
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: inherit;
+    resize: vertical;
+    margin-bottom: 14px;
+    line-height: 1.6;
+}
+
+.notesTextarea:focus {
+    outline: none;
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.saveNotesBtn {
+    width: 100%;
+    padding: 12px;
+    background:  #059669;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.saveNotesBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+.saveNotesBtn:active {
+    transform: translateY(0);
+}
+
+
+.resultsContainer {
+    background: white;
+    border-radius: 16px;
+    padding: 60px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #E2E8F0;
+    text-align: center;
+}
+
+.scoreDisplay {
+    margin-bottom: 40px;
+}
+
+.scoreCircle {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 32px auto;
+    border-radius: 50%;
+    background: rgb(9, 9, 88);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(30, 64, 175, 0.3);
+}
+
+.scoreNumber {
+    font-size: 64px;
+    font-weight: 800;
+    color: white;
+}
+
+.scoreMessage {
+    font-size: 28px;
+    font-weight: 800;
+    color: #0F172A;
+    margin: 0 0 16px 0;
+}
+
+.scoreDetails {
+    font-size: 18px;
+    color: #64748B;
+    margin: 0;
+}
+
+.resultsActions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+.btnPrimary {
+    padding: 14px 32px;
+    background: rgb(13, 13, 83);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+
+.btnPrimary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(30, 64, 175, 0.4);
+}
+
+.btnPrimary:active {
+    transform: translateY(0);
+}
+
+
+@media (max-width: 1200px) {
+    .problemsLayout {
+        grid-template-columns: 1fr;
+        padding: 32px 40px 48px 40px;
+    }
+
+    .problemsSidebar {
+        position: static;
+    }
+
+    .problemNav {
+        grid-template-columns: repeat(8, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .problemsTitle {
+        font-size: 36px;
+    }
+
+    .problemsHeader {
+        padding: 48px 0 36px 0;
+    }
+
+    .headerContent {
+        padding: 0 24px;
+    }
+
+    .problemsLayout {
+        padding: 24px 20px 40px 20px;
+    }
+
+    .problemBox {
+        padding: 28px;
+    }
+
+    .problemText {
+        font-size: 20px;
+    }
+
+    .problemNav {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .problemsHeader {
+        padding: 40px 0 32px 0;
+    }
+
+    .headerContent {
+        padding: 0 20px;
+    }
+
+    .problemsLayout {
+        padding: 20px 16px 32px 16px;
+    }
+
+    .problemsTitle {
+        font-size: 28px;
+    }
+
+    .problemBox {
+        padding: 20px;
+    }
+
+    .problemText {
+        font-size: 18px;
+    }
+
+    .problemNav {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .closeTabBtn {
+        top: 16px;
+        right: 16px;
+        padding: 10px 18px;
+        font-size: 13px;
+    }
+
+    .answerInput {
+        font-size: 16px;
+        padding: 16px 20px;
+    }
+}
