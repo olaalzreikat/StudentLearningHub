@@ -44,13 +44,15 @@ function Navbar() {
                 </ul>
                 
                 <button
-                    className="mobile-menu-toggle"
+                    className={`mobile-menu-toggle ${isMobileMenuOpen ? 'open' : ''}`}
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                     aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
                     aria-expanded={isMobileMenuOpen}
                     aria-controls="nav-links-list"
                 >
-                    ☰
+                    <span className="burger-line"></span>
+                    <span className="burger-line"></span>
+                    <span className="burger-line"></span>
                 </button>
             </div>
         </nav>

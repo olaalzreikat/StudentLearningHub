@@ -73,11 +73,45 @@
 
 .mobile-menu-toggle {
     display: none;
-    background: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    background: #f1f5f9;
     border: none;
-    font-size: 28px;
+    border-radius: 10px;
     cursor: pointer;
-    color: var(--text-primary);
+    padding: 8px;
+    transition: background 0.2s ease;
+}
+
+.mobile-menu-toggle:hover {
+    background: #dbeafe;
+}
+
+.burger-line {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #1e293b;
+    border-radius: 2px;
+    transition: all 0.25s ease;
+    transform-origin: center;
+}
+
+.mobile-menu-toggle.open .burger-line:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.mobile-menu-toggle.open .burger-line:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+}
+
+.mobile-menu-toggle.open .burger-line:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
 }
 
 @media (max-width: 1024px) {
@@ -97,30 +131,51 @@
 
 @media (max-width: 768px) {
     .nav-container {
-        padding: 15px 20px;
+        padding: 12px 16px;
     }
 
     .logo-text img {
-        height: 40px;
+        height: 38px;
     }
 
     .nav-links {
         display: none;
         position: absolute;
-        top: 70px;
+        top: 64px;
         left: 0;
         width: 100%;
         background: white;
         flex-direction: column;
-        padding: 20px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 12px 16px 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
         z-index: 999;
+        gap: 4px;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .nav-links li {
+        width: 100%;
     }
 
     .nav-links a {
-        padding: 12px 16px;
+        display: block;
+        padding: 14px 16px;
         font-size: 15px;
+        font-weight: 600;
         border-radius: 10px;
+        color: #1e293b;
+    }
+
+    .nav-links a:hover {
+        background: #eff6ff;
+        color: #1e40af;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .nav-links a.active {
+        background: #1e40af;
+        color: white;
     }
 
     .nav-links.active {
@@ -128,6 +183,6 @@
     }
 
     .mobile-menu-toggle {
-        display: block;
+        display: flex;
     }
 }
