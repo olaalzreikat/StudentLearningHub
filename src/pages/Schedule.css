@@ -415,19 +415,21 @@
 
 .group-session-card {
   background: #fff;
-  border: 1.5px solid #e2e8f0;
-  border-top: 4px solid var(--accent);
-  border-radius: 16px;
+  border: 1px solid #E5E7EB;
+  border-top: 3px solid var(--accent);
+  border-radius: 14px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 14px;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
 .group-session-card:hover {
-  box-shadow: 0 8px 28px rgba(0,0,0,0.09);
-  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+  border-color: #CBD5E1;
 }
 
 .gsc-top {
@@ -437,12 +439,12 @@
 }
 
 .gsc-avatar {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: 800;
   color: white;
-  font-size: 20px;
-  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -533,21 +535,27 @@
 
 .gsc-btn {
   width: 100%;
-  padding: 11px 20px;
+  padding: 9px 16px;
   border: none;
-  border-radius: 100px;
-  font-size: 14px;
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: all 0.2s ease;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   color: white;
+  text-align: center;
+}
+
+.gsc-btn-join {
+  background: #1e40af;
+  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.25);
 }
 
 .gsc-btn-join:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 8px 20px rgba(30, 64, 175, 0.45);
-  filter: brightness(1.1);
+  background: #1e3a8a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.35);
 }
 
 .gsc-btn-cancel {
@@ -608,16 +616,17 @@
 }
 
 .session-progress {
-    height: 5px;
-    background: #e2e8f0;
-    border-radius: 100px;
+    height: 7px;
+    background: #E5E7EB;
+    border-radius: 10px;
     overflow: hidden;
     margin-top: 6px;
 }
 
 .session-progress-bar {
     height: 100%;
-    border-radius: 100px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #1e40af, #3b82f6);
     transition: width 0.3s ease;
 }
 @media (max-width: 1024px) {

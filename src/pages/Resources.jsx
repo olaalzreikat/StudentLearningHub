@@ -4,7 +4,7 @@ import { videosData, quizzesData, problemsData, guidesData } from '../data/resou
 import { classesData } from '../data/classesData';
 import { lessonsData } from '../data/lessonsData';
 import { getProgress, markAsComplete, addActivity, checkAndAwardAchievements } from '../utils/localStorage';
-import { useNavigate } from 'react-router-dom';
+import { getSubjectColor } from '../utils/subjectColors';
 import ClassModal from '../components/ClassModal';
 import './Resources.css';
 
@@ -37,7 +37,6 @@ function Resources() {
         setTimeout(() => setShowNotification(false), 3000);
     };
     
-    const navigate = useNavigate();
     
     const progress = getProgress();
 
@@ -309,19 +308,25 @@ const downloadFile = (guide) => {
                         >
                             Geometry
                         </button>
-                        <button 
+                        <button
                             className={`category-btn ${activeFilter === 'calculus' ? 'active' : ''}`}
                             onClick={() => setActiveFilter('calculus')}
                         >
                             Calculus
                         </button>
-                        <button 
+                        <button
                             className={`category-btn ${activeFilter === 'statistics' ? 'active' : ''}`}
                             onClick={() => setActiveFilter('statistics')}
                         >
                             Statistics
                         </button>
-                       
+                        <button
+                            className={`category-btn ${activeFilter === 'trigonometry' ? 'active' : ''}`}
+                            onClick={() => setActiveFilter('trigonometry')}
+                        >
+                            Trigonometry
+                        </button>
+
                     </div>
 
                     <div className="search-box">
@@ -349,15 +354,14 @@ const downloadFile = (guide) => {
                             <h2>Classes</h2>
                         </div>
                         <div className="classes-grid">
-                            {filtered.classes.map((classItem, idx) => {
+                            {filtered.classes.map((classItem) => {
                                 const prog = classProgress[classItem.id] || { percentage: 0, total: 0, completed: 0, started: false };
                                 const totalUnits = classItem.units.length;
                                 const totalLessons = classItem.units.reduce((sum, unit) => sum + unit.lessons.length, 0);
                                 const totalMins = classItem.units.reduce((sum, unit) =>
                                     sum + unit.lessons.reduce((s, l) => s + parseInt(l.duration) || 0, 0), 0);
                                 const estHours = Math.round(totalMins / 60 * 10) / 10;
-                                const accentColors = ['#1e40af','#059669','#7c3aed','#b45309','#0891b2','#be185d','#dc2626','#0d9488'];
-                                const accent = accentColors[idx % accentColors.length];
+                                const accent = getSubjectColor(classItem.subject);
 
                                 return (
                                     <div key={classItem.id} className="lesson-card" style={{ borderTop: `3px solid ${accent}` }} onClick={() => handleClassClick(classItem)}>
@@ -419,10 +423,11 @@ const downloadFile = (guide) => {
                                 <option value="Algebra 1">Algebra 1</option>
                                 <option value="Algebra 2">Algebra 2</option>
                                 <option value="Geometry">Geometry</option>
-                                <option value="Trigonometry">Trigonometry</option>
                                 <option value="Precalculus">Precalculus</option>
                                 <option value="Calculus">Calculus</option>
                                 <option value="Statistics">Statistics</option>
+                                <option value="Trigonometry">Trigonometry</option>
+
                             </select>
                         </div>
                         <div className="videos-grid">
@@ -430,10 +435,10 @@ const downloadFile = (guide) => {
                                 const isCompleted = isVideoCompleted(video.id);
                                 
                                 return (
-                                    <div key={video.id} className={`video-card${isCompleted ? ' video-card-done' : ''}`} onClick={() => handleVideoClick(video)}>
+                                    <div key={video.id} className={`video-card${isCompleted ? ' video-card-done' : ''}`} style={{ borderTop: `3px solid ${getSubjectColor(video.topic || '')}` }} onClick={() => handleVideoClick(video)}>
                                         <div className="video-background"></div>
                                         <div className="video-card-top-row">
-                                            {video.class && <div className="video-class-badge">{video.class}</div>}
+                                            {video.class && <div className="video-class-badge" style={{ color: getSubjectColor(video.topic || ''), background: getSubjectColor(video.topic || '') + '15' }}>{video.class}</div>}
                                         </div>
                                         <div className="video-preview">
                                             {video.videoUrl ? (
@@ -479,7 +484,7 @@ const downloadFile = (guide) => {
                                 const isCompleted = isQuizCompleted(quiz.id);
                                 
                                 return (
-                                    <div key={quiz.id} className={`quiz-card${isCompleted ? ' quiz-card-done' : ''}`} onClick={() => handleQuizClick(quiz)}>
+                                    <div key={quiz.id} className={`quiz-card${isCompleted ? ' quiz-card-done' : ''}`} style={{ borderLeft: `4px solid ${getSubjectColor(quiz.topic)}` }} onClick={() => handleQuizClick(quiz)}>
                                         <div className="quiz-info">
                                             <h4 className="quiz-title">{quiz.title}</h4>
                                             <p className="quiz-description">{quiz.description}</p>
@@ -506,7 +511,7 @@ const downloadFile = (guide) => {
                                 const isCompleted = isProblemCompleted(problem.id);
                                 
                                 return (
-                                    <div key={problem.id} className={`quiz-card${isCompleted ? ' quiz-card-done' : ''}`} onClick={() => handleProblemClick(problem)}>
+                                    <div key={problem.id} className={`quiz-card${isCompleted ? ' quiz-card-done' : ''}`} style={{ borderLeft: `4px solid ${getSubjectColor(problem.topic)}` }} onClick={() => handleProblemClick(problem)}>
                                         <div className="quiz-info">
                                             <h4 className="quiz-title">{problem.title}</h4>
                                             <p className="quiz-description">{problem.description}</p>
@@ -544,7 +549,7 @@ const downloadFile = (guide) => {
                                 const isDownloaded = isGuideDownloaded(guide.id);
                                 
                                 return (
-                                    <div key={guide.id} className="download-card">
+                                    <div key={guide.id} className="download-card" style={{ borderTop: `3px solid ${getSubjectColor(guide.topic)}` }}>
                                         <div className="download-content">
                                             <h4 className="download-title">{guide.title}</h4>
                                             <p className="download-description">{guide.description}</p>

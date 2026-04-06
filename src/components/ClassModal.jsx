@@ -12,7 +12,7 @@ function ClassModal({ classData, onClose, onLessonStart }) {
         const refreshProgress = () => {
             const progress = getProgress();
             setCompletedLessons(progress.completedLessons || []);
-            console.log('✓ ClassModal: Refreshed progress', progress.completedLessons); // Debug log
+            console.log(' ClassModal: Refreshed progress', progress.completedLessons); // Debug log
         };
 
         // Initial load
@@ -20,7 +20,7 @@ function ClassModal({ classData, onClose, onLessonStart }) {
 
         // Refresh when window regains focus (e.g., after closing lesson tab)
         const handleFocus = () => {
-            console.log('✓ ClassModal: Window focused, refreshing progress'); // Debug log
+            console.log('ClassModal: Window focused, refreshing progress'); // Debug log
             refreshProgress();
         };
 

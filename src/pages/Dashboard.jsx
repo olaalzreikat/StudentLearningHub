@@ -575,19 +575,19 @@ function Dashboard() {
                                     <div className="stat-box-number" style={{ color: '#1e40af' }}>{completedVideos}</div>
                                     <div className="stat-box-sublabel">of {totalVideos}</div>
                                 </div>
-                                <div className="stat-box" style={{ borderBottom: '3px solid #059669' }}>
+                                <div className="stat-box" style={{ borderBottom: '3px solid #1e40af' }}>
                                     <div className="stat-box-label">Lessons</div>
-                                    <div className="stat-box-number" style={{ color: '#059669' }}>{completedLessons}</div>
+                                    <div className="stat-box-number" style={{ color: '#1e40af' }}>{completedLessons}</div>
                                     <div className="stat-box-sublabel">of {totalLessons}</div>
                                 </div>
-                                <div className="stat-box" style={{ borderBottom: '3px solid #d97706' }}>
+                                <div className="stat-box" style={{ borderBottom: '3px solid #1e40af' }}>
                                     <div className="stat-box-label">Quizzes</div>
-                                    <div className="stat-box-number" style={{ color: '#d97706' }}>{completedQuizzes}</div>
+                                    <div className="stat-box-number" style={{ color: '#1e40af' }}>{completedQuizzes}</div>
                                     <div className="stat-box-sublabel">of {totalQuizzes}</div>
                                 </div>
-                                <div className="stat-box" style={{ borderBottom: '3px solid #7c3aed' }}>
+                                <div className="stat-box" style={{ borderBottom: '3px solid #1e40af' }}>
                                     <div className="stat-box-label">Problems</div>
-                                    <div className="stat-box-number" style={{ color: '#7c3aed' }}>{completedProblems}</div>
+                                    <div className="stat-box-number" style={{ color: '#1e40af' }}>{completedProblems}</div>
                                     <div className="stat-box-sublabel">of {totalProblems}</div>
                                 </div>
                             </div>
@@ -681,11 +681,11 @@ function Dashboard() {
                                     <span>{completedVideos} Videos</span>
                                 </div>
                                 <div className="breakdown-simple-item">
-                                    <span className="breakdown-dot" style={{ background: '#059669' }}></span>
+                                    <span className="breakdown-dot" style={{ background: '#1e40af' }}></span>
                                     <span>{completedLessons} Lessons</span>
                                 </div>
                                 <div className="breakdown-simple-item">
-                                    <span className="breakdown-dot" style={{ background: '#d97706' }}></span>
+                                    <span className="breakdown-dot" style={{ background: '#1e40af' }}></span>
                                     <span>{completedQuizzes} Quizzes</span>
                                 </div>
                             </div>

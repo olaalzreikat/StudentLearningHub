@@ -510,7 +510,7 @@ function Schedule() {
                         {isFull && <span className="gsc-spots-full">Full</span>}
                       </div>
                       <div className="session-progress">
-                        <div className="session-progress-bar" style={{ width: `${(currentCount / group.totalSize) * 100}%`, background: getTopicColor(group.topic) }}></div>
+                        <div className="session-progress-bar" style={{ width: `${(currentCount / group.totalSize) * 100}%` }}></div>
                       </div>
                     </div>
 
@@ -522,7 +522,7 @@ function Schedule() {
                       ) : (
                         <button
                           className={`gsc-btn ${isFull ? 'gsc-btn-full' : 'gsc-btn-join'}`}
-                          style={!isFull ? { background: getTopicColor(group.topic) } : {}}
+                          style={{}}
                           onClick={() => { handleJoinGroupSession(group); if (!isFull) triggerSessionBurst(group.id); }}
                           disabled={isFull}
                         >
