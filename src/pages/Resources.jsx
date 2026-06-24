@@ -24,6 +24,9 @@ function Resources() {
     // Show more toggle for videos
     const [showAllVideos, setShowAllVideos] = useState(false);
 
+    // Practice section toggle
+    const [practiceTab, setPracticeTab] = useState('quizzes');
+
     // Trigger to reread progress after returning from a lesson/quiz tab
     const [refreshTrigger, setRefreshTrigger] = useState(0);
 
@@ -347,6 +350,46 @@ const downloadFile = (guide) => {
                     </div>
                 )}
 
+                {/* CONTINUE LEARNING SECTION */}
+                {(() => {
+                    const inProgress = classesData.filter(c => {
+                        const p = classProgress[c.id];
+                        return p && p.started && p.percentage < 100;
+                    });
+                    if (inProgress.length === 0) return null;
+                    return (
+                        <div className="resource-section">
+                            <div className="section-header">
+                                <h2>Continue Learning</h2>
+                            </div>
+                            <div className="continue-grid">
+                                {inProgress.slice(0, 3).map(classItem => {
+                                    const prog = classProgress[classItem.id];
+                                    const accent = getSubjectColor(classItem.subject);
+                                    return (
+                                        <div key={classItem.id} className="continue-card" onClick={() => handleClassClick(classItem)}>
+                                            <div className="continue-card-stripe" style={{ background: accent }} />
+                                            <div className="continue-card-content">
+                                                <div className="continue-card-icon" style={{ background: accent + '18', color: accent }}>
+                                                    {classItem.title.charAt(0)}
+                                                </div>
+                                                <div className="continue-card-info">
+                                                    <div className="continue-card-title">{classItem.title}</div>
+                                                    <div className="continue-card-sub">{prog.completed}/{prog.total} lessons · {prog.percentage}%</div>
+                                                    <div className="continue-bar-wrap">
+                                                        <div className="continue-bar-fill" style={{ width: `${prog.percentage}%`, background: accent }} />
+                                                    </div>
+                                                </div>
+                                                <button className="continue-btn" style={{ background: accent }}>Continue →</button>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    );
+                })()}
+
                 {/* CLASSES SECTION */}
                 {filtered.classes.length > 0 && (
                     <div className="resource-section">
@@ -364,19 +407,20 @@ const downloadFile = (guide) => {
                                 const accent = getSubjectColor(classItem.subject);
 
                                 return (
-                                    <div key={classItem.id} className="lesson-card" style={{ borderTop: `3px solid ${accent}` }} onClick={() => handleClassClick(classItem)}>
-                                        <div className="class-card-content">
-                                            <div className="class-card-top">
-                                                <div className="class-subject-avatar" style={{ background: accent }}>
-                                                    {classItem.title.charAt(0)}
-                                                </div>
-                                                <div className="class-card-info">
-                                                    <h3 className="lesson-title">{classItem.title}</h3>
-                                                    {classItem.level && (
-                                                        <span className="class-level-badge">{classItem.level}</span>
-                                                    )}
-                                                </div>
+                                    <div key={classItem.id} className="lesson-card" onClick={() => handleClassClick(classItem)}>
+                                        <div className="class-card-banner" style={{ background: accent }}>
+                                            <span className="class-banner-letter">{classItem.title.charAt(0)}</span>
+                                            <div className="class-banner-right">
+                                                {classItem.level && (
+                                                    <span className="class-banner-level">{classItem.level}</span>
+                                                )}
+                                                {prog.percentage > 0 && (
+                                                    <span className="class-banner-pct">{prog.percentage}%</span>
+                                                )}
                                             </div>
+                                        </div>
+                                        <div className="class-card-body">
+                                            <h3 className="lesson-title">{classItem.title}</h3>
                                             {classItem.description && (
                                                 <p className="class-description">{classItem.description}</p>
                                             )}
@@ -394,10 +438,10 @@ const downloadFile = (guide) => {
                                                         <span className="class-progress-text">{prog.completed} / {prog.total} lessons</span>
                                                     </div>
                                                     <div className="class-progress-bar">
-                                                        <div className="class-progress-fill" style={{ width: `${prog.percentage}%` }}></div>
+                                                        <div className="class-progress-fill" style={{ width: `${prog.percentage}%`, background: accent }}></div>
                                                     </div>
                                                 </div>
-                                                <button className="class-action-btn">
+                                                <button className="class-action-btn" style={{ background: accent }}>
                                                     {prog.started ? 'Continue' : 'Start'}
                                                 </button>
                                             </div>
@@ -473,57 +517,98 @@ const downloadFile = (guide) => {
                     </div>
                 )}
 
-                {/* QUIZZES SECTION */}
-                {filtered.quizzes.length > 0 && (
+                {/* PRACTICE SECTION — Quizzes + Problems with toggle */}
+                {(filtered.quizzes.length > 0 || filtered.problems.length > 0) && (
                     <div className="resource-section">
                         <div className="section-header">
-                            <h2>Quizzes</h2>
+                            <h2>Practice</h2>
+                            <div className="practice-toggle">
+                                <button
+                                    className={`practice-toggle-btn ${practiceTab === 'quizzes' ? 'active' : ''}`}
+                                    onClick={() => setPracticeTab('quizzes')}
+                                >
+                                    Quizzes
+                                    {filtered.quizzes.length > 0 && (
+                                        <span className="practice-toggle-count">{filtered.quizzes.length}</span>
+                                    )}
+                                </button>
+                                <button
+                                    className={`practice-toggle-btn ${practiceTab === 'problems' ? 'active' : ''}`}
+                                    onClick={() => setPracticeTab('problems')}
+                                >
+                                    Problems
+                                    {filtered.problems.length > 0 && (
+                                        <span className="practice-toggle-count">{filtered.problems.length}</span>
+                                    )}
+                                </button>
+                            </div>
                         </div>
-                        <div className="quizzes-grid">
-                            {filtered.quizzes.map((quiz) => {
-                                const isCompleted = isQuizCompleted(quiz.id);
-                                
-                                return (
-                                    <div key={quiz.id} className={`quiz-card${isCompleted ? ' quiz-card-done' : ''}`} style={{ borderLeft: `4px solid ${getSubjectColor(quiz.topic)}` }} onClick={() => handleQuizClick(quiz)}>
-                                        <div className="quiz-info">
-                                            <h4 className="quiz-title">{quiz.title}</h4>
-                                            <p className="quiz-description">{quiz.description}</p>
-                                            <p className="quiz-duration">{quiz.questions} questions • {quiz.duration}</p>
-                                        </div>
-                                        <button className={`start-btn${isCompleted ? ' start-btn-done' : ''}`} onClick={(e) => { e.stopPropagation(); handleQuizClick(quiz); }}>
-                                            {isCompleted ? 'Retake' : 'Start'}
-                                        </button>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                )}
 
-                {/* PRACTICE PROBLEMS SECTION */}
-                {filtered.problems.length > 0 && (
-                    <div className="resource-section">
-                        <div className="section-header">
-                            <h2>Practice Problems</h2>
-                        </div>
-                        <div className="problems-grid">
-                            {filtered.problems.map((problem) => {
-                                const isCompleted = isProblemCompleted(problem.id);
-                                
-                                return (
-                                    <div key={problem.id} className={`quiz-card${isCompleted ? ' quiz-card-done' : ''}`} style={{ borderLeft: `4px solid ${getSubjectColor(problem.topic)}` }} onClick={() => handleProblemClick(problem)}>
-                                        <div className="quiz-info">
-                                            <h4 className="quiz-title">{problem.title}</h4>
-                                            <p className="quiz-description">{problem.description}</p>
-                                            <p className="quiz-duration">{problem.problems.length} problems • {problem.duration}</p>
-                                        </div>
-                                        <button className={`start-btn${isCompleted ? ' start-btn-done' : ''}`} onClick={(e) => { e.stopPropagation(); handleProblemClick(problem); }}>
-                                            {isCompleted ? 'Retake' : 'Start'}
-                                        </button>
-                                    </div>
-                                );
-                            })}
-                        </div>
+                        {practiceTab === 'quizzes' && (
+                            filtered.quizzes.length > 0 ? (
+                                <div className="quizzes-grid">
+                                    {filtered.quizzes.map((quiz) => {
+                                        const isCompleted = isQuizCompleted(quiz.id);
+                                        const color = getSubjectColor(quiz.topic);
+                                        const letter = quiz.topic.charAt(0).toUpperCase();
+                                        return (
+                                            <div key={quiz.id} className={`practice-card${isCompleted ? ' practice-card-done' : ''}`} style={{ '--practice-color': color, borderColor: color + '40', background: color + '06' }} onClick={() => handleQuizClick(quiz)}>
+                                                <div className="practice-card-left">
+                                                    <div className="practice-icon" style={{ background: color, color: 'white' }}>{letter}</div>
+                                                    <div className="practice-info">
+                                                        <h4 className="quiz-title">{quiz.title}</h4>
+                                                        <p className="quiz-description">{quiz.description}</p>
+                                                        <p className="quiz-duration">{quiz.questions} questions · {quiz.duration}</p>
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    className={`practice-start-btn${isCompleted ? ' practice-start-done' : ''}`}
+                                                    style={!isCompleted ? { background: color } : {}}
+                                                    onClick={(e) => { e.stopPropagation(); handleQuizClick(quiz); }}
+                                                >
+                                                    {isCompleted ? 'Retake' : 'Start'}
+                                                </button>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <div className="practice-empty">No quizzes match your current filter.</div>
+                            )
+                        )}
+
+                        {practiceTab === 'problems' && (
+                            filtered.problems.length > 0 ? (
+                                <div className="quizzes-grid">
+                                    {filtered.problems.map((problem) => {
+                                        const isCompleted = isProblemCompleted(problem.id);
+                                        const color = getSubjectColor(problem.topic);
+                                        const letter = problem.topic.charAt(0).toUpperCase();
+                                        return (
+                                            <div key={problem.id} className={`practice-card${isCompleted ? ' practice-card-done' : ''}`} style={{ '--practice-color': color, borderColor: color + '40', background: color + '06' }} onClick={() => handleProblemClick(problem)}>
+                                                <div className="practice-card-left">
+                                                    <div className="practice-icon" style={{ background: color, color: 'white' }}>{letter}</div>
+                                                    <div className="practice-info">
+                                                        <h4 className="quiz-title">{problem.title}</h4>
+                                                        <p className="quiz-description">{problem.description}</p>
+                                                        <p className="quiz-duration">{problem.problems.length} problems · {problem.duration}</p>
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    className={`practice-start-btn${isCompleted ? ' practice-start-done' : ''}`}
+                                                    style={!isCompleted ? { background: color } : {}}
+                                                    onClick={(e) => { e.stopPropagation(); handleProblemClick(problem); }}
+                                                >
+                                                    {isCompleted ? 'Retake' : 'Start'}
+                                                </button>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <div className="practice-empty">No problems match your current filter.</div>
+                            )
+                        )}
                     </div>
                 )}
 

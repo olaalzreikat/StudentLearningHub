@@ -1,0 +1,583 @@
+.ta-page {
+    min-height: 100vh;
+    background: #f8fafc;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ─── Intro Card ─── */
+.ta-intro-card {
+    background: white;
+    border-radius: 24px;
+    padding: 48px 44px;
+    max-width: 580px;
+    width: 100%;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.ta-intro-badge {
+    display: inline-block;
+    background: #eff6ff;
+    color: rgb(8, 8, 85);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+
+.ta-intro-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0 0 14px;
+}
+
+.ta-intro-desc {
+    font-size: 1rem;
+    color: #475569;
+    line-height: 1.6;
+    margin: 0 0 32px;
+}
+
+.ta-intro-rules {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+    margin-bottom: 36px;
+}
+
+.ta-rule {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 16px;
+    border: 2px solid #e2e8f0;
+}
+
+.ta-rule-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+.ta-rule strong { font-size: 0.95rem; color: #1e293b; display: block; margin-bottom: 2px; }
+.ta-rule p { font-size: 0.82rem; color: #64748b; margin: 0; line-height: 1.4; }
+
+.ta-intro-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+}
+
+.ta-start-btn {
+    padding: 14px 40px;
+    background: rgb(8, 8, 85);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 16px rgba(8, 8, 85, 0.35);
+}
+.ta-start-btn:hover:not(:disabled) { background: #1e40af; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(8, 8, 85, 0.4); }
+.ta-start-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.ta-back-btn {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px;
+    transition: color 0.2s ease;
+}
+.ta-back-btn:hover { color: #475569; }
+
+/* ─── Test Header ─── */
+.ta-test-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    max-width: 720px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+}
+
+.ta-back-link {
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s ease;
+    flex-shrink: 0;
+}
+.ta-back-link:hover { color: rgb(8, 8, 85); }
+
+.ta-progress-text {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #64748b;
+    flex-shrink: 0;
+}
+
+.ta-progress-bar {
+    flex: 1;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    min-width: 80px;
+}
+
+.ta-progress-fill {
+    height: 100%;
+    background: rgb(8, 8, 85);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+/* ─── Questions ─── */
+.ta-questions {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 720px;
+    margin-bottom: 100px;
+}
+
+.ta-question-card {
+    background: white;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    border: 2px solid #e2e8f0;
+}
+
+.ta-q-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.ta-q-subject {
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.ta-q-num {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #94a3b8;
+}
+
+.ta-q-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 18px;
+    line-height: 1.5;
+}
+
+.ta-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ta-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    background: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #1e293b;
+    text-align: left;
+    transition: all 0.15s ease;
+    font-family: inherit;
+}
+
+.ta-option:hover { border-color: rgb(8, 8, 85); background: #f0f4ff; }
+
+.ta-option.selected {
+    border-color: rgb(8, 8, 85);
+    background: #eff6ff;
+    font-weight: 700;
+}
+
+.ta-option-letter {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 800;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+}
+
+.ta-option.selected .ta-option-letter {
+    background: rgb(8, 8, 85);
+    color: white;
+}
+
+/* ─── Submit Bar ─── */
+.ta-submit-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 2px solid #e2e8f0;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+    z-index: 100;
+}
+
+.ta-submit-status {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.ta-submit-btn {
+    padding: 12px 32px;
+    background: rgb(8, 8, 85);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 14px rgba(8, 8, 85, 0.3);
+    flex-shrink: 0;
+}
+.ta-submit-btn:hover:not(:disabled) { background: #1e40af; transform: translateY(-1px); }
+.ta-submit-btn:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; }
+
+/* ─── Result Card ─── */
+.ta-result-card {
+    background: white;
+    border-radius: 24px;
+    padding: 48px 44px;
+    max-width: 580px;
+    width: 100%;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.ta-result-icon {
+    font-size: 3.5rem;
+    margin-bottom: 16px;
+    line-height: 1;
+}
+
+.ta-result-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0 0 10px;
+}
+
+.ta-result-score {
+    font-size: 1.1rem;
+    color: #475569;
+    margin: 0 0 14px;
+}
+
+.ta-result-desc {
+    font-size: 0.95rem;
+    color: #64748b;
+    line-height: 1.6;
+    margin: 0 0 32px;
+}
+
+/* ─── Breakdown ─── */
+.ta-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 32px;
+    text-align: left;
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 20px;
+    border: 2px solid #e2e8f0;
+}
+
+.ta-breakdown-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ta-bd-subject {
+    font-size: 0.82rem;
+    font-weight: 700;
+    width: 100px;
+    flex-shrink: 0;
+}
+
+.ta-bd-bar-wrap {
+    flex: 1;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.ta-bd-bar {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.6s ease;
+}
+
+.ta-bd-score {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #475569;
+    width: 32px;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.ta-result-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+}
+
+/* ─── Step Indicator ─── */
+.ta-step-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 28px;
+}
+
+.ta-step {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #94a3b8;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 2px solid #e2e8f0;
+    white-space: nowrap;
+}
+
+.ta-step.active {
+    color: rgb(8, 8, 85);
+    background: #eff6ff;
+    border-color: rgb(8, 8, 85);
+}
+
+.ta-step-line {
+    flex: 1;
+    height: 2px;
+    background: #e2e8f0;
+    max-width: 40px;
+}
+
+/* ─── Info Card ─── */
+.ta-info-card {
+    background: white;
+    border-radius: 24px;
+    padding: 40px 44px;
+    max-width: 640px;
+    width: 100%;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+}
+
+.ta-info-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0 0 28px;
+}
+
+.ta-info-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.ta-info-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 20px;
+}
+
+.ta-info-field label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #374151;
+}
+
+.ta-required {
+    font-weight: 500;
+    color: #94a3b8;
+}
+
+.ta-info-field input,
+.ta-info-field select,
+.ta-info-field textarea {
+    padding: 11px 14px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    color: #1e293b;
+    font-family: inherit;
+    background: white;
+    transition: border-color 0.2s;
+    resize: vertical;
+}
+
+.ta-info-field input:focus,
+.ta-info-field select:focus,
+.ta-info-field textarea:focus {
+    outline: none;
+    border-color: rgb(8, 8, 85);
+}
+
+.ta-char-count {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    font-weight: 600;
+    text-align: right;
+}
+
+.ta-subjects-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ta-subject-chip {
+    padding: 7px 14px;
+    border: 2px solid #e2e8f0;
+    border-radius: 20px;
+    background: white;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #475569;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+}
+
+.ta-subject-chip:hover {
+    border-color: rgb(8, 8, 85);
+    color: rgb(8, 8, 85);
+}
+
+.ta-subject-chip.selected {
+    background: rgb(8, 8, 85);
+    border-color: rgb(8, 8, 85);
+    color: white;
+}
+
+.ta-info-section-label {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #1e293b;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+    padding-top: 4px;
+}
+
+.ta-info-hint {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0 0 16px;
+    line-height: 1.5;
+}
+
+.ta-info-error {
+    background: #fef2f2;
+    border: 2px solid #fecaca;
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-size: 0.875rem;
+    color: #dc2626;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.ta-info-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 4px;
+}
+
+/* ─── Quiz banner ─── */
+.ta-quiz-banner {
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #eff6ff;
+    border: 2px solid #bfdbfe;
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: rgb(8, 8, 85);
+    margin-bottom: 20px;
+}
+
+/* ─── Login note ─── */
+.login-signup-note {
+    background: #eff6ff;
+    border: 2px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    color: rgb(8, 8, 85);
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 640px) {
+    .ta-intro-card, .ta-result-card { padding: 32px 24px; }
+    .ta-submit-bar { flex-direction: column; gap: 10px; text-align: center; }
+    .ta-test-header { flex-wrap: wrap; }
+}

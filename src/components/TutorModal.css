@@ -38,6 +38,21 @@
     border-radius: 50%;
 }
 
+.tutor-avatar-large {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 72px;
+    font-weight: 900;
+    color: white;
+    flex-shrink: 0;
+    letter-spacing: -2px;
+}
+
 @media (max-width: 1024px) {
     .tutor-pfp {
         width: 140px;

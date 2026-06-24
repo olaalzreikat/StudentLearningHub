@@ -1,3 +1,100 @@
+/* ─── Announcements Banner ─── */
+.announcements-banner {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border-bottom: 2px solid #fde68a;
+    padding: 20px 40px;
+}
+.announcements-inner { max-width: 1200px; margin: 0 auto; }
+.ann-banner-title { font-size: 0.875rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #92400e; margin: 0 0 14px; }
+.ann-banner-list { display: flex; flex-direction: column; gap: 10px; }
+.ann-banner-item { background: white; border-radius: 10px; padding: 12px 16px; border-left: 3px solid #f59e0b; }
+.ann-banner-top { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+.ann-banner-tutor { font-size: 0.825rem; font-weight: 700; color: #1e293b; }
+.ann-banner-tag { background: #fef3c7; color: #92400e; font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em; }
+.ann-banner-date { font-size: 0.775rem; color: #94a3b8; margin-left: auto; }
+.ann-banner-msg { margin: 0; font-size: 0.9rem; color: #374151; line-height: 1.4; }
+
+/* ─── Tutor CTA Banner ─── */
+.tutor-schedule-banner {
+    background: linear-gradient(135deg, rgb(8, 8, 85) 0%, #1e40af 100%);
+    padding: 18px 40px;
+}
+
+.tutor-schedule-banner-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.tsb-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.tsb-pill {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    flex-shrink: 0;
+}
+
+.tsb-title {
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0 0 2px;
+}
+
+.tsb-sub {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+.tsb-post-btn {
+    padding: 12px 24px;
+    background: white;
+    color: rgb(8, 8, 85);
+    border: none;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    flex-shrink: 0;
+}
+
+.tsb-post-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+
+/* ─── Registered Tutors ─── */
+.registered-tutors-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.reg-tutor-card { background: white; border-radius: 16px; padding: 20px; display: flex; gap: 16px; align-items: flex-start; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border: 2px solid #e2e8f0; transition: all 0.2s ease; }
+.reg-tutor-card:hover { border-color: rgb(8,8,85); box-shadow: 0 6px 20px rgba(8,8,85,0.1); transform: translateY(-2px); }
+.reg-tutor-avatar { width: 52px; height: 52px; border-radius: 50%; background: rgb(8,8,85); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; flex-shrink: 0; }
+.reg-tutor-info { flex: 1; min-width: 0; }
+.reg-tutor-name { font-size: 1rem; font-weight: 700; color: #1e293b; margin: 0 0 8px; }
+.reg-tutor-subjects { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.reg-tutor-subject-tag { background: #eff6ff; color: #1e40af; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+.reg-tutor-bio { font-size: 0.85rem; color: #475569; margin: 0 0 8px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.reg-tutor-avail { font-size: 0.8rem; color: #64748b; margin: 0; }
+.reg-tutor-avail strong { color: #1e293b; }
+
 .schedule-hero {
     position: relative;
     height: 400px;
@@ -267,6 +364,61 @@
   object-fit: cover;
   flex-shrink: 0;
   border: 3px solid #e2e8f0;
+}
+
+.tutor-list-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgb(8, 8, 85);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  border: 3px solid rgba(8, 8, 85, 0.2);
+}
+
+.registered-tutor-card { cursor: pointer; }
+
+/* ─── 1-on-1 Request Modal ─── */
+.request-tutor-preview {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  border: 2px solid #e2e8f0;
+}
+
+.request-tutor-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgb(8, 8, 85);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.request-tutor-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.request-tutor-avail {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 2px;
 }
 
 .tutor-list-info {

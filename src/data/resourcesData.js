@@ -1131,7 +1131,7 @@ export const lessonsData = [
         duration: "25 min",
         sections: 6,
         content: {
-            introduction: "Two-step equations require two operations to solve. The strategy is to undo operations in reverse order of PEMDAS: first undo addition/subtraction, then undo multiplication/division. Think of it like unwrapping a gift—you reverse the order of how it was wrapped!",
+            introduction: "Two-step equations require two operations to solve. The strategy is to undo operations in reverse order of PEMDAS: first undo addition/subtraction, then undo multiplication/division. Think of it like unwrapping a gift - you reverse the order of how it was wrapped!",
             keyPoints: [
                 "Undo addition or subtraction FIRST",
                 "Then undo multiplication or division SECOND",

@@ -223,7 +223,7 @@ function Problems() {
                             <span className={styles.unitLabel}>
                                 {currentProblemSet.topic?.toUpperCase() || 'PROBLEMS'} • PRACTICE
                             </span>
-                            <h1 className={styles.problemsTitle}>Problems Complete! 🎉</h1>
+                            <h1 className={styles.problemsTitle}>Problems Complete!</h1>
                             <p className={styles.problemsObjective}>You've finished {currentProblemSet.title}</p>
                         </div>
                     </div>

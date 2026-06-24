@@ -144,7 +144,7 @@ export const classesData = [
         id: 'calculus-ab',
         title: 'Calculus AB',
         subject: 'calculus',
-        description: 'Tackle limits, derivatives, and integrals — the core concepts of the AP Calculus AB exam.',
+        description: 'Tackle limits, derivatives, and integrals - the core concepts of the AP Calculus AB exam.',
         level: 'Advanced',
         units: [
             { id: 'calc-u1', title: 'Unit 1: Limits and Continuity', lessons: [

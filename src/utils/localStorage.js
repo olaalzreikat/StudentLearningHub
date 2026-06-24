@@ -1,3 +1,12 @@
+let _currentUserId = null;
+export const setCurrentUser = (uid) => { _currentUserId = uid; };
+const getProgressKey = () => _currentUserId ? `mathmaster-progress-${_currentUserId}` : 'mathmaster-progress';
+const getAgendaKey = () => _currentUserId ? `agendaItems-${_currentUserId}` : 'agendaItems';
+const getDailyTasksKey = () => _currentUserId ? `dailyTasks-${_currentUserId}` : 'dailyTasks';
+const getQuizScoresKey = () => _currentUserId ? `quizScores-${_currentUserId}` : 'quizScores';
+
+export { getAgendaKey, getDailyTasksKey, getQuizScoresKey };
+
 // Initial progress structure
 const INITIAL_PROGRESS = {
     completedActivities: 0,
@@ -22,11 +31,11 @@ const INITIAL_PROGRESS = {
 
 // Get progress from localStorage
 export const getProgress = () => {
-    const savedProgress = localStorage.getItem('mathmaster-progress');
+    const savedProgress = localStorage.getItem(getProgressKey());
     
     if (!savedProgress) {
         // If no progress exists, create initial progress
-        localStorage.setItem('mathmaster-progress', JSON.stringify(INITIAL_PROGRESS));
+        localStorage.setItem(getProgressKey(), JSON.stringify(INITIAL_PROGRESS));
         return INITIAL_PROGRESS;
     }
     
@@ -52,7 +61,7 @@ export const getProgress = () => {
 
 // Save progress to localStorage
 export const saveProgress = (progress) => {
-    localStorage.setItem('mathmaster-progress', JSON.stringify(progress));
+    localStorage.setItem(getProgressKey(), JSON.stringify(progress));
 };
 
 // Check if an item is completed
@@ -156,9 +165,21 @@ export const addActivity = (type, title, topic) => {
         progress.recentActivity = progress.recentActivity.slice(0, 20);
     }
     
+    // Update streak: increment if yesterday, reset if gap, keep if already active today
+    const today = new Date().toDateString();
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    const lastDay = progress.lastActivity ? new Date(progress.lastActivity).toDateString() : null;
+    if (lastDay === today) {
+        // already active today — streak stays the same
+    } else if (lastDay === yesterday) {
+        progress.streak = (progress.streak || 0) + 1;
+    } else {
+        progress.streak = 1;
+    }
+
     progress.completedActivities = (progress.completedActivities || 0) + 1;
     progress.lastActivity = new Date().toISOString();
-    
+
     saveProgress(progress);
 };
 

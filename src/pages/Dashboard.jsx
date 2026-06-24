@@ -1,13 +1,19 @@
 // Dashboard page — shows the user's progress overview, quick actions, and upcoming schedule
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getProgress } from '../utils/localStorage';
+import { getProgress, getAgendaKey, getDailyTasksKey, getQuizScoresKey } from '../utils/localStorage';
+import { useAuth } from '../contexts/AuthContext';
 import { subjects } from '../utils/subjectColors';
 import { videosData, quizzesData, problemsData, lessonsData, guidesData } from '../data/resourcesData';
+import ProgressCharts from '../components/ProgressCharts';
+import ChatModal, { getReadKey } from '../components/ChatModal';
+import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
+import { db } from '../firebase';
 import './Dashboard.css';
 
 function Dashboard() {
     const navigate = useNavigate();
+    const { user } = useAuth();
 
     // Core state — progress loaded from localStorage, loading flag, and show more toggles
     const [progress, setProgress] = useState(null);
@@ -32,6 +38,12 @@ function Dashboard() {
     const [newTask, setNewTask] = useState('');
     const [showNotification, setShowNotification] = useState(false);
     const [notificationMessage, setNotificationMessage] = useState('');
+    const [myBookings, setMyBookings] = useState([]);
+    const [chatSession, setChatSession] = useState(null);
+    const [unreadMap, setUnreadMap] = useState({});
+    const [reviewModal, setReviewModal] = useState(null);
+    const [reviewStars, setReviewStars] = useState(0);
+    const [reviewComment, setReviewComment] = useState('');
 
     useEffect(() => {
         try {
@@ -52,13 +64,13 @@ function Dashboard() {
             setProgress(userProgress);
             
             // Load agenda items from localStorage or set default
-            const savedAgenda = localStorage.getItem('agendaItems');
+            const savedAgenda = localStorage.getItem(getAgendaKey());
             if (savedAgenda) {
                 setAgendaItems(JSON.parse(savedAgenda));
             }
 
             // Load daily tasks from localStorage
-            const savedTasks = localStorage.getItem('dailyTasks');
+            const savedTasks = localStorage.getItem(getDailyTasksKey());
             const today = new Date().toDateString();
             if (savedTasks) {
                 const tasksData = JSON.parse(savedTasks);
@@ -66,7 +78,7 @@ function Dashboard() {
                 if (tasksData.date !== today) {
                     const resetTasks = tasksData.tasks.map(task => ({ ...task, completed: false }));
                     const newTasksData = { date: today, tasks: resetTasks };
-                    localStorage.setItem('dailyTasks', JSON.stringify(newTasksData));
+                    localStorage.setItem(getDailyTasksKey(), JSON.stringify(newTasksData));
                     setDailyTasks(resetTasks);
                 } else {
                     setDailyTasks(tasksData.tasks);
@@ -79,9 +91,16 @@ function Dashboard() {
                     { id: 3, text: 'Take 1 quiz', completed: false }
                 ];
                 const tasksData = { date: today, tasks: defaultTasks };
-                localStorage.setItem('dailyTasks', JSON.stringify(tasksData));
+                localStorage.setItem(getDailyTasksKey(), JSON.stringify(tasksData));
                 setDailyTasks(defaultTasks);
             }
+            // Load accepted 1-on-1 bookings for this student
+            const savedRequests = localStorage.getItem('oneOnOneRequests');
+            if (savedRequests && user?.uid) {
+                const allReqs = JSON.parse(savedRequests);
+                setMyBookings(allReqs.filter(r => r.studentId === user.uid && ['accepted', 'cancelled', 'cancelled_by_student'].includes(r.status)));
+            }
+
         } catch (error) {
             console.error('Error loading progress:', error);
             setProgress({
@@ -97,6 +116,35 @@ function Dashboard() {
             setIsLoading(false);
         }
     }, []);
+
+    // Subscribe to last message of each accepted booking to show unread badge
+    useEffect(() => {
+        if (!user) return;
+        const accepted = myBookings.filter(b => b.status === 'accepted');
+        if (!accepted.length) return;
+
+        const unsubs = accepted.map(booking => {
+            const q = query(
+                collection(db, 'conversations', booking.id, 'messages'),
+                orderBy('timestamp', 'desc'),
+                limit(1)
+            );
+            return onSnapshot(q, snap => {
+                if (snap.empty) return;
+                const msg = snap.docs[0].data();
+                if (msg.senderId === user.uid) {
+                    setUnreadMap(prev => ({ ...prev, [booking.id]: false }));
+                    return;
+                }
+                const lastRead = localStorage.getItem(getReadKey(user.uid, booking.id));
+                const msgTime = msg.timestamp?.toDate?.()?.getTime() || Date.now();
+                const readTime = lastRead ? new Date(lastRead).getTime() : 0;
+                setUnreadMap(prev => ({ ...prev, [booking.id]: msgTime > readTime }));
+            });
+        });
+
+        return () => unsubs.forEach(u => u());
+    }, [myBookings, user]);
 
     const showNotificationMessage = (message) => {
         setNotificationMessage(message);
@@ -119,7 +167,7 @@ function Dashboard() {
         
         setDailyTasks(updatedTasks);
         const today = new Date().toDateString();
-        localStorage.setItem('dailyTasks', JSON.stringify({ date: today, tasks: updatedTasks }));
+        localStorage.setItem(getDailyTasksKey(), JSON.stringify({ date: today, tasks: updatedTasks }));
     };
 
     const addCustomTask = () => {
@@ -133,7 +181,7 @@ function Dashboard() {
             const updatedTasks = [...dailyTasks, customTask];
             setDailyTasks(updatedTasks);
             const today = new Date().toDateString();
-            localStorage.setItem('dailyTasks', JSON.stringify({ date: today, tasks: updatedTasks }));
+            localStorage.setItem(getDailyTasksKey(), JSON.stringify({ date: today, tasks: updatedTasks }));
             setNewTask('');
             setShowTaskModal(false);
             showNotificationMessage('New task added to your daily goals!');
@@ -144,7 +192,7 @@ function Dashboard() {
         const updatedTasks = dailyTasks.filter(task => task.id !== taskId);
         setDailyTasks(updatedTasks);
         const today = new Date().toDateString();
-        localStorage.setItem('dailyTasks', JSON.stringify({ date: today, tasks: updatedTasks }));
+        localStorage.setItem(getDailyTasksKey(), JSON.stringify({ date: today, tasks: updatedTasks }));
     };
 
     // Capitalize the first letter of a string safely
@@ -210,18 +258,110 @@ function Dashboard() {
                 return dateA - dateB;
             });
             setAgendaItems(updatedAgenda);
-            localStorage.setItem('agendaItems', JSON.stringify(updatedAgenda));
+            localStorage.setItem(getAgendaKey(), JSON.stringify(updatedAgenda));
             setNewAgendaItem({ title: '', subject: '', date: '', time: '' });
             setShowAgendaModal(false);
             showNotificationMessage('Session scheduled successfully!');
         }
     };
 
+    const handleCancelBooking = (bookingId) => {
+        const saved = localStorage.getItem('oneOnOneRequests');
+        const all = saved ? JSON.parse(saved) : [];
+        const updated = all.map(r => r.id === bookingId ? { ...r, status: 'cancelled_by_student' } : r);
+        localStorage.setItem('oneOnOneRequests', JSON.stringify(updated));
+        setMyBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: 'cancelled_by_student' } : b));
+        showNotificationMessage('Session cancelled.');
+    };
+
+    const handleDeleteBooking = (bookingId) => {
+        const saved = localStorage.getItem('oneOnOneRequests');
+        const all = saved ? JSON.parse(saved) : [];
+        localStorage.setItem('oneOnOneRequests', JSON.stringify(all.filter(r => r.id !== bookingId)));
+        setMyBookings(prev => prev.filter(b => b.id !== bookingId));
+    };
+
+    const hasReviewed = (booking) => {
+        const ratings = JSON.parse(localStorage.getItem('tutorRatings') || '{}');
+        const tutorRatings = ratings[booking.tutorId] || [];
+        return tutorRatings.some(r => r.bookingId === booking.id);
+    };
+
+    const submitReview = () => {
+        if (!reviewModal || reviewStars === 0) return;
+        const ratings = JSON.parse(localStorage.getItem('tutorRatings') || '{}');
+        const key = reviewModal.tutorId;
+        if (!ratings[key]) ratings[key] = [];
+        ratings[key].push({
+            bookingId: reviewModal.id,
+            studentEmail: user?.email || '',
+            rating: reviewStars,
+            comment: reviewComment.trim(),
+            date: new Date().toISOString(),
+        });
+        localStorage.setItem('tutorRatings', JSON.stringify(ratings));
+        setReviewModal(null);
+        setReviewStars(0);
+        setReviewComment('');
+        showNotificationMessage('Review submitted! Thank you.');
+    };
+
+    function downloadProgressReport() {
+        const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        const html = `
+<!DOCTYPE html><html><head>
+<title>Equalizer Learning Hub: Progress Report</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 700px; margin: 40px auto; padding: 0 24px; color: #1e293b; }
+  h1 { color: rgb(8,8,85); margin-bottom: 4px; }
+  .subtitle { color: #64748b; margin-bottom: 32px; font-size: 14px; }
+  .section { margin-bottom: 28px; }
+  h2 { font-size: 16px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; color: #374151; }
+  .stat-row { display: flex; gap: 24px; flex-wrap: wrap; margin: 12px 0; }
+  .stat-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 20px; min-width: 120px; text-align: center; }
+  .stat-num { font-size: 24px; font-weight: 900; color: rgb(8,8,85); }
+  .stat-lbl { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: .05em; }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  td, th { padding: 8px 12px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+  th { background: #f8fafc; font-weight: 700; color: #64748b; }
+  .footer { margin-top: 40px; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 14px; }
+</style>
+</head><body>
+<h1>Equalizer Learning Hub</h1>
+<div class="subtitle">Progress Report | Generated ${date}</div>
+<div class="section">
+  <h2>Overview</h2>
+  <div class="stat-row">
+    <div class="stat-box"><div class="stat-num">${completedResources}</div><div class="stat-lbl">Resources Completed</div></div>
+    <div class="stat-box"><div class="stat-num">${progress.streak || 0}</div><div class="stat-lbl">Day Streak</div></div>
+    <div class="stat-box"><div class="stat-num">${overallProgress}%</div><div class="stat-lbl">Overall Progress</div></div>
+    <div class="stat-box"><div class="stat-num">${completedVideos}</div><div class="stat-lbl">Videos</div></div>
+    <div class="stat-box"><div class="stat-num">${completedQuizzes}</div><div class="stat-lbl">Quizzes</div></div>
+    <div class="stat-box"><div class="stat-num">${completedLessons}</div><div class="stat-lbl">Lessons</div></div>
+  </div>
+</div>
+<div class="section">
+  <h2>Recent Activity</h2>
+  <table><tr><th>Type</th><th>Title</th><th>Topic</th><th>Date</th></tr>
+  ${(progress.recentActivity || []).slice(0, 20).map(a => `<tr><td>${a.type}</td><td>${a.title}</td><td>${a.topic || ''}</td><td>${a.timestamp ? new Date(a.timestamp).toLocaleDateString() : ''}</td></tr>`).join('')}
+  </table>
+</div>
+<div class="footer">Generated by Equalizer Learning Hub · ${user?.email || ''} · ${date}</div>
+</body></html>`;
+        const blob = new Blob([html], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `equalizer-progress-report-${Date.now()}.html`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
     const handleRemoveAgendaItem = (index) => {
         const removedItem = agendaItems[index];
         const updatedAgenda = agendaItems.filter((_, i) => i !== index);
         setAgendaItems(updatedAgenda);
-        localStorage.setItem('agendaItems', JSON.stringify(updatedAgenda));
+        localStorage.setItem(getAgendaKey(), JSON.stringify(updatedAgenda));
         
         // If it's a group session, decrease the count
         if (removedItem.type === 'group' && removedItem.groupId) {
@@ -254,7 +394,7 @@ function Dashboard() {
     const completedQuizzes = progress?.completedQuizzes?.length || 0;
     
     // Check for perfect quiz score
-    const quizScores = JSON.parse(localStorage.getItem('quizScores') || '{}');
+    const quizScores = JSON.parse(localStorage.getItem(getQuizScoresKey()) || '{}');
     const hasPerfectScore = Object.values(quizScores).some(score => score === 100);
 
 
@@ -374,6 +514,10 @@ function Dashboard() {
                                     <span className="stat-number">{overallProgress}%</span>
                                     <span className="stat-label">Overall Progress</span>
                                 </div>
+                                <div className="stat-bubble streak-bubble">
+                                    <span className="stat-number">{progress.streak || 0}</span>
+                                    <span className="stat-label">Day Streak</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -404,7 +548,7 @@ function Dashboard() {
                         <div className="section daily-tasks-card">
                             <div className="section-header">
                                 <h2>Today's Tasks</h2>
-                                <button className="icon-btn" onClick={() => setShowTaskModal(true)} aria-label="Add new task">➕</button>
+                                <button className="icon-btn" onClick={() => setShowTaskModal(true)} aria-label="Add new task">+</button>
                             </div>
                             <div className="task-progress-header">
                                 <div className="task-progress-row">
@@ -559,14 +703,74 @@ function Dashboard() {
                             </div>
                         </div>
 
+                        {/* Progress Charts */}
+                        <ProgressCharts progress={progress} />
+
                     </div>
 
                     {/* Right Column */}
                     <div className="right-column">
+                        {/* Badges & Achievements */}
+                        {(progress.achievements?.length > 0 || completedVideos > 0 || completedQuizzes > 0 || completedLessons > 0 || (progress.streak || 0) >= 3) && (
+                        <div className="badges-card">
+                            <div className="badges-header">
+                                <h3>Badges & Achievements</h3>
+                                <span className="badges-count">{(progress.achievements?.length || 0) + (completedVideos > 0 ? 1 : 0) + ((progress.streak||0)>=3 ? 1:0) + (completedQuizzes>0?1:0) + (completedLessons>0?1:0)}</span>
+                            </div>
+                            <div className="badges-grid">
+                                {completedVideos > 0 && (
+                                    <div className="badge-item earned">
+                                        <span className="badge-icon">V</span>
+                                        <span className="badge-name">Video Watcher</span>
+                                        <span className="badge-sub">{completedVideos} video{completedVideos !== 1 ? 's' : ''}</span>
+                                    </div>
+                                )}
+                                {completedLessons > 0 && (
+                                    <div className="badge-item earned">
+                                        <span className="badge-icon">L</span>
+                                        <span className="badge-name">Lesson Learner</span>
+                                        <span className="badge-sub">{completedLessons} lesson{completedLessons !== 1 ? 's' : ''}</span>
+                                    </div>
+                                )}
+                                {completedQuizzes > 0 && (
+                                    <div className="badge-item earned">
+                                        <span className="badge-icon">Q</span>
+                                        <span className="badge-name">Quiz Taker</span>
+                                        <span className="badge-sub">{completedQuizzes} quiz{completedQuizzes !== 1 ? 'zes' : ''}</span>
+                                    </div>
+                                )}
+                                {(progress.streak || 0) >= 3 && (
+                                    <div className="badge-item earned streak">
+                                        <span className="badge-icon">S</span>
+                                        <span className="badge-name">On a Streak</span>
+                                        <span className="badge-sub">{progress.streak} days</span>
+                                    </div>
+                                )}
+                                {(progress.achievements || []).filter(a => !['First Steps','Video Enthusiast','Quiz Master','Knowledge Seeker'].includes(a.name)).map((a, i) => (
+                                    <div key={i} className="badge-item earned">
+                                        <span className="badge-icon">★</span>
+                                        <span className="badge-name">{a.name}</span>
+                                        <span className="badge-sub">{a.description}</span>
+                                    </div>
+                                ))}
+                                {completedResources === 0 && (
+                                    <div className="badge-item locked">
+                                        <span className="badge-icon locked-icon">?</span>
+                                        <span className="badge-name">First Steps</span>
+                                        <span className="badge-sub">Complete your first activity</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        )}
+
                         {/* Statistics */}
                         <div className="statistics-card">
                             <div className="stats-header">
                                 <h3>Your Statistics</h3>
+                                <button className="export-report-btn" onClick={downloadProgressReport} title="Download progress report">
+                                    ↓ Export
+                                </button>
                             </div>
                             
                             <div className="stats-grid-small">
@@ -592,6 +796,89 @@ function Dashboard() {
                                 </div>
                             </div>
                         </div>
+
+                                {/* Become a Tutor CTA */}
+                        <div className="become-tutor-card" onClick={() => navigate('/apply')} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && navigate('/apply')}>
+                            <div className="bt-icon">+</div>
+                            <div className="bt-text">
+                                <strong>Become a Student Tutor</strong>
+                                <p>Think you know the material? Take the qualification test and help your peers.</p>
+                            </div>
+                            <span className="bt-arrow">→</span>
+                        </div>
+
+                        {/* My Bookings — accepted 1-on-1 sessions */}
+                        {myBookings.length > 0 && (
+                            <div className="my-bookings-card">
+                                <div className="bookings-header">
+                                    <h3>My 1-on-1 Sessions</h3>
+                                    <span className="bookings-count">{myBookings.length}</span>
+                                </div>
+                                <div className="bookings-list">
+                                    {myBookings.map(booking => {
+                                        const subj = subjects.find(s => s.name.toLowerCase() === booking.subject.toLowerCase()) || subjects[0];
+                                        const [h, m] = booking.preferredTime.split(':');
+                                        const hr = parseInt(h);
+                                        const timeStr = `${hr % 12 || 12}:${m} ${hr >= 12 ? 'PM' : 'AM'}`;
+                                        const dateStr = new Date(booking.preferredDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                                        const isCancelled = booking.status === 'cancelled' || booking.status === 'cancelled_by_student';
+                                        return (
+                                            <div key={booking.id} className={`booking-item ${isCancelled ? 'booking-item-cancelled' : ''}`}>
+                                                <div className="booking-icon" style={{ background: subj.color, opacity: isCancelled ? 0.45 : 1 }}>{subj.icon}</div>
+                                                <div className="booking-details">
+                                                    <div className="booking-top">
+                                                        <span className="booking-tutor">with {booking.tutorName}</span>
+                                                        <span className="booking-subject-tag">{booking.subject.charAt(0).toUpperCase() + booking.subject.slice(1)}</span>
+                                                    </div>
+                                                    <span className="booking-time">{dateStr} at {timeStr}</span>
+                                                    {booking.status === 'cancelled' && (
+                                                        <span className="booking-cancelled">Cancelled by tutor</span>
+                                                    )}
+                                                    {booking.status === 'cancelled_by_student' && (
+                                                        <span className="booking-cancelled">You cancelled this session</span>
+                                                    )}
+                                                    {booking.status === 'accepted' && !booking.meetingLink && (
+                                                        <span className="booking-no-link">Tutor will share a link soon</span>
+                                                    )}
+                                                </div>
+                                                <div className="booking-actions">
+                                                    {booking.status === 'accepted' && booking.meetingLink && (
+                                                        <a href={booking.meetingLink} target="_blank" rel="noopener noreferrer" className="booking-join-btn">
+                                                            Join →
+                                                        </a>
+                                                    )}
+                                                    {booking.status === 'accepted' && (
+                                                        <button
+                                                            className="booking-chat-btn"
+                                                            onClick={() => {
+                                                                setChatSession({ id: booking.id, otherName: booking.tutorName });
+                                                                setUnreadMap(prev => ({ ...prev, [booking.id]: false }));
+                                                            }}
+                                                        >
+                                                            Chat{unreadMap[booking.id] && <span className="chat-unread-dot" />}
+                                                        </button>
+                                                    )}
+                                                    {booking.status === 'accepted' && (
+                                                        <button className="booking-cancel-btn" onClick={() => handleCancelBooking(booking.id)}>Cancel</button>
+                                                    )}
+                                                    {booking.status === 'accepted' && !hasReviewed(booking) && (
+                                                        <button className="booking-review-btn" onClick={() => { setReviewModal(booking); setReviewStars(0); setReviewComment(''); }}>
+                                                            ★ Rate
+                                                        </button>
+                                                    )}
+                                                    {booking.status === 'accepted' && hasReviewed(booking) && (
+                                                        <span className="booking-reviewed-badge">Reviewed ✓</span>
+                                                    )}
+                                                    {(booking.status === 'cancelled' || booking.status === 'cancelled_by_student') && (
+                                                        <button className="booking-delete-btn" onClick={() => handleDeleteBooking(booking.id)}>Remove</button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
 
                         {/* Upcoming Sessions */}
                         <div className="agenda-card">
@@ -732,6 +1019,59 @@ function Dashboard() {
                                     disabled={!newTask.trim()}
                                 >
                                     Add Task
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Chat Modal */}
+                {chatSession && (
+                    <ChatModal
+                        requestId={chatSession.id}
+                        otherName={chatSession.otherName}
+                        onClose={() => setChatSession(null)}
+                    />
+                )}
+
+                {/* Review Modal */}
+                {reviewModal && (
+                    <div className="modal-overlay" onClick={() => setReviewModal(null)} role="presentation">
+                        <div className="modal-content" role="dialog" aria-modal="true" onClick={e => e.stopPropagation()}>
+                            <div className="modal-header">
+                                <h2>Rate your session with {reviewModal.tutorName}</h2>
+                                <button className="modal-close" onClick={() => setReviewModal(null)}>×</button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="review-stars-row">
+                                    {[1,2,3,4,5].map(n => (
+                                        <button
+                                            key={n}
+                                            className={`review-star-btn ${reviewStars >= n ? 'active' : ''}`}
+                                            onClick={() => setReviewStars(n)}
+                                            aria-label={`${n} star${n !== 1 ? 's' : ''}`}
+                                        >★</button>
+                                    ))}
+                                    {reviewStars > 0 && (
+                                        <span className="review-star-label">
+                                            {['','Poor','Fair','Good','Great','Excellent!'][reviewStars]}
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="form-group">
+                                    <label>Comment (optional)</label>
+                                    <textarea
+                                        rows={3}
+                                        placeholder="How was the session? What did you learn?"
+                                        value={reviewComment}
+                                        onChange={e => setReviewComment(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button className="cancel-btn" onClick={() => setReviewModal(null)}>Cancel</button>
+                                <button className="submit-btn" onClick={submitReview} disabled={reviewStars === 0}>
+                                    Submit Review
                                 </button>
                             </div>
                         </div>

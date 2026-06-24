@@ -1,0 +1,383 @@
+.tutors-dir-page {
+    min-height: 100vh;
+    background: #f8fafc;
+    padding: 60px 24px 80px;
+}
+
+/* ─── Header ─── */
+.tutors-dir-header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 40px;
+}
+
+.tutors-dir-badge {
+    display: inline-block;
+    background: #eff6ff;
+    color: rgb(8, 8, 85);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+}
+
+.tutors-dir-header h1 {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0 0 12px;
+}
+
+.tutors-dir-header p {
+    font-size: 1.05rem;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* ─── Stats Bar ─── */
+.tutors-dir-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    max-width: 700px;
+    margin: 0 auto 40px;
+    padding: 24px 32px;
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    flex-wrap: wrap;
+}
+
+.dir-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.dir-stat-num {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: rgb(8, 8, 85);
+    line-height: 1;
+}
+
+.dir-stat-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ─── Controls ─── */
+.tutors-dir-controls {
+    max-width: 1100px;
+    margin: 0 auto 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.tutors-dir-search {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    color: #1e293b;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    background: white;
+}
+
+.tutors-dir-search:focus {
+    outline: none;
+    border-color: rgb(8, 8, 85);
+}
+
+.tutors-dir-filters {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.tutors-dir-filters select {
+    flex: 1;
+    min-width: 140px;
+    padding: 10px 14px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    background: white;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.tutors-dir-filters select:focus {
+    outline: none;
+    border-color: rgb(8, 8, 85);
+}
+
+/* ─── Results Bar ─── */
+.tutors-dir-results-bar {
+    max-width: 1100px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+.clear-filters-btn {
+    background: none;
+    border: none;
+    color: rgb(8, 8, 85);
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    font-family: inherit;
+}
+
+.clear-filters-btn:hover {
+    text-decoration: underline;
+}
+
+/* ─── Grid ─── */
+.tutors-dir-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+/* ─── Tutor Card ─── */
+.tutor-dir-card {
+    background: white;
+    border-radius: 18px;
+    border: 2px solid #e2e8f0;
+    padding: 24px;
+    display: flex;
+    gap: 18px;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.tutor-dir-card:hover {
+    border-color: rgb(8, 8, 85);
+    box-shadow: 0 8px 28px rgba(8, 8, 85, 0.1);
+    transform: translateY(-2px);
+}
+
+.tutor-dir-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 900;
+    flex-shrink: 0;
+}
+
+.tutor-dir-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tutor-dir-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.tutor-dir-name {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0 0 4px;
+}
+
+.tutor-dir-subject {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: rgb(8, 8, 85);
+    background: #eff6ff;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.tutor-dir-grade {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.tutor-dir-bio {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ─── Stars ─── */
+.stars-row {
+    display: inline-flex;
+    gap: 1px;
+}
+
+.star {
+    color: #e2e8f0;
+    font-size: 0.9rem;
+}
+
+.star.filled {
+    color: #f59e0b;
+}
+
+.star.half {
+    color: #f59e0b;
+    opacity: 0.5;
+}
+
+.tutor-dir-rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.rating-num {
+    font-size: 0.875rem;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.rating-count {
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
+
+.tutor-dir-avail {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: #64748b;
+    line-height: 1.4;
+}
+
+.avail-label {
+    flex-shrink: 0;
+}
+
+/* ─── Request Button ─── */
+.tutor-dir-btn {
+    display: inline-block;
+    padding: 9px 18px;
+    background: rgb(8, 8, 85);
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: all 0.2s;
+    align-self: flex-start;
+    margin-top: 4px;
+}
+
+.tutor-dir-btn:hover {
+    background: #1e40af;
+    transform: translateX(2px);
+}
+
+/* ─── Empty State ─── */
+.tutors-dir-empty {
+    text-align: center;
+    padding: 60px 24px;
+    color: #64748b;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.tutors-dir-empty p {
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+}
+
+.tutors-dir-empty button {
+    padding: 10px 24px;
+    background: rgb(8, 8, 85);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+/* ─── Bottom CTA ─── */
+.tutors-dir-cta {
+    text-align: center;
+    margin: 56px auto 0;
+    max-width: 500px;
+    padding: 36px;
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border-radius: 20px;
+    border: 2px solid #bfdbfe;
+}
+
+.tutors-dir-cta h3 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0 0 8px;
+}
+
+.tutors-dir-cta p {
+    font-size: 0.95rem;
+    color: #475569;
+    margin: 0 0 20px;
+}
+
+.tutors-dir-apply-btn {
+    display: inline-block;
+    padding: 12px 28px;
+    background: rgb(8, 8, 85);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    transition: all 0.2s;
+}
+
+.tutors-dir-apply-btn:hover {
+    background: #1e40af;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 640px) {
+    .tutors-dir-header h1 { font-size: 1.8rem; }
+    .tutors-dir-grid { grid-template-columns: 1fr; }
+    .tutors-dir-stats { gap: 20px; }
+    .tutor-dir-card { flex-direction: column; }
+}

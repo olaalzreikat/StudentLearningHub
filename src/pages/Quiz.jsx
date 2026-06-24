@@ -1,7 +1,7 @@
 // Quiz page — opens in a new tab, one question at a time with instant feedback
 // Students must get each answer correct before moving on; wrong answers show a "Try Again" button
 import { useState, useEffect } from 'react';
-import { addActivity, checkAndAwardAchievements, getProgress } from '../utils/localStorage';
+import { addActivity, checkAndAwardAchievements, getProgress, getQuizScoresKey } from '../utils/localStorage';
 import styles from './Quiz.module.css';
 
 function Quiz() {
@@ -190,6 +190,13 @@ function Quiz() {
             progress.completedQuizzes.push(currentQuiz.id);
             localStorage.setItem('mathmaster-progress', JSON.stringify(progress));
         }
+
+        // Save score with timestamp for progress charts
+        const scoresKey = getQuizScoresKey();
+        const savedScores = localStorage.getItem(scoresKey);
+        const scoresHistory = savedScores ? JSON.parse(savedScores) : [];
+        scoresHistory.push({ quizId: currentQuiz.id, title: currentQuiz.title, topic: currentQuiz.topic, score: percentage, timestamp: new Date().toISOString() });
+        localStorage.setItem(scoresKey, JSON.stringify(scoresHistory));
 
         addActivity('quiz', currentQuiz.title, currentQuiz.topic);
         checkAndAwardAchievements();

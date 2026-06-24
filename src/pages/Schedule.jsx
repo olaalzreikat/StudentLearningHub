@@ -16,8 +16,10 @@ import {
   markAsComplete,
   addActivity,
   checkAndAwardAchievements,
+  getAgendaKey,
 } from "../utils/localStorage";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import TutorModal from "../components/TutorModal";
 import tutor2 from "../assets/tutor2.jpg";
 import tutor3 from "../assets/tutor3.jpg";
@@ -44,10 +46,18 @@ function Schedule() {
   // Sessions the user has joined, and live participant counts
   const [joinedSessions, setJoinedSessions] = useState([]);
   const [sessionCounts, setSessionCounts] = useState({});
+  const [tutorSessions, setTutorSessions] = useState([]);
+  const [registeredTutors, setRegisteredTutors] = useState([]);
+
+  const { user, role } = useAuth();
 
   // Separate burst animation states for tutors vs group sessions
   const [tutorBurstId, setTutorBurstId] = useState(null);
   const [sessionBurstId, setSessionBurstId] = useState(null);
+
+  // 1-on-1 request modal
+  const [requestModal, setRequestModal] = useState(null); // tutor object or null
+  const [requestForm, setRequestForm] = useState({ subject: '', message: '', date: '', time: '' });
 
   // Toast notification
   const [showNotification, setShowNotification] = useState(false);
@@ -72,8 +82,8 @@ function Schedule() {
   const progress = getProgress();
 
   useEffect(() => {
-    // Load joined sessions from localStorage
-    const savedAgenda = localStorage.getItem('agendaItems');
+    // Load joined sessions from localStorage (per-user)
+    const savedAgenda = localStorage.getItem(getAgendaKey());
     if (savedAgenda) {
       const agendaItems = JSON.parse(savedAgenda);
       const groupSessionIds = agendaItems
@@ -87,7 +97,6 @@ function Schedule() {
     if (savedCounts) {
       setSessionCounts(JSON.parse(savedCounts));
     } else {
-      // Initialize counts from groupSessionData
       const initialCounts = {};
       groupSessionData.forEach(session => {
         initialCounts[session.id] = session.currentSize;
@@ -95,6 +104,25 @@ function Schedule() {
       setSessionCounts(initialCounts);
       localStorage.setItem('groupSessionCounts', JSON.stringify(initialCounts));
     }
+
+    // Load tutor-posted sessions (upcoming only)
+    const savedTutorSessions = localStorage.getItem('tutorPostedSessions');
+    if (savedTutorSessions) {
+      const all = JSON.parse(savedTutorSessions);
+      setTutorSessions(all.filter(s => new Date(`${s.date}T${s.time}`) >= new Date()));
+    }
+
+    // Load registered tutor profiles (include uid from key)
+    const savedProfiles = localStorage.getItem('tutorProfiles');
+    if (savedProfiles) {
+      const profilesMap = JSON.parse(savedProfiles);
+      setRegisteredTutors(
+        Object.entries(profilesMap)
+          .filter(([, p]) => p.name)
+          .map(([uid, p]) => ({ ...p, uid }))
+      );
+    }
+
   }, [refreshTrigger]);
 
   const showNotificationMessage = (message) => {
@@ -189,7 +217,7 @@ function Schedule() {
     }
 
     // Get existing agenda items
-    const savedAgenda = localStorage.getItem('agendaItems');
+    const savedAgenda = localStorage.getItem(getAgendaKey());
     const agendaItems = savedAgenda ? JSON.parse(savedAgenda) : [];
     
     // Create session item from group data
@@ -210,7 +238,7 @@ function Schedule() {
       return dateA - dateB;
     });
     
-    localStorage.setItem('agendaItems', JSON.stringify(updatedAgenda));
+    localStorage.setItem(getAgendaKey(), JSON.stringify(updatedAgenda));
     
     // Update joined sessions state
     setJoinedSessions([...joinedSessions, group.id]);
@@ -223,6 +251,14 @@ function Schedule() {
     setSessionCounts(updatedCounts);
     localStorage.setItem('groupSessionCounts', JSON.stringify(updatedCounts));
     
+    // Save student to session roster
+    if (user?.email) {
+      const savedRosters = localStorage.getItem('sessionRosters');
+      const rosters = savedRosters ? JSON.parse(savedRosters) : {};
+      rosters[group.id] = [...(rosters[group.id] || []), { email: user.email, joinedAt: new Date().toISOString() }];
+      localStorage.setItem('sessionRosters', JSON.stringify(rosters));
+    }
+
     // Show success message
     showNotificationMessage(`Successfully joined "${group.subject}" with ${group.title}!`);
     
@@ -232,7 +268,7 @@ function Schedule() {
 
   const handleCancelGroupSession = (group) => {
     // Get existing agenda items
-    const savedAgenda = localStorage.getItem('agendaItems');
+    const savedAgenda = localStorage.getItem(getAgendaKey());
     const agendaItems = savedAgenda ? JSON.parse(savedAgenda) : [];
     
     // Remove the session
@@ -240,7 +276,7 @@ function Schedule() {
       !(item.type === 'group' && item.groupId === group.id)
     );
     
-    localStorage.setItem('agendaItems', JSON.stringify(updatedAgenda));
+    localStorage.setItem(getAgendaKey(), JSON.stringify(updatedAgenda));
     
     // Update joined sessions state
     setJoinedSessions(joinedSessions.filter(id => id !== group.id));
@@ -261,10 +297,51 @@ function Schedule() {
     setRefreshTrigger((prev) => prev + 1);
   };
 
+  const handleSendRequest = () => {
+    if (!requestForm.subject || !requestForm.date || !requestForm.time) return;
+    const req = {
+      id: `req-${Date.now()}`,
+      tutorId: requestModal.uid,
+      tutorEmail: requestModal.email,
+      tutorName: requestModal.title || requestModal.name,
+      studentEmail: user?.email || 'Anonymous',
+      studentId: user?.uid || '',
+      subject: requestForm.subject,
+      message: requestForm.message,
+      preferredDate: requestForm.date,
+      preferredTime: requestForm.time,
+      status: 'pending',
+      timestamp: new Date().toISOString(),
+    };
+    const saved = localStorage.getItem('oneOnOneRequests');
+    const all = saved ? JSON.parse(saved) : [];
+    all.push(req);
+    localStorage.setItem('oneOnOneRequests', JSON.stringify(all));
+    setRequestModal(null);
+    setRequestForm({ subject: '', message: '', date: '', time: '' });
+    showNotificationMessage(`Request sent to ${requestModal.title || requestModal.name}!`);
+  };
+
   // Filter functions
   const getFilteredData = () => {
-    let tutors = tutorsData;
-    let groupSessions = groupSessionData;
+    // Merge registered tutors (with isRegistered flag) into tutors list
+    const regTutors = registeredTutors.map(p => ({
+      id: `reg-${p.uid}`,
+      title: p.name,
+      topic: p.subjects?.[0] || 'algebra',
+      subjects: p.subjects || [],
+      description: p.bio || '',
+      availability: p.availability || '',
+      availableDays: p.availability || '',
+      availableTimes: '',
+      email: p.email,
+      uid: p.uid,
+      isRegistered: true,
+    }));
+    let tutors = [...regTutors, ...tutorsData];
+
+    // Tutor-posted sessions first (newest first), then hardcoded
+    let groupSessions = [...[...tutorSessions].reverse(), ...groupSessionData];
     let videos = videosData;
     let quizzes = quizzesData;
     let problems = problemsData;
@@ -272,7 +349,11 @@ function Schedule() {
 
     // Apply category filter
     if (activeFilter !== "all") {
-      tutors = tutors.filter((t) => t.topic.toLowerCase() === activeFilter);
+      tutors = tutors.filter((t) =>
+        t.isRegistered
+          ? t.subjects.includes(activeFilter)
+          : t.topic.toLowerCase() === activeFilter
+      );
       videos = videos.filter(
         (v) => v.topic && v.topic.toLowerCase() === activeFilter
       );
@@ -295,7 +376,11 @@ function Schedule() {
     // Apply search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      tutors = tutors.filter((t) => t.topic.toLowerCase().includes(query));
+      tutors = tutors.filter((t) =>
+        t.isRegistered
+          ? t.title.toLowerCase().includes(query) || t.subjects.some(s => s.includes(query)) || t.description.toLowerCase().includes(query)
+          : t.topic.toLowerCase().includes(query)
+      );
       groupSessions = groupSessions.filter((g) => 
         g.title.toLowerCase().includes(query) || 
         g.subject.toLowerCase().includes(query)
@@ -328,6 +413,24 @@ function Schedule() {
           </div>
         </div>
       </div>
+
+      {/* Tutor CTA Banner */}
+      {role === 'tutor' && (
+        <div className="tutor-schedule-banner">
+          <div className="tutor-schedule-banner-inner">
+            <div className="tsb-left">
+              <span className="tsb-pill">Tutor View</span>
+              <div>
+                <p className="tsb-title">Your posted sessions appear at the top of this page</p>
+                <p className="tsb-sub">Students can join them directly from here.</p>
+              </div>
+            </div>
+            <button className="tsb-post-btn" onClick={() => navigate('/dashboard')}>
+              + Post New Session
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Main Container */}
       <div className="resources-container">
@@ -402,7 +505,7 @@ function Schedule() {
           </div>
         )}
 
-        {/* TUTORS SECTION */}
+        {/* TUTORS SECTION — registered + hardcoded merged */}
         {filtered.tutors.length > 0 && (
           <div className="resource-section">
             <div className="section-header">
@@ -412,30 +515,63 @@ function Schedule() {
               {(showAllTutors ? filtered.tutors : filtered.tutors.slice(0, 4)).map((classItem) => (
                 <div
                   key={classItem.id}
-                  className="tutor-list-card"
-                  onClick={() => handleClassClick(classItem)}
+                  className={`tutor-list-card ${classItem.isRegistered ? 'registered-tutor-card' : ''}`}
+                  onClick={() => {
+                    if (classItem.isRegistered && !user) { navigate('/login'); return; }
+                    handleClassClick(classItem);
+                  }}
                 >
-                  <img
-                    className="tutor-list-photo"
-                    src={classItem.specification === 'M' ? tutor3 : tutor2}
-                    alt={classItem.title}
-                  />
+                  {classItem.isRegistered ? (
+                    <div className="tutor-list-avatar">
+                      {classItem.title.charAt(0).toUpperCase()}
+                    </div>
+                  ) : (
+                    <img
+                      className="tutor-list-photo"
+                      src={classItem.specification === 'M' ? tutor3 : tutor2}
+                      alt={classItem.title}
+                    />
+                  )}
                   <div className="tutor-list-info">
                     <div className="tutor-list-top">
                       <h3 className="tutor-list-name">{classItem.title}</h3>
                       <span className="tutor-list-badge" style={{ background: getTopicColor(classItem.topic) + '18', color: getTopicColor(classItem.topic) }}>
-                        {classItem.topic.split(' ')[0]}
+                        {classItem.isRegistered
+                          ? (classItem.subjects[0] || classItem.topic)
+                          : classItem.topic.split(' ')[0]}
                       </span>
                     </div>
-                    <p className="tutor-list-meta">Year {classItem.year} · {classItem.subject} Lessons</p>
-                    <p className="tutor-list-desc">{classItem.description}</p>
-                    <p className="tutor-list-avail">
-                      <span className="avail-label">Available:</span> {classItem.availableDays} · {classItem.availableTimes}
-                    </p>
+                    {classItem.isRegistered ? (
+                      <>
+                        {classItem.subjects.length > 1 && (
+                          <p className="tutor-list-meta">{classItem.subjects.map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' · ')}</p>
+                        )}
+                        <p className="tutor-list-desc">{classItem.description || 'Available for tutoring sessions.'}</p>
+                        {classItem.availability && (
+                          <p className="tutor-list-avail"><span className="avail-label">Available:</span> {classItem.availability}</p>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <p className="tutor-list-meta">Year {classItem.year} · {classItem.subject} Lessons</p>
+                        <p className="tutor-list-desc">{classItem.description}</p>
+                        <p className="tutor-list-avail">
+                          <span className="avail-label">Available:</span> {classItem.availableDays} · {classItem.availableTimes}
+                        </p>
+                      </>
+                    )}
                   </div>
                   <div className="tutor-list-actions" onClick={(e) => e.stopPropagation()}>
                     <div className="btn-burst-wrapper">
-                      <button className="tutor-list-btn" onClick={(e) => { e.stopPropagation(); triggerTutorBurst(classItem.id); handleClassClick(classItem); }}>
+                      <button
+                        className="tutor-list-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (classItem.isRegistered && !user) { navigate('/login'); return; }
+                          triggerTutorBurst(classItem.id);
+                          handleClassClick(classItem);
+                        }}
+                      >
                         Book Session
                       </button>
                       {tutorBurstId === classItem.id && [1,2,3,4,5,6,7,8].map((i) => (
@@ -551,8 +687,69 @@ function Schedule() {
         <TutorModal
           tutorsData={selectedClass}
           onClose={handleModalClose}
-          onLessonStart={handleLessonStart}
+          onBook={selectedClass.isRegistered ? () => {
+            setSelectedClass(null);
+            setRequestModal(selectedClass);
+          } : undefined}
         />
+      )}
+
+      {/* 1-on-1 Request Modal */}
+      {requestModal && (
+        <div className="modal-overlay" onClick={() => setRequestModal(null)} role="presentation">
+          <div className="modal-content wide-modal" role="dialog" aria-modal="true" aria-labelledby="request-modal-title" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 id="request-modal-title">Book a Session with {requestModal.title || requestModal.name}</h2>
+              <button className="modal-close" onClick={() => setRequestModal(null)} aria-label="Close">×</button>
+            </div>
+            <div className="modal-body">
+              <div className="request-tutor-preview">
+                <div className="request-tutor-avatar">{requestModal.title.charAt(0).toUpperCase()}</div>
+                <div>
+                  <div className="request-tutor-name">{requestModal.title}</div>
+                  {requestModal.availability && (
+                    <div className="request-tutor-avail">Available: {requestModal.availability}</div>
+                  )}
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Subject <span className="req">*</span></label>
+                <select value={requestForm.subject} onChange={e => setRequestForm({ ...requestForm, subject: e.target.value })}>
+                  <option value="">Select subject</option>
+                  {(requestModal.subjects?.length ? requestModal.subjects : ['algebra', 'geometry', 'calculus', 'statistics', 'trigonometry']).map(s => (
+                    <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Preferred Date <span className="req">*</span></label>
+                  <input type="date" value={requestForm.date} min={new Date().toISOString().split('T')[0]}
+                    onChange={e => setRequestForm({ ...requestForm, date: e.target.value })} />
+                </div>
+                <div className="form-group">
+                  <label>Preferred Time <span className="req">*</span></label>
+                  <input type="time" value={requestForm.time}
+                    onChange={e => setRequestForm({ ...requestForm, time: e.target.value })} />
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Message <span className="optional-label">(optional)</span></label>
+                <textarea rows={3} placeholder="Tell the tutor what topics you need help with..."
+                  value={requestForm.message}
+                  onChange={e => setRequestForm({ ...requestForm, message: e.target.value })} />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="cancel-btn" onClick={() => setRequestModal(null)}>Cancel</button>
+              <button className="submit-btn"
+                onClick={handleSendRequest}
+                disabled={!requestForm.subject || !requestForm.date || !requestForm.time}>
+                Send Request
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

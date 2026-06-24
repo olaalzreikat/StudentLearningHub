@@ -197,7 +197,7 @@
     transition: all 0.3s ease;
     border: 1px solid #E5E7EB;
     background: #FFFFFF;
-    padding: 20px;
+    padding: 0;
     display: flex;
     flex-direction: column;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
@@ -368,9 +368,9 @@
 }
 
 .class-action-btn:hover {
-    background: #1e3a8a;
+    filter: brightness(0.88);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.35);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .class-action-btn:active {
@@ -994,10 +994,6 @@
         padding: 6px 0;
     }
 
-    .lesson-card {
-        padding: 14px;
-    }
-
     .lesson-title {
         font-size: 20px;
     }
@@ -1018,4 +1014,367 @@
     .download-title {
         font-size: 16px;
     }
+}
+
+/* ─── Class Card Banner (new design) ─── */
+.class-card-banner {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    flex-shrink: 0;
+}
+
+.class-banner-letter {
+    width: 58px;
+    height: 58px;
+    background: rgba(255, 255, 255, 0.22);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 800;
+    color: white;
+    flex-shrink: 0;
+    letter-spacing: -1px;
+}
+
+.class-banner-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+.class-banner-level {
+    font-size: 10px;
+    font-weight: 800;
+    background: rgba(255,255,255,0.22);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.class-banner-pct {
+    font-size: 13px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.9);
+}
+
+.class-card-body {
+    padding: 16px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 10px;
+}
+
+.class-card-body .lesson-title {
+    font-size: 15px;
+}
+
+/* ─── Continue Learning ─── */
+.continue-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.continue-card {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    background: white;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.continue-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    border-color: #cbd5e1;
+}
+
+.continue-card-stripe {
+    width: 5px;
+    flex-shrink: 0;
+}
+
+.continue-card-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+}
+
+.continue-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.continue-card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.continue-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.continue-card-sub {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 500;
+    margin: 2px 0 6px;
+}
+
+.continue-bar-wrap {
+    height: 5px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.continue-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.4s ease;
+}
+
+.continue-btn {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.continue-btn:hover {
+    filter: brightness(1.1);
+    transform: translateX(2px);
+}
+
+/* ─── Practice Section Toggle ─── */
+.practice-toggle {
+    display: flex;
+    gap: 4px;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: 10px;
+}
+
+.practice-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border: none;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s ease;
+}
+
+.practice-toggle-btn:hover {
+    color: #1e293b;
+}
+
+.practice-toggle-btn.active {
+    background: white;
+    color: #1e293b;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.practice-toggle-count {
+    font-size: 11px;
+    font-weight: 700;
+    background: #e2e8f0;
+    color: #475569;
+    padding: 1px 7px;
+    border-radius: 20px;
+}
+
+.practice-toggle-btn.active .practice-toggle-count {
+    background: #eff6ff;
+    color: #1e40af;
+}
+
+/* ─── Practice Grid ─── */
+.practice-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+/* ─── Practice Cards ─── */
+.practice-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 22px;
+    border: 1.5px solid #e8edf4;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    gap: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.practice-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--practice-color, #3b82f6);
+    border-radius: 16px 0 0 16px;
+}
+
+.practice-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+.practice-card-done {
+    opacity: 0.85;
+}
+
+.practice-card-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+    padding-left: 8px;
+}
+
+.practice-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 900;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+    letter-spacing: -1px;
+}
+
+.practice-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.quiz-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.quiz-description {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.quiz-duration {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #94a3b8;
+    margin: 0;
+}
+
+.practice-start-btn {
+    flex-shrink: 0;
+    padding: 10px 24px;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.practice-start-btn:hover {
+    filter: brightness(0.88);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.practice-start-done {
+    background: #f1f5f9 !important;
+    color: #475569;
+    border: 1.5px solid #cbd5e1;
+}
+
+.practice-start-done:hover {
+    background: #e2e8f0 !important;
+    filter: none;
+    box-shadow: none;
+    transform: none;
+}
+
+.practice-empty {
+    padding: 48px 20px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 14px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1.5px dashed #e2e8f0;
+}
+
+@media (max-width: 640px) {
+    .practice-card { flex-direction: column; align-items: flex-start; }
+    .practice-start-btn { width: 100%; text-align: center; }
 }
