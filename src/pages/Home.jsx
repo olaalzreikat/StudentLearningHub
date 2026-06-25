@@ -118,55 +118,6 @@ function Home() {
           </div>
         </div>
 
-        {/* ── Metrics & Success Indicators ─────────────────────── */}
-        <section className="metrics-section" aria-label="Platform metrics and success indicators">
-          <div className="metrics-inner">
-            <p className="section-label">Measuring what matters</p>
-            <h2 className="metrics-heading">Built Around Student Success</h2>
-            <p className="metrics-sub">
-              Equalizer tracks key performance indicators across every learning interaction, using industry-standard web analytics to continuously improve the student experience.
-            </p>
-            <div className="metrics-grid">
-              <div className="metric-card">
-                <div className="metric-icon" aria-hidden="true">📈</div>
-                <div className="metric-kpi">85%+</div>
-                <div className="metric-name">Course Completion Rate</div>
-                <div className="metric-desc">Students who start a lesson or video finish it — measured via session-level event tracking and funnel analysis.</div>
-              </div>
-              <div className="metric-card">
-                <div className="metric-icon" aria-hidden="true">👥</div>
-                <div className="metric-kpi">DAU / MAU</div>
-                <div className="metric-name">Engagement Ratio</div>
-                <div className="metric-desc">We track daily and monthly active users to measure stickiness and identify drop-off patterns in the learning journey.</div>
-              </div>
-              <div className="metric-card">
-                <div className="metric-icon" aria-hidden="true">⚡</div>
-                <div className="metric-kpi">&lt;2s</div>
-                <div className="metric-name">Average Page Load Time</div>
-                <div className="metric-desc">Core Web Vitals including LCP, FID, and CLS are monitored to ensure fast, responsive experiences on all devices.</div>
-              </div>
-              <div className="metric-card">
-                <div className="metric-icon" aria-hidden="true">🎯</div>
-                <div className="metric-kpi">Session Conversion</div>
-                <div className="metric-name">Visitor-to-User Rate</div>
-                <div className="metric-desc">We monitor the conversion funnel from anonymous visitor to registered student and measure session booking conversion rates.</div>
-              </div>
-              <div className="metric-card">
-                <div className="metric-icon" aria-hidden="true">🔁</div>
-                <div className="metric-kpi">Retention Rate</div>
-                <div className="metric-name">7-Day & 30-Day Return</div>
-                <div className="metric-desc">Cohort retention analysis tracks whether students return after their first session — a core indicator of platform value.</div>
-              </div>
-              <div className="metric-card">
-                <div className="metric-icon" aria-hidden="true">⭐</div>
-                <div className="metric-kpi">NPS Score</div>
-                <div className="metric-name">Net Promoter Score</div>
-                <div className="metric-desc">Post-session ratings and peer recommendations are aggregated into an NPS score to measure overall learner satisfaction.</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* ── CTA — original gradient ───────────────────────────── */}
         <div className="cta-container">
           <CallToAction />
