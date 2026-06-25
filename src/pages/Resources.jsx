@@ -339,6 +339,7 @@ const downloadFile = (guide) => {
                             placeholder="Search resources..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
+                            aria-label="Search learning resources"
                         />
                     </div>
                 </div>
@@ -479,7 +480,7 @@ const downloadFile = (guide) => {
                                 const isCompleted = isVideoCompleted(video.id);
                                 
                                 return (
-                                    <div key={video.id} className={`video-card${isCompleted ? ' video-card-done' : ''}`} style={{ borderTop: `3px solid ${getSubjectColor(video.topic || '')}` }} onClick={() => handleVideoClick(video)}>
+                                    <div key={video.id} className={`video-card${isCompleted ? ' video-card-done' : ''}`} style={{ borderTop: `3px solid ${getSubjectColor(video.topic || '')}` }} onClick={() => handleVideoClick(video)} role="button" tabIndex={0} aria-label={`Watch video: ${video.title}`} onKeyDown={e => e.key === 'Enter' && handleVideoClick(video)}>
                                         <div className="video-background"></div>
                                         <div className="video-card-top-row">
                                             {video.class && <div className="video-class-badge" style={{ color: getSubjectColor(video.topic || ''), background: getSubjectColor(video.topic || '') + '15' }}>{video.class}</div>}
@@ -552,7 +553,7 @@ const downloadFile = (guide) => {
                                         const color = getSubjectColor(quiz.topic);
                                         const letter = quiz.topic.charAt(0).toUpperCase();
                                         return (
-                                            <div key={quiz.id} className={`practice-card${isCompleted ? ' practice-card-done' : ''}`} style={{ '--practice-color': color, borderColor: color + '40', background: color + '06' }} onClick={() => handleQuizClick(quiz)}>
+                                            <div key={quiz.id} className={`practice-card${isCompleted ? ' practice-card-done' : ''}`} style={{ '--practice-color': color, borderColor: color + '40', background: color + '06' }} onClick={() => handleQuizClick(quiz)} role="button" tabIndex={0} aria-label={`${isCompleted ? 'Retake' : 'Start'} quiz: ${quiz.title}`} onKeyDown={e => e.key === 'Enter' && handleQuizClick(quiz)}>
                                                 <div className="practice-card-left">
                                                     <div className="practice-icon" style={{ background: color, color: 'white' }}>{letter}</div>
                                                     <div className="practice-info">
@@ -585,7 +586,7 @@ const downloadFile = (guide) => {
                                         const color = getSubjectColor(problem.topic);
                                         const letter = problem.topic.charAt(0).toUpperCase();
                                         return (
-                                            <div key={problem.id} className={`practice-card${isCompleted ? ' practice-card-done' : ''}`} style={{ '--practice-color': color, borderColor: color + '40', background: color + '06' }} onClick={() => handleProblemClick(problem)}>
+                                            <div key={problem.id} className={`practice-card${isCompleted ? ' practice-card-done' : ''}`} style={{ '--practice-color': color, borderColor: color + '40', background: color + '06' }} onClick={() => handleProblemClick(problem)} role="button" tabIndex={0} aria-label={`${isCompleted ? 'Retake' : 'Start'} problems: ${problem.title}`} onKeyDown={e => e.key === 'Enter' && handleProblemClick(problem)}>
                                                 <div className="practice-card-left">
                                                     <div className="practice-icon" style={{ background: color, color: 'white' }}>{letter}</div>
                                                     <div className="practice-info">
@@ -644,7 +645,7 @@ const downloadFile = (guide) => {
                                                 <span>{guide.size}</span>
                                             </div>
                                         </div>
-                                        <button className={`download-btn${isDownloaded ? ' download-btn-done' : ''}`} onClick={(e) => { e.stopPropagation(); handleGuideDownload(guide); }}>
+                                        <button className={`download-btn${isDownloaded ? ' download-btn-done' : ''}`} onClick={(e) => { e.stopPropagation(); handleGuideDownload(guide); }} aria-label={`${isDownloaded ? 'Re-download' : 'Download'} ${guide.title}`}>
                                             {isDownloaded ? 'Re-download' : 'Download'}
                                         </button>
                                     </div>

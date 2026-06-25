@@ -729,6 +729,136 @@
   cursor: not-allowed;
 }
 
+/* ── 1-on-1 session cards (tutor Schedule view) ── */
+.one-on-one-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ono-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: white;
+  border: 1.5px solid #e8edf4;
+  border-radius: 16px;
+  padding: 16px 20px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.ono-card:hover {
+  border-color: var(--ono-color, #3b82f6);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+}
+
+.ono-accent {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: var(--ono-color, #3b82f6);
+  border-radius: 16px 0 0 16px;
+}
+
+.ono-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ono-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.ono-student {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ono-subject {
+  font-size: 0.8rem;
+  color: var(--ono-color, #3b82f6);
+  font-weight: 700;
+  margin: 0 0 3px;
+}
+
+.ono-message {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  margin: 0;
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ono-time {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.ono-date {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 2px;
+}
+
+.ono-clock {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.ono-badge {
+  flex-shrink: 0;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.03em;
+}
+
+.gsc-your-session-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #eff6ff;
+  color: #1e40af;
+  border: 1.5px solid #bfdbfe;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  letter-spacing: 0.02em;
+}
+
+.gsc-your-session-badge::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  background: #2563eb;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
 /* ── Group session improvements ───────────────────────────── */
 
 .group-header {

@@ -10,12 +10,18 @@ function Login() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [termsAccepted, setTermsAccepted] = useState(false);
+    const [showTerms, setShowTerms] = useState(false);
 
     const { login, signup } = useAuth();
     const navigate = useNavigate();
 
     async function handleSubmit(e) {
         e.preventDefault();
+        if (mode === 'signup' && !termsAccepted) {
+            setError('You must agree to the Terms of Service to create an account.');
+            return;
+        }
         setError('');
         setLoading(true);
         try {
@@ -80,7 +86,36 @@ function Login() {
                         </div>
                     )}
 
-                    <button type="submit" className="login-btn" disabled={loading}>
+                    {mode === 'signup' && (
+                        <label className="tos-check">
+                            <input
+                                type="checkbox"
+                                checked={termsAccepted}
+                                onChange={e => setTermsAccepted(e.target.checked)}
+                            />
+                            <span>
+                                I agree to the{' '}
+                                <button type="button" className="tos-link" onClick={() => setShowTerms(true)}>
+                                    Terms of Service
+                                </button>
+                            </span>
+                        </label>
+                    )}
+
+                    {mode === 'login' && (
+                        <p className="tos-notice">
+                            By signing in you agree to our{' '}
+                            <button type="button" className="tos-link" onClick={() => setShowTerms(true)}>
+                                Terms of Service
+                            </button>
+                        </p>
+                    )}
+
+                    <button
+                        type="submit"
+                        className="login-btn"
+                        disabled={loading || (mode === 'signup' && !termsAccepted)}
+                    >
                         {loading ? 'Please wait…' : mode === 'login' ? 'Sign in' : 'Create account'}
                     </button>
                 </form>
@@ -90,12 +125,66 @@ function Login() {
                     <button
                         type="button"
                         className="login-toggle-btn"
-                        onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError(''); }}
+                        onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError(''); setTermsAccepted(false); }}
                     >
                         {mode === 'login' ? 'Sign up' : 'Sign in'}
                     </button>
                 </p>
             </div>
+
+            {showTerms && (
+                <div className="tos-overlay" onClick={() => setShowTerms(false)}>
+                    <div className="tos-modal" onClick={e => e.stopPropagation()}>
+                        <div className="tos-modal-header">
+                            <h2>Terms of Service</h2>
+                            <button className="tos-modal-close" onClick={() => setShowTerms(false)} aria-label="Close">&#10005;</button>
+                        </div>
+                        <div className="tos-modal-body">
+                            <p className="tos-updated">Last updated: June 2025</p>
+
+                            <h3>1. Acceptance of Terms</h3>
+                            <p>By creating an account or using Equalizer Learning Hub, you agree to these Terms of Service. If you do not agree, please do not use the platform.</p>
+
+                            <h3>2. Eligibility</h3>
+                            <p>You must be a student or educator at an eligible institution. By registering, you confirm you meet this requirement.</p>
+
+                            <h3>3. Account Responsibilities</h3>
+                            <p>You are responsible for maintaining the confidentiality of your account credentials and for all activity under your account.</p>
+
+                            <h3>4. Platform Use</h3>
+                            <p>Equalizer Learning Hub is provided for peer tutoring and academic support. You agree not to misuse the platform, post harmful content, or harass other users.</p>
+
+                            <h3>5. Tutoring Sessions</h3>
+                            <p>Session requests are matched based on availability. Tutors and students are expected to communicate respectfully and honor scheduled commitments.</p>
+
+                            <h3>6. Privacy</h3>
+                            <p>Your data is handled in accordance with our Privacy Policy. We do not sell your personal information to third parties.</p>
+
+                            <h3>7. Intellectual Property</h3>
+                            <p>All content on this platform, including course materials and resources, remains the property of Equalizer Learning Hub unless otherwise stated.</p>
+
+                            <h3>8. Termination</h3>
+                            <p>We reserve the right to suspend or terminate accounts that violate these terms or engage in conduct harmful to the community.</p>
+
+                            <h3>9. Changes to Terms</h3>
+                            <p>We may update these Terms from time to time. Continued use of the platform after changes constitutes acceptance of the revised terms.</p>
+
+                            <h3>10. Contact</h3>
+                            <p>Questions about these Terms? Contact us through the Contact page on our website.</p>
+                        </div>
+                        {mode === 'signup' && (
+                            <div className="tos-modal-footer">
+                                <button
+                                    className="tos-accept-btn"
+                                    onClick={() => { setTermsAccepted(true); setShowTerms(false); }}
+                                >
+                                    I Agree
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

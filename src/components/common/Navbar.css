@@ -74,6 +74,28 @@
 .nav-auth {
     display: flex;
     align-items: center;
+    gap: 12px;
+}
+
+.nav-contact-btn {
+    text-decoration: none;
+    color: rgb(8, 8, 85);
+    background: #eff6ff;
+    border: 1.5px solid #bfdbfe;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.nav-contact-btn:hover,
+.nav-contact-btn.active {
+    background: rgb(8, 8, 85);
+    color: white;
+    border-color: rgb(8, 8, 85);
+    transform: translateY(-1px);
 }
 
 .nav-login-btn {

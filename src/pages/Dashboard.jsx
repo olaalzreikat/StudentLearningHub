@@ -6,9 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { subjects } from '../utils/subjectColors';
 import { videosData, quizzesData, problemsData, lessonsData, guidesData } from '../data/resourcesData';
 import ProgressCharts from '../components/ProgressCharts';
-import ChatModal, { getReadKey } from '../components/ChatModal';
-import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
-import { db } from '../firebase';
+import MessagesPanel from '../components/MessagesPanel';
 import './Dashboard.css';
 
 function Dashboard() {
@@ -39,8 +37,7 @@ function Dashboard() {
     const [showNotification, setShowNotification] = useState(false);
     const [notificationMessage, setNotificationMessage] = useState('');
     const [myBookings, setMyBookings] = useState([]);
-    const [chatSession, setChatSession] = useState(null);
-    const [unreadMap, setUnreadMap] = useState({});
+    const [preCompose, setPreCompose] = useState(null);
     const [reviewModal, setReviewModal] = useState(null);
     const [reviewStars, setReviewStars] = useState(0);
     const [reviewComment, setReviewComment] = useState('');
@@ -117,34 +114,6 @@ function Dashboard() {
         }
     }, []);
 
-    // Subscribe to last message of each accepted booking to show unread badge
-    useEffect(() => {
-        if (!user) return;
-        const accepted = myBookings.filter(b => b.status === 'accepted');
-        if (!accepted.length) return;
-
-        const unsubs = accepted.map(booking => {
-            const q = query(
-                collection(db, 'conversations', booking.id, 'messages'),
-                orderBy('timestamp', 'desc'),
-                limit(1)
-            );
-            return onSnapshot(q, snap => {
-                if (snap.empty) return;
-                const msg = snap.docs[0].data();
-                if (msg.senderId === user.uid) {
-                    setUnreadMap(prev => ({ ...prev, [booking.id]: false }));
-                    return;
-                }
-                const lastRead = localStorage.getItem(getReadKey(user.uid, booking.id));
-                const msgTime = msg.timestamp?.toDate?.()?.getTime() || Date.now();
-                const readTime = lastRead ? new Date(lastRead).getTime() : 0;
-                setUnreadMap(prev => ({ ...prev, [booking.id]: msgTime > readTime }));
-            });
-        });
-
-        return () => unsubs.forEach(u => u());
-    }, [myBookings, user]);
 
     const showNotificationMessage = (message) => {
         setNotificationMessage(message);
@@ -850,12 +819,9 @@ function Dashboard() {
                                                     {booking.status === 'accepted' && (
                                                         <button
                                                             className="booking-chat-btn"
-                                                            onClick={() => {
-                                                                setChatSession({ id: booking.id, otherName: booking.tutorName });
-                                                                setUnreadMap(prev => ({ ...prev, [booking.id]: false }));
-                                                            }}
+                                                            onClick={() => setPreCompose({ to: booking.tutorEmail, subject: `Re: Our tutoring session` })}
                                                         >
-                                                            Chat{unreadMap[booking.id] && <span className="chat-unread-dot" />}
+                                                            Message
                                                         </button>
                                                     )}
                                                     {booking.status === 'accepted' && (
@@ -1025,14 +991,14 @@ function Dashboard() {
                     </div>
                 )}
 
-                {/* Chat Modal */}
-                {chatSession && (
-                    <ChatModal
-                        requestId={chatSession.id}
-                        otherName={chatSession.otherName}
-                        onClose={() => setChatSession(null)}
+                {/* Messages */}
+                <div className="dashboard-section">
+                    <MessagesPanel
+                        userEmail={user?.email}
+                        preCompose={preCompose}
+                        onClearPreCompose={() => setPreCompose(null)}
                     />
-                )}
+                </div>
 
                 {/* Review Modal */}
                 {reviewModal && (

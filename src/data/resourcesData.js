@@ -742,8 +742,8 @@ export const guidesData = [
         topic: "geometry",
         pages: "32 pages",
         size: "1.8 MB",
-         fileUrl:"",
-        fileName:""
+        fileUrl: "/study-guides/variables-expressions-studyguide.pdf",
+        fileName: "geometry-formulas-guide"
     },
     {
         id: 3,
@@ -752,8 +752,8 @@ export const guidesData = [
         topic: "calculus",
         pages: "68 pages",
         size: "4.1 MB",
-         fileUrl:"",
-        fileName:""
+        fileUrl: "/study-guides/variables-expressions-studyguide.pdf",
+        fileName: "calculus-study-guide"
     },
     {
         id: 4,
@@ -762,8 +762,8 @@ export const guidesData = [
         topic: "statistics",
         pages: "52 pages",
         size: "2.9 MB",
-         fileUrl:"",
-        fileName:""
+        fileUrl: "/study-guides/variables-expressions-studyguide.pdf",
+        fileName: "statistics-handbook"
     },
     {
         id: 5,
@@ -772,8 +772,8 @@ export const guidesData = [
         topic: "trigonometry",
         pages: "28 pages",
         size: "1.5 MB",
-         fileUrl:"",
-        fileName:""
+        fileUrl: "/study-guides/variables-expressions-studyguide.pdf",
+        fileName: "trigonometry-quick-reference"
     }
 ];
 

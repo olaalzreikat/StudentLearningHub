@@ -107,6 +107,8 @@ function Footer() {
                             <Link to="/terms">Terms of Service</Link>
                             <span className="divider" aria-hidden="true">•</span>
                             <Link to="/accessibility">Accessibility</Link>
+                            <span className="divider" aria-hidden="true">•</span>
+                            <Link to="/sources">Sources</Link>
                         </div>
                         <p className="footer-credits">
                             Built with React · Student-run, school-sponsored

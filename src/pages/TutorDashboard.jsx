@@ -4,8 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { videosData, quizzesData, problemsData, guidesData } from '../data/resourcesData';
 import { lessonsData } from '../data/lessonsData';
 import { subjects } from '../utils/subjectColors';
-import ChatModal, { getReadKey } from '../components/ChatModal';
-import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
+import MessagesPanel from '../components/MessagesPanel';
 import { db } from '../firebase';
 import './TutorDashboard.css';
 
@@ -40,9 +39,9 @@ function TutorDashboard() {
     const [editLinkModal, setEditLinkModal] = useState(null);
     const [editLinkValue, setEditLinkValue] = useState('');
 
-    // Chat
-    const [chatSession, setChatSession] = useState(null);
-    const [unreadMap, setUnreadMap] = useState({});
+    // Messages
+    const [preCompose, setPreCompose] = useState(null);
+    const [msgUnread, setMsgUnread] = useState(0);
 
     // Notification
     const [notif, setNotif] = useState('');
@@ -53,34 +52,6 @@ function TutorDashboard() {
         loadRequests();
     }, []);
 
-    // Subscribe to last message of each accepted request for unread badge
-    useEffect(() => {
-        if (!user) return;
-        const accepted = requests.filter(r => r.status === 'accepted');
-        if (!accepted.length) return;
-
-        const unsubs = accepted.map(req => {
-            const q = query(
-                collection(db, 'conversations', req.id, 'messages'),
-                orderBy('timestamp', 'desc'),
-                limit(1)
-            );
-            return onSnapshot(q, snap => {
-                if (snap.empty) return;
-                const msg = snap.docs[0].data();
-                if (msg.senderId === user.uid) {
-                    setUnreadMap(prev => ({ ...prev, [req.id]: false }));
-                    return;
-                }
-                const lastRead = localStorage.getItem(getReadKey(user.uid, req.id));
-                const msgTime = msg.timestamp?.toDate?.()?.getTime() || Date.now();
-                const readTime = lastRead ? new Date(lastRead).getTime() : 0;
-                setUnreadMap(prev => ({ ...prev, [req.id]: msgTime > readTime }));
-            });
-        });
-
-        return () => unsubs.forEach(u => u());
-    }, [requests, user]);
 
     const notify = (msg) => {
         setNotif(msg);
@@ -225,6 +196,7 @@ function TutorDashboard() {
         { id: 'requests', label: `Requests${pendingCount > 0 ? ` (${pendingCount})` : ''}` },
         { id: 'hours', label: 'Hours & Certificate' },
         { id: 'resources', label: 'Resource Library' },
+        { id: 'messages', label: `Messages${msgUnread > 0 ? ` (${msgUnread})` : ''}` },
     ];
 
     // ── Service Hours ─────────────────────────────────────────
@@ -241,57 +213,287 @@ function TutorDashboard() {
     function downloadCertificate() {
         const tutorName = profile.name || user?.email?.split('@')[0] || 'Tutor';
         const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        const html = `<!DOCTYPE html><html><head>
-<title>Service Hour Certificate — Equalizer Learning Hub</title>
+        const html = `<!DOCTYPE html>
+<html>
+<head>
+<title>Service Hour Certificate - Equalizer Learning Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
 <style>
-  body { font-family: Georgia, serif; margin: 0; padding: 40px; background: #f8fafc; }
-  .cert { max-width: 700px; margin: 0 auto; background: white; border: 6px solid rgb(8,8,85); border-radius: 12px; padding: 48px 56px; text-align: center; }
-  .cert-header { font-size: 13px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: #94a3b8; margin-bottom: 12px; }
-  .cert-title { font-size: 34px; font-weight: 900; color: rgb(8,8,85); margin: 0 0 8px; }
-  .cert-sub { font-size: 14px; color: #64748b; margin: 0 0 28px; }
-  .cert-divider { height: 2px; background: linear-gradient(90deg, transparent, rgb(8,8,85), transparent); margin: 24px 0; }
-  .cert-body { font-size: 17px; color: #374151; line-height: 1.8; margin-bottom: 28px; }
-  .cert-name { font-size: 28px; font-weight: 900; color: rgb(8,8,85); margin: 8px 0; }
-  .cert-hours { font-size: 42px; font-weight: 900; color: rgb(8,8,85); line-height: 1; }
-  .cert-hours-label { font-size: 14px; color: #94a3b8; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 24px; }
-  .cert-sessions { text-align: left; margin: 20px 0; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { background: #f1f5f9; padding: 8px 12px; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: #64748b; text-align: left; }
-  td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #374151; text-align: left; }
-  .cert-footer { margin-top: 36px; font-size: 12px; color: #94a3b8; }
-  .cert-sig { margin-top: 32px; display: flex; justify-content: space-around; }
-  .sig-line { border-top: 1px solid #94a3b8; padding-top: 6px; font-size: 11px; color: #94a3b8; min-width: 160px; }
-  @media print { body { padding: 0; } .no-print { display: none; } }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #e2e8f0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 36px 20px;
+  }
+
+  .cert-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 1060px;
+    background: white;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+    overflow: hidden;
+    min-height: 680px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Dot pattern — right side decoration */
+  .cert-dots {
+    position: absolute;
+    top: 0; right: 0;
+    width: 42%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Badge top right */
+  .cert-badge {
+    position: absolute;
+    top: 28px;
+    right: 60px;
+    width: 148px;
+    height: 148px;
+    z-index: 2;
+  }
+
+  /* ── Top logo strip ── */
+  .cert-logo-strip {
+    position: relative;
+    z-index: 1;
+    padding: 36px 52px 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .logo-mark {
+    width: 44px; height: 44px;
+    background: rgb(8,8,85);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo-mark span {
+    color: white; font-size: 17px; font-weight: 800; letter-spacing: -1px; line-height: 1;
+  }
+  .logo-text-block .org { font-size: 10px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: #64748b; display: block; }
+  .logo-text-block .prog { font-size: 19px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: rgb(8,8,85); display: block; line-height: 1.1; }
+
+  /* ── Main content ── */
+  .cert-body-wrap {
+    position: relative;
+    z-index: 1;
+    padding: 44px 52px 36px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    max-width: 660px;
+  }
+
+  .cert-top { }
+
+  .cert-name {
+    font-size: 58px;
+    font-weight: 300;
+    color: #0f172a;
+    line-height: 1.05;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+  }
+
+  .cert-presents {
+    font-size: 15px;
+    color: #64748b;
+    font-weight: 400;
+    margin-bottom: 6px;
+  }
+
+  .cert-achievement {
+    font-size: 22px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 28px;
+  }
+
+  /* Sessions table */
+  .cert-sessions { margin: 0 0 16px; }
+  .cert-sessions-label { font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #94a3b8; margin-bottom: 8px; display: block; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; max-width: 560px; }
+  th { background: rgb(8,8,85); color: white; padding: 7px 12px; font-size: 9.5px; text-transform: uppercase; letter-spacing: .07em; font-weight: 700; text-align: left; }
+  td { padding: 7px 12px; border-bottom: 1px solid #f1f5f9; color: #374151; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: #f8fafc; }
+
+  /* ── Bottom signatures ── */
+  .cert-bottom {
+    display: flex;
+    align-items: flex-end;
+    gap: 48px;
+    padding-top: 28px;
+    border-top: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+  }
+
+  .sig-block { min-width: 160px; }
+  .sig-name {
+    font-family: 'Dancing Script', cursive;
+    font-size: 34px;
+    font-weight: 700;
+    color: #0f172a;
+    display: block;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .sig-line { border-top: 1.5px solid #334155; margin-bottom: 6px; width: 180px; display: block; }
+  .sig-label { font-size: 12px; font-weight: 700; color: #0f172a; display: block; }
+  .sig-role { font-size: 11px; color: #64748b; display: block; margin-top: 1px; }
+
+  .cert-meta { }
+  .meta-value { font-size: 15px; font-weight: 600; color: #0f172a; display: block; }
+  .meta-label { font-size: 11px; color: #94a3b8; display: block; margin-top: 3px; }
+
+  .cert-footer { margin-top: 20px; font-size: 10px; color: #cbd5e1; letter-spacing: .04em; }
+
+  @media print {
+    @page { size: landscape; margin: 0; }
+    body { background: white; padding: 0; }
+    .cert-wrap { box-shadow: none; max-width: 100%; }
+    .no-print { display: none; }
+  }
 </style>
-</head><body>
-<div class="cert">
-  <div class="cert-header">Equalizer Learning Hub · Official Document</div>
-  <div class="cert-title">Service Hour Certificate</div>
-  <div class="cert-sub">This certifies that the following student has completed verified peer tutoring hours</div>
-  <div class="cert-divider"></div>
-  <div class="cert-body">This is to certify that</div>
-  <div class="cert-name">${tutorName}</div>
-  <div class="cert-body">has completed</div>
-  <div class="cert-hours">${totalHours}</div>
-  <div class="cert-hours-label">Verified Service Hour${totalHours !== 1 ? 's' : ''}</div>
-  <div class="cert-body">as a certified peer math tutor on the Equalizer Learning Hub platform</div>
-  ${acceptedRequests.length > 0 ? `
-  <div class="cert-sessions">
-    <table>
-      <tr><th>Student</th><th>Subject</th><th>Date</th><th>Duration</th></tr>
-      ${acceptedRequests.map(r => `<tr><td>${r.studentEmail || 'Student'}</td><td>${r.subject || 'Math'}</td><td>${r.preferredDate || 'See platform'}</td><td>1 hour</td></tr>`).join('')}
-    </table>
-  </div>` : ''}
-  <div class="cert-divider"></div>
-  <div class="cert-sig">
-    <div class="sig-line">Equalizer Learning Hub<br>Platform Verification</div>
-    <div class="sig-line">Faculty Advisor<br>Authorized Signature</div>
-    <div class="sig-line">${date}<br>Date of Issue</div>
+</head>
+<body>
+<div class="cert-wrap">
+
+  <!-- Dot grid + math symbol accents (right side, fades left) -->
+  <svg class="cert-dots" viewBox="0 0 440 680" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+        <rect x="7" y="7" width="5" height="5" rx="1" fill="rgb(8,8,85)" opacity="0.12"/>
+      </pattern>
+      <linearGradient id="fade" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="white" stop-opacity="1"/>
+        <stop offset="40%" stop-color="white" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <!-- Uniform dot grid -->
+    <rect width="440" height="680" fill="url(#dots)"/>
+    <!-- Math symbol accents -->
+    <g font-family="Inter,system-ui,sans-serif" font-weight="700" fill="rgb(8,8,85)">
+      <text x="196" y="48"  font-size="14" opacity="0.32">&#960;</text>
+      <text x="256" y="24"  font-size="12" opacity="0.28" fill="#2563eb">+</text>
+      <text x="306" y="66"  font-size="16" opacity="0.30">&#8730;</text>
+      <text x="346" y="34"  font-size="13" opacity="0.27" fill="#1e40af">=</text>
+      <text x="388" y="60"  font-size="18" opacity="0.33">&#215;</text>
+      <text x="218" y="106" font-size="13" opacity="0.28" fill="#2563eb">%</text>
+      <text x="376" y="116" font-size="12" opacity="0.30">&#247;</text>
+      <text x="296" y="146" font-size="15" opacity="0.26" fill="#1e40af">&#178;</text>
+      <text x="238" y="186" font-size="13" opacity="0.28">&#8722;</text>
+      <text x="406" y="176" font-size="16" opacity="0.32" fill="#2563eb">&#8730;</text>
+      <text x="326" y="206" font-size="12" opacity="0.27">+</text>
+      <text x="186" y="266" font-size="16" opacity="0.22" fill="#1e40af">=</text>
+      <text x="356" y="284" font-size="13" opacity="0.28">&#960;</text>
+      <text x="276" y="326" font-size="15" opacity="0.25" fill="#2563eb">&#215;</text>
+      <text x="416" y="346" font-size="14" opacity="0.31">%</text>
+      <text x="206" y="406" font-size="12" opacity="0.24" fill="#1e40af">&#247;</text>
+      <text x="386" y="426" font-size="18" opacity="0.30">&#178;</text>
+      <text x="306" y="466" font-size="13" opacity="0.27" fill="#2563eb">&#8730;</text>
+      <text x="246" y="506" font-size="15" opacity="0.26">+</text>
+      <text x="426" y="516" font-size="12" opacity="0.32" fill="#1e40af">&#215;</text>
+      <text x="196" y="566" font-size="14" opacity="0.24">=</text>
+      <text x="366" y="586" font-size="16" opacity="0.29" fill="#2563eb">&#960;</text>
+      <text x="286" y="626" font-size="13" opacity="0.27">&#247;</text>
+      <text x="436" y="646" font-size="15" opacity="0.31" fill="#1e40af">&#8730;</text>
+    </g>
+    <!-- Left fade overlay -->
+    <rect width="440" height="680" fill="url(#fade)"/>
+  </svg>
+
+  <!-- Badge (top right) -->
+  <svg class="cert-badge" viewBox="0 0 148 148" xmlns="http://www.w3.org/2000/svg">
+    <!-- Outer ring -->
+    <circle cx="74" cy="74" r="70" fill="none" stroke="rgb(8,8,85)" stroke-width="2" opacity="0.15"/>
+    <circle cx="74" cy="74" r="62" fill="rgb(8,8,85)"/>
+    <circle cx="74" cy="74" r="54" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+    <!-- Star -->
+    <polygon points="74,38 80,62 106,62 85,77 92,101 74,87 56,101 63,77 42,62 68,62" fill="white" opacity="0.9"/>
+    <!-- Wreath arcs (simple dashes) -->
+    <circle cx="74" cy="74" r="48" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1" stroke-dasharray="4 3"/>
+    <!-- Text around circle -->
+    <path id="topArc" d="M 26,74 A 48,48 0 0,1 122,74" fill="none"/>
+    <text font-size="8" font-weight="700" fill="white" letter-spacing="2" font-family="Inter,sans-serif" opacity="0.85">
+      <textPath href="#topArc" startOffset="10%">EQUALIZER LEARNING HUB</textPath>
+    </text>
+    <path id="botArc" d="M 26,78 A 48,48 0 0,0 122,78" fill="none"/>
+    <text font-size="7.5" font-weight="600" fill="white" letter-spacing="1.5" font-family="Inter,sans-serif" opacity="0.7">
+      <textPath href="#botArc" startOffset="12%">PEER TUTOR PROGRAM</textPath>
+    </text>
+    <!-- Ribbon -->
+    <rect x="62" y="124" width="24" height="28" rx="2" fill="#1e3a8a"/>
+    <polygon points="62,152 74,144 86,152 86,170 62,170" fill="#0f172a" opacity="0.6"/>
+  </svg>
+
+  <!-- Logo strip -->
+  <div class="cert-logo-strip">
+    <div class="logo-mark"><span>EQ</span></div>
+    <div class="logo-text-block">
+      <span class="org">Student-Run Peer Tutoring</span>
+      <span class="prog">Equalizer</span>
+    </div>
   </div>
-  <div class="cert-footer">Generated ${date} · ${user?.email} · Equalizer Learning Hub · equalizer.edu</div>
+
+  <!-- Main body -->
+  <div class="cert-body-wrap">
+    <div class="cert-top">
+      <div class="cert-name">${tutorName}</div>
+      <p class="cert-presents">has successfully completed</p>
+      <div class="cert-achievement">${totalHours} Verified Service Hour${totalHours !== 1 ? 's' : ''} &nbsp;·&nbsp; Peer Mathematics Tutoring</div>
+
+      ${acceptedRequests.length > 0 ? `
+      <div class="cert-sessions">
+        <span class="cert-sessions-label">Session Record</span>
+        <table>
+          <tr><th>Student</th><th>Subject</th><th>Date</th><th>Duration</th></tr>
+          ${acceptedRequests.map(r => `<tr><td>${r.studentEmail || 'Student'}</td><td>${r.subject || 'Math'}</td><td>${r.preferredDate || 'On Platform'}</td><td>1 hr</td></tr>`).join('')}
+        </table>
+      </div>` : ''}
+    </div>
+
+    <!-- Signatures row -->
+    <div class="cert-bottom">
+      <div class="sig-block">
+        <span class="sig-name">Equalizer LH</span>
+        <span class="sig-line"></span>
+        <span class="sig-label">Equalizer Learning Hub</span>
+        <span class="sig-role">Platform Verification</span>
+      </div>
+      <div class="sig-block">
+        <span class="sig-name">Student Leadership</span>
+        <span class="sig-line"></span>
+        <span class="sig-label">Student Leadership Team</span>
+        <span class="sig-role">Program Director</span>
+      </div>
+      <div class="cert-meta">
+        <span class="meta-value">${date}</span>
+        <span class="meta-label">Date Awarded</span>
+      </div>
+    </div>
+
+    <div class="cert-footer">Equalizer Learning Hub &nbsp;·&nbsp; Student-created, student-verified &nbsp;·&nbsp; ${user?.email} &nbsp;·&nbsp; equalizer.edu</div>
+  </div>
 </div>
-<div class="no-print" style="text-align:center;margin-top:20px">
-  <button onclick="window.print()" style="padding:12px 28px;background:rgb(8,8,85);color:white;border:none;border-radius:25px;font-size:16px;cursor:pointer">Print / Save as PDF</button>
+
+<div class="no-print" style="text-align:center;margin-top:28px;padding-bottom:36px">
+  <button onclick="window.print()" style="padding:13px 34px;background:rgb(8,8,85);color:white;border:none;border-radius:8px;font-size:14px;font-family:Inter,sans-serif;font-weight:600;cursor:pointer;box-shadow:0 4px 16px rgba(8,8,85,0.3);letter-spacing:.03em">
+    Print / Save as PDF
+  </button>
 </div>
 </body></html>`;
         const w = window.open('', '_blank');
@@ -572,11 +774,11 @@ function TutorDashboard() {
                                                     <button
                                                         className="req-chat-btn"
                                                         onClick={() => {
-                                                            setChatSession({ id: req.id, otherName: req.studentEmail });
-                                                            setUnreadMap(prev => ({ ...prev, [req.id]: false }));
+                                                            setPreCompose({ to: req.studentEmail, subject: `Re: Your tutoring request` });
+                                                            setActiveTab('messages');
                                                         }}
                                                     >
-                                                        Chat{unreadMap[req.id] && <span className="chat-unread-dot" />}
+                                                        Message
                                                     </button>
                                                     <button className="req-edit-link-btn" onClick={() => { setEditLinkModal(req); setEditLinkValue(req.meetingLink || ''); }}>
                                                         {req.meetingLink ? 'Edit Link' : '+ Add Link'}
@@ -827,13 +1029,16 @@ function TutorDashboard() {
                 </div>
             )}
 
-            {/* Chat Modal */}
-            {chatSession && (
-                <ChatModal
-                    requestId={chatSession.id}
-                    otherName={chatSession.otherName}
-                    onClose={() => setChatSession(null)}
-                />
+            {/* ── MESSAGES ── */}
+            {activeTab === 'messages' && (
+                <div className="tutor-resources-view">
+                    <MessagesPanel
+                        userEmail={user?.email}
+                        preCompose={preCompose}
+                        onClearPreCompose={() => setPreCompose(null)}
+                        onUnreadChange={setMsgUnread}
+                    />
+                </div>
             )}
 
             {/* Edit Meeting Link Modal */}

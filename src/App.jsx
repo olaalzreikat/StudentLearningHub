@@ -23,6 +23,7 @@ import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Accessibility from './pages/Accessibility';
 import AdminDashboard from './pages/AdminDashboard';
+import Sources from './pages/Sources';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
@@ -62,6 +63,7 @@ function AppContent() {
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/accessibility" element={<Accessibility />} />
+            <Route path="/sources" element={<Sources />} />
             <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/problems" element={<Problems />} />

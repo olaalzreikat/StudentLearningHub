@@ -48,6 +48,7 @@ function Schedule() {
   const [sessionCounts, setSessionCounts] = useState({});
   const [tutorSessions, setTutorSessions] = useState([]);
   const [registeredTutors, setRegisteredTutors] = useState([]);
+  const [acceptedOneOnOne, setAcceptedOneOnOne] = useState([]);
 
   const { user, role } = useAuth();
 
@@ -110,6 +111,20 @@ function Schedule() {
     if (savedTutorSessions) {
       const all = JSON.parse(savedTutorSessions);
       setTutorSessions(all.filter(s => new Date(`${s.date}T${s.time}`) >= new Date()));
+    }
+
+    // Load accepted 1-on-1 requests for this tutor (upcoming only)
+    const savedRequests = localStorage.getItem('oneOnOneRequests');
+    if (savedRequests) {
+      const allReqs = JSON.parse(savedRequests);
+      setAcceptedOneOnOne(
+        allReqs.filter(r =>
+          r.status === 'accepted' &&
+          r.tutorId === user?.uid &&
+          r.preferredDate &&
+          new Date(r.preferredDate) >= new Date(new Date().toDateString())
+        ).sort((a, b) => new Date(a.preferredDate) - new Date(b.preferredDate))
+      );
     }
 
     // Load registered tutor profiles (include uid from key)
@@ -324,7 +339,22 @@ function Schedule() {
 
   // Filter functions
   const getFilteredData = () => {
-    // Merge registered tutors (with isRegistered flag) into tutors list
+    // Tutor view: only show their own posted sessions
+    if (role === 'tutor') {
+      let myGroupSessions = tutorSessions.filter(s => s.tutorId === user?.uid);
+      if (activeFilter !== 'all') {
+        myGroupSessions = myGroupSessions.filter(s => s.topic.toLowerCase() === activeFilter);
+      }
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        myGroupSessions = myGroupSessions.filter(s =>
+          s.title.toLowerCase().includes(q) || s.subject.toLowerCase().includes(q)
+        );
+      }
+      return { tutors: [], groupSessions: myGroupSessions };
+    }
+
+    // Student view: full listing
     const regTutors = registeredTutors.map(p => ({
       id: `reg-${p.uid}`,
       title: p.name,
@@ -339,41 +369,21 @@ function Schedule() {
       isRegistered: true,
     }));
     let tutors = [...regTutors, ...tutorsData];
-
-    // Tutor-posted sessions first (newest first), then hardcoded
     let groupSessions = [...[...tutorSessions].reverse(), ...groupSessionData];
-    let videos = videosData;
-    let quizzes = quizzesData;
-    let problems = problemsData;
-    let guides = guidesData;
 
-    // Apply category filter
     if (activeFilter !== "all") {
       tutors = tutors.filter((t) =>
         t.isRegistered
           ? t.subjects.includes(activeFilter)
           : t.topic.toLowerCase() === activeFilter
       );
-      videos = videos.filter(
-        (v) => v.topic && v.topic.toLowerCase() === activeFilter
-      );
-      quizzes = quizzes.filter((q) => q.topic.toLowerCase() === activeFilter);
-      problems = problems.filter((p) => p.topic.toLowerCase() === activeFilter);
-      guides = guides.filter((g) => g.topic.toLowerCase() === activeFilter);
-      groupSessions = groupSessions.filter((g)=>g.topic.toLowerCase() === activeFilter);
+      groupSessions = groupSessions.filter((g) => g.topic.toLowerCase() === activeFilter);
     }
 
-    // Apply video class filter
-    if (videoFilter !== "all") {
-      videos = videos.filter((v) => v.class === videoFilter);
-    }
-
-    // Apply guide topic filter
     if (guideFilter !== "all") {
       groupSessions = groupSessions.filter((g) => g.topic.toLowerCase() === guideFilter);
     }
 
-    // Apply search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       tutors = tutors.filter((t) =>
@@ -381,8 +391,8 @@ function Schedule() {
           ? t.title.toLowerCase().includes(query) || t.subjects.some(s => s.includes(query)) || t.description.toLowerCase().includes(query)
           : t.topic.toLowerCase().includes(query)
       );
-      groupSessions = groupSessions.filter((g) => 
-        g.title.toLowerCase().includes(query) || 
+      groupSessions = groupSessions.filter((g) =>
+        g.title.toLowerCase().includes(query) ||
         g.subject.toLowerCase().includes(query)
       );
     }
@@ -408,29 +418,20 @@ function Schedule() {
       <div className="schedule-hero">
         <div className="hero-content">
           <div className="hero-text">
-            <h1>Book a Session</h1>
-            <p>Find the right help and book a session that fits your schedule</p>
+            {role === 'tutor' ? (
+              <>
+                <h1>Your Posted Sessions</h1>
+                <p>Sessions you've posted that students can see and join</p>
+              </>
+            ) : (
+              <>
+                <h1>Book a Session</h1>
+                <p>Find the right help and book a session that fits your schedule</p>
+              </>
+            )}
           </div>
         </div>
       </div>
-
-      {/* Tutor CTA Banner */}
-      {role === 'tutor' && (
-        <div className="tutor-schedule-banner">
-          <div className="tutor-schedule-banner-inner">
-            <div className="tsb-left">
-              <span className="tsb-pill">Tutor View</span>
-              <div>
-                <p className="tsb-title">Your posted sessions appear at the top of this page</p>
-                <p className="tsb-sub">Students can join them directly from here.</p>
-              </div>
-            </div>
-            <button className="tsb-post-btn" onClick={() => navigate('/dashboard')}>
-              + Post New Session
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Main Container */}
       <div className="resources-container">
@@ -501,7 +502,10 @@ function Schedule() {
         {/* No Results */}
         {!hasResults && (
           <div className="no-resources">
-            No sessions found. Try a different subject or clear your filters.
+            {role === 'tutor'
+              ? <>You haven't posted any sessions yet. <button className="no-sessions-link" onClick={() => navigate('/dashboard')}>Go to your dashboard</button> to post one.</>
+              : 'No sessions found. Try a different subject or clear your filters.'
+            }
           </div>
         )}
 
@@ -561,24 +565,26 @@ function Schedule() {
                       </>
                     )}
                   </div>
-                  <div className="tutor-list-actions" onClick={(e) => e.stopPropagation()}>
-                    <div className="btn-burst-wrapper">
-                      <button
-                        className="tutor-list-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (classItem.isRegistered && !user) { navigate('/login'); return; }
-                          triggerTutorBurst(classItem.id);
-                          handleClassClick(classItem);
-                        }}
-                      >
-                        Book Session
-                      </button>
-                      {tutorBurstId === classItem.id && [1,2,3,4,5,6,7,8].map((i) => (
-                        <span key={i} className={`burst-star bs${i}`}></span>
-                      ))}
+                  {role !== 'tutor' && (
+                    <div className="tutor-list-actions" onClick={(e) => e.stopPropagation()}>
+                      <div className="btn-burst-wrapper">
+                        <button
+                          className="tutor-list-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (classItem.isRegistered && !user) { navigate('/login'); return; }
+                            triggerTutorBurst(classItem.id);
+                            handleClassClick(classItem);
+                          }}
+                        >
+                          Book Session
+                        </button>
+                        {tutorBurstId === classItem.id && [1,2,3,4,5,6,7,8].map((i) => (
+                          <span key={i} className={`burst-star bs${i}`}></span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -587,6 +593,38 @@ function Schedule() {
                 {showAllTutors ? 'Show less ↑' : 'Show all tutors ↓'}
               </button>
             )}
+          </div>
+        )}
+
+        {/* 1-ON-1 SESSIONS — tutor view only */}
+        {role === 'tutor' && acceptedOneOnOne.length > 0 && (
+          <div className="resource-section">
+            <div className="section-header">
+              <h2>1-on-1 Sessions</h2>
+            </div>
+            <div className="one-on-one-list">
+              {acceptedOneOnOne.map(req => {
+                const color = getSubjectColor(req.subject?.toLowerCase() || 'algebra');
+                return (
+                  <div key={req.id} className="ono-card" style={{ '--ono-color': color }}>
+                    <div className="ono-accent" />
+                    <div className="ono-avatar" style={{ background: color }}>
+                      {(req.studentEmail || 'S').charAt(0).toUpperCase()}
+                    </div>
+                    <div className="ono-info">
+                      <p className="ono-student">{req.studentEmail}</p>
+                      <p className="ono-subject">{req.subject?.charAt(0).toUpperCase() + req.subject?.slice(1)}</p>
+                      {req.message && <p className="ono-message">"{req.message}"</p>}
+                    </div>
+                    <div className="ono-time">
+                      <p className="ono-date">{new Date(req.preferredDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</p>
+                      {req.preferredTime && <p className="ono-clock">{req.preferredTime}</p>}
+                    </div>
+                    <span className="ono-badge">Confirmed</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 
@@ -650,25 +688,30 @@ function Schedule() {
                       </div>
                     </div>
 
-                    <div className="btn-burst-wrapper">
-                      {isJoined ? (
-                        <button className="gsc-btn gsc-btn-cancel" onClick={() => handleCancelGroupSession(group)}>
-                          Cancel Registration
-                        </button>
-                      ) : (
-                        <button
-                          className={`gsc-btn ${isFull ? 'gsc-btn-full' : 'gsc-btn-join'}`}
-                          style={{}}
-                          onClick={() => { handleJoinGroupSession(group); if (!isFull) triggerSessionBurst(group.id); }}
-                          disabled={isFull}
-                        >
-                          {isFull ? 'Session Full' : 'Join Session'}
-                        </button>
-                      )}
-                      {sessionBurstId === group.id && [1,2,3,4,5,6,7,8].map((i) => (
-                        <span key={i} className={`burst-star bs${i}`}></span>
-                      ))}
-                    </div>
+                    {role === 'tutor' ? (
+                      group.tutorId === user?.uid ? (
+                        <div className="gsc-your-session-badge">Your session</div>
+                      ) : null
+                    ) : (
+                      <div className="btn-burst-wrapper">
+                        {isJoined ? (
+                          <button className="gsc-btn gsc-btn-cancel" onClick={() => handleCancelGroupSession(group)}>
+                            Cancel Registration
+                          </button>
+                        ) : (
+                          <button
+                            className={`gsc-btn ${isFull ? 'gsc-btn-full' : 'gsc-btn-join'}`}
+                            onClick={() => { handleJoinGroupSession(group); if (!isFull) triggerSessionBurst(group.id); }}
+                            disabled={isFull}
+                          >
+                            {isFull ? 'Session Full' : 'Join Session'}
+                          </button>
+                        )}
+                        {sessionBurstId === group.id && [1,2,3,4,5,6,7,8].map((i) => (
+                          <span key={i} className={`burst-star bs${i}`}></span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -687,6 +730,7 @@ function Schedule() {
         <TutorModal
           tutorsData={selectedClass}
           onClose={handleModalClose}
+          readOnly={role === 'tutor'}
           onBook={selectedClass.isRegistered ? () => {
             setSelectedClass(null);
             setRequestModal(selectedClass);

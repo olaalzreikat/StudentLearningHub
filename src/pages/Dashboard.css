@@ -231,6 +231,10 @@
     gap: 2rem;
 }
 
+.dashboard-section {
+    margin-top: 2rem;
+}
+
 /* Section Styling */
 .section {
     background: white;

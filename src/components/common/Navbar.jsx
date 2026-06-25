@@ -71,6 +71,7 @@ function Navbar() {
                 </ul>
 
                 <div className="nav-auth">
+                    <Link to="/contact" className={`nav-contact-btn${location.pathname === '/contact' ? ' active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>Contact</Link>
                     {user ? (
                         <div className="account-menu" ref={dropdownRef}>
                             <button

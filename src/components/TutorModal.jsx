@@ -5,7 +5,7 @@ import '../pages/Dashboard.css';
 import tutor2 from '../assets/tutor2.jpg';
 import tutor3 from '../assets/tutor3.jpg';
 
-function TutorModal({ tutorsData, onClose, onBook }) {
+function TutorModal({ tutorsData, onClose, onBook, readOnly = false }) {
     const [showAgendaModal, setShowAgendaModal] = useState(false);
     const [agendaItems, setAgendaItems] = useState([]);
     const [newAgendaItem, setNewAgendaItem] = useState({ title: '', subject: '', date: '', time: '' });
@@ -110,12 +110,14 @@ function TutorModal({ tutorsData, onClose, onBook }) {
                         </div>
                     </div>
 
-                    <div className="continue-section">
-                        <div className="continue-header">
-                            <span className="tutor-book">Book tutoring session now:</span>
+                    {!readOnly && (
+                        <div className="continue-section">
+                            <div className="continue-header">
+                                <span className="tutor-book">Book tutoring session now:</span>
+                            </div>
+                            <button className="add-book-btn" onClick={handleBookClick}>Book</button>
                         </div>
-                        <button className="add-book-btn" onClick={handleBookClick}>Book</button>
-                    </div>
+                    )}
                 </div>
 
                 {/* Agenda modal — only for hardcoded tutors */}
