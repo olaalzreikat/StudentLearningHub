@@ -1,4 +1,4 @@
-import ChatbotIcon from "./ChatBotIcon";
+import ChatbotIcon from "./ChatbotIcon";
 const ChatMessage = ({ chat }) => {
   return (
     !chat.hideInChat && (
