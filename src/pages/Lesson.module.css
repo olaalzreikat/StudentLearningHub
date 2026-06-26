@@ -39,10 +39,27 @@
 
 .lessonHeader {
     width: 100%;
-    background: linear-gradient(135deg, #dbeafe 0%, #e0f2fe 100%);
-    padding: 60px 0 40px 0;
+    background: linear-gradient(135deg, #0f2166 0%, #1e40af 55%, #2563eb 100%);
+    padding: 60px 0 44px 0;
     margin: 0;
-    border-bottom: 1px solid #bfdbfe;
+    border-bottom: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.lessonHeader::before {
+    content: 'π  ∑  √  ∫  Δ  θ  ∞  ±';
+    position: absolute;
+    font-family: 'Georgia', serif;
+    font-size: 72px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.045);
+    bottom: -16px;
+    right: 40px;
+    letter-spacing: 16px;
+    user-select: none;
+    pointer-events: none;
+    white-space: nowrap;
 }
 
 .headerContent {
@@ -63,13 +80,14 @@
 
 .topicPill {
     display: inline-block;
-    background: #1e40af;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.35);
     color: white;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
-    padding: 4px 12px;
+    letter-spacing: 0.8px;
+    padding: 5px 14px;
     border-radius: 20px;
     margin-bottom: 14px;
 }
@@ -77,14 +95,14 @@
 .lessonTitle {
     font-size: 42px;
     font-weight: 700;
-    color: rgb(5, 16, 41);
+    color: #ffffff;
     margin: 0 0 16px 0;
     line-height: 1.2;
 }
 
 .lessonObjective {
     font-size: 16px;
-    color: rgba(24, 19, 66, 0.9);
+    color: rgba(255, 255, 255, 0.82);
     margin: 0 0 32px 0;
     line-height: 1.6;
     max-width: 800px;
@@ -92,9 +110,9 @@
 
 .lessonProgressBar {
     width: 100%;
-    max-width: 400px;
-    height: 10px;
-    background: rgba(0, 0, 0, 0.12);
+    max-width: 420px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
     border-radius: 6px;
     overflow: hidden;
     margin-top: 24px;
@@ -102,14 +120,15 @@
 
 .lessonProgressFill {
     height: 100%;
-    background: #3b82f6;
+    background: linear-gradient(90deg, #60a5fa, #93c5fd);
     border-radius: 6px;
     transition: width 0.6s ease;
+    box-shadow: 0 0 8px rgba(147, 197, 253, 0.6);
 }
 
 .lessonProgressText {
     font-size: 12px;
-    color: rgba(0, 1, 4, 0.9);
+    color: rgba(255, 255, 255, 0.75);
     font-weight: 500;
     margin-top: 8px;
 }
@@ -154,7 +173,7 @@
 }
 
 .tocItem {
-    padding: 12px 20px;
+    padding: 11px 20px;
     cursor: pointer;
     transition: all 0.2s;
     position: relative;
@@ -162,6 +181,34 @@
     font-size: 14px;
     color: #475569;
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tocNumber {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+
+.tocItem.active .tocNumber {
+    background: #1e40af;
+    color: white;
+}
+
+.tocItem.completed .tocNumber {
+    background: #16a34a;
+    color: white;
 }
 
 .tocItem:hover {
@@ -186,15 +233,6 @@
     line-height: 1.4;
 }
 
-.tocCheck {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #216e55;
-    font-weight: bold;
-    font-size: 14px;
-}
 
 
 .lessonMain {
@@ -742,18 +780,32 @@
     text-transform: capitalize;
 }
 
-.btnPrevious,
+.btnPrevious {
+    background: white;
+    color: #1e40af;
+    border: 2px solid #1e40af;
+}
+
+.btnPrevious:hover {
+    background: #eff6ff;
+}
+
+.btnPrevious:disabled {
+    background: #f8fafc;
+    color: #cbd5e1;
+    border-color: #e2e8f0;
+    cursor: not-allowed;
+}
+
 .btnNext {
-    background: #174ead;
+    background: #1e40af;
     color: white;
 }
 
-.btnPrevious:hover,
 .btnNext:hover {
-    background: #1e418c;
+    background: #1d3a9e;
 }
 
-.btnPrevious:disabled,
 .btnNext:disabled {
     background: #CBD5E1;
     cursor: not-allowed;
@@ -800,8 +852,15 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.toolIconBtn span {
-    font-size: 24px;
+.toolIconBtn svg {
+    width: 22px;
+    height: 22px;
+    stroke: #475569;
+    transition: stroke 0.2s;
+}
+
+.toolIconBtn:hover svg {
+    stroke: #1e40af;
 }
 
 .toolIconBtn:hover {

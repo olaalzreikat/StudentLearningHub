@@ -277,53 +277,253 @@ function Dashboard() {
 
     function downloadProgressReport() {
         const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        const html = `
-<!DOCTYPE html><html><head>
-<title>Equalizer Learning Hub: Progress Report</title>
+
+        // Bar chart data
+        const chartData = [
+            { label: 'Lessons',  value: completedLessons },
+            { label: 'Videos',   value: completedVideos },
+            { label: 'Quizzes',  value: completedQuizzes },
+        ];
+        const chartMax = Math.max(...chartData.map(d => d.value), 1);
+        const BAR_W = 260;
+        const ROW_H = 36;
+        const LABEL_W = 70;
+        const svgH = chartData.length * ROW_H + 16;
+        const chartSVG = `
+<svg width="${LABEL_W + BAR_W + 60}" height="${svgH}" xmlns="http://www.w3.org/2000/svg" style="display:block">
+  ${chartData.map((d, i) => {
+      const y = i * ROW_H + 8;
+      const barPx = Math.round((d.value / chartMax) * BAR_W);
+      return `
+  <text x="${LABEL_W - 8}" y="${y + 14}" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#475569" font-weight="600">${d.label}</text>
+  <rect x="${LABEL_W}" y="${y}" width="${BAR_W}" height="20" rx="4" fill="#f1f5f9"/>
+  <rect x="${LABEL_W}" y="${y}" width="${barPx}" height="20" rx="4" fill="#1e3a8a"/>
+  <text x="${LABEL_W + barPx + 6}" y="${y + 14}" font-family="Arial,sans-serif" font-size="11" fill="#1e3a8a" font-weight="700">${d.value}</text>`;
+  }).join('')}
+</svg>`;
+
+        const activityRows = (progress.recentActivity || []).slice(0, 20).map((a, i) => `
+          <tr class="${i % 2 === 0 ? 'row-even' : 'row-odd'}">
+            <td><span class="type-badge">${a.type}</span></td>
+            <td>${a.title}</td>
+            <td>${a.topic || '—'}</td>
+            <td>${a.timestamp ? new Date(a.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}</td>
+          </tr>`).join('');
+
+        const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Equalizer Learning Hub — Progress Report</title>
 <style>
-  body { font-family: Arial, sans-serif; max-width: 700px; margin: 40px auto; padding: 0 24px; color: #1e293b; }
-  h1 { color: rgb(8,8,85); margin-bottom: 4px; }
-  .subtitle { color: #64748b; margin-bottom: 32px; font-size: 14px; }
-  .section { margin-bottom: 28px; }
-  h2 { font-size: 16px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; color: #374151; }
-  .stat-row { display: flex; gap: 24px; flex-wrap: wrap; margin: 12px 0; }
-  .stat-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 20px; min-width: 120px; text-align: center; }
-  .stat-num { font-size: 24px; font-weight: 900; color: rgb(8,8,85); }
-  .stat-lbl { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: .05em; }
-  table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-  td, th { padding: 8px 12px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
-  th { background: #f8fafc; font-weight: 700; color: #64748b; }
-  .footer { margin-top: 40px; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 14px; }
+  @page { size: letter; margin: 2cm 2.2cm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #111827;
+    background: white;
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+
+  /* ── Header ── */
+  .report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 14px;
+    border-bottom: 2px solid #111827;
+    margin-bottom: 24px;
+  }
+  .brand-name {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.3px;
+  }
+  .brand-sub {
+    font-size: 11px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 2px;
+  }
+  .header-meta {
+    text-align: right;
+    font-size: 11.5px;
+    color: #374151;
+    line-height: 1.7;
+  }
+  .header-meta .meta-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #111827;
+  }
+
+  /* ── Section ── */
+  .section { margin-bottom: 22px; page-break-inside: avoid; }
+  .section-title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: #6b7280;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #d1d5db;
+  }
+
+  /* ── Two-column layout for stats + chart ── */
+  .overview-cols {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  /* ── Stat grid ── */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .stat-card {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 10px 12px;
+    text-align: center;
+    background: #f9fafb;
+  }
+  .stat-num {
+    font-size: 26px;
+    font-weight: 900;
+    color: #0f172a;
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+  .stat-lbl {
+    font-size: 9.5px;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    font-weight: 600;
+  }
+
+  /* ── Chart ── */
+  .chart-wrap { padding-top: 4px; }
+  .chart-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  /* ── Activity table ── */
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: #f3f4f6; }
+  th {
+    padding: 8px 10px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: #6b7280;
+    border-bottom: 1px solid #d1d5db;
+  }
+  td {
+    padding: 8px 10px;
+    color: #1f2937;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 12px;
+  }
+  .row-odd td { background: #f9fafb; }
+  .type-badge {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 20px;
+    font-size: 9.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border: 1px solid #d1d5db;
+    color: #374151;
+    background: white;
+  }
+
+  /* ── Footer ── */
+  .report-footer {
+    margin-top: 28px;
+    padding-top: 10px;
+    border-top: 1px solid #d1d5db;
+    display: flex;
+    justify-content: space-between;
+    font-size: 10.5px;
+    color: #9ca3af;
+  }
+
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
 </style>
-</head><body>
-<h1>Equalizer Learning Hub</h1>
-<div class="subtitle">Progress Report | Generated ${date}</div>
-<div class="section">
-  <h2>Overview</h2>
-  <div class="stat-row">
-    <div class="stat-box"><div class="stat-num">${completedResources}</div><div class="stat-lbl">Resources Completed</div></div>
-    <div class="stat-box"><div class="stat-num">${progress.streak || 0}</div><div class="stat-lbl">Day Streak</div></div>
-    <div class="stat-box"><div class="stat-num">${overallProgress}%</div><div class="stat-lbl">Overall Progress</div></div>
-    <div class="stat-box"><div class="stat-num">${completedVideos}</div><div class="stat-lbl">Videos</div></div>
-    <div class="stat-box"><div class="stat-num">${completedQuizzes}</div><div class="stat-lbl">Quizzes</div></div>
-    <div class="stat-box"><div class="stat-num">${completedLessons}</div><div class="stat-lbl">Lessons</div></div>
+</head>
+<body>
+
+<div class="report-header">
+  <div>
+    <div class="brand-name">Equalizer Learning Hub</div>
+    <div class="brand-sub">Student Progress Report</div>
+  </div>
+  <div class="header-meta">
+    <div class="meta-name">${user?.displayName || user?.email?.split('@')[0] || 'Student'}</div>
+    <div>${user?.email || ''}</div>
+    <div>${date}</div>
   </div>
 </div>
+
 <div class="section">
-  <h2>Recent Activity</h2>
-  <table><tr><th>Type</th><th>Title</th><th>Topic</th><th>Date</th></tr>
-  ${(progress.recentActivity || []).slice(0, 20).map(a => `<tr><td>${a.type}</td><td>${a.title}</td><td>${a.topic || ''}</td><td>${a.timestamp ? new Date(a.timestamp).toLocaleDateString() : ''}</td></tr>`).join('')}
+  <div class="section-title">Overview</div>
+  <div class="overview-cols">
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num">${completedResources}</div><div class="stat-lbl">Completed</div></div>
+      <div class="stat-card"><div class="stat-num">${overallProgress}%</div><div class="stat-lbl">Progress</div></div>
+      <div class="stat-card"><div class="stat-num">${progress.streak || 0}</div><div class="stat-lbl">Day Streak</div></div>
+      <div class="stat-card"><div class="stat-num">${completedLessons + completedVideos + completedQuizzes}</div><div class="stat-lbl">Activities</div></div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">Completion by Type</div>
+      ${chartSVG}
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Recent Activity</div>
+  <table>
+    <thead>
+      <tr><th>Type</th><th>Title</th><th>Topic</th><th>Date</th></tr>
+    </thead>
+    <tbody>
+      ${activityRows || '<tr><td colspan="4" style="color:#9ca3af;text-align:center;padding:18px">No activity recorded yet</td></tr>'}
+    </tbody>
   </table>
 </div>
-<div class="footer">Generated by Equalizer Learning Hub · ${user?.email || ''} · ${date}</div>
-</body></html>`;
-        const blob = new Blob([html], { type: 'text/html' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `equalizer-progress-report-${Date.now()}.html`;
-        a.click();
-        URL.revokeObjectURL(url);
+
+<div class="report-footer">
+  <span>Equalizer Learning Hub &middot; Confidential</span>
+  <span>Generated ${date}</span>
+</div>
+
+<script>window.onload = () => window.print();<\/script>
+</body>
+</html>`;
+
+        const win = window.open('', '_blank');
+        win.document.write(html);
+        win.document.close();
     }
 
     const handleRemoveAgendaItem = (index) => {
@@ -738,7 +938,7 @@ function Dashboard() {
                             <div className="stats-header">
                                 <h3>Your Statistics</h3>
                                 <button className="export-report-btn" onClick={downloadProgressReport} title="Download progress report">
-                                    ↓ Export
+                                    Export
                                 </button>
                             </div>
                             

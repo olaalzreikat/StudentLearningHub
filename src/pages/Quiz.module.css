@@ -43,7 +43,7 @@
 
 .quizHeader {
     width: 100%;
-    background-color: rgb(209, 228, 249);
+    background: linear-gradient(135deg, #0f2166 0%, #1e40af 55%, #2563eb 100%);
     padding: 72px 0 48px 0;
     margin: 0;
     color: white;
@@ -52,14 +52,18 @@
 }
 
 .quizHeader::before {
-    content: '';
+    content: 'π  ∑  √  ∫  Δ  θ  ∞  ±';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    font-family: 'Georgia', serif;
+    font-size: 72px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.045);
+    bottom: -16px;
+    right: 40px;
+    letter-spacing: 16px;
+    user-select: none;
     pointer-events: none;
+    white-space: nowrap;
 }
 
 .headerContent {
@@ -72,13 +76,14 @@
 
 .unitLabel {
     font-size: 13px;
-    color: rgba(24, 25, 106, 0.85);
+    color: white;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1.5px;
     display: inline-block;
     margin-bottom: 16px;
-    background: rgba(68, 79, 163, 0.15);
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.35);
     padding: 6px 14px;
     border-radius: 20px;
     backdrop-filter: blur(10px);
@@ -87,16 +92,16 @@
 .quizTitle {
     font-size: 48px;
     font-weight: 800;
-    color: rgb(14, 7, 70);
+    color: #ffffff;
     margin: 0 0 20px 0;
     line-height: 1.2;
     letter-spacing: -0.5px;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .quizObjective {
     font-size: 18px;
-    color: rgba(6, 20, 77, 0.95);
+    color: rgba(255, 255, 255, 0.82);
     margin: 0 0 24px 0;
     line-height: 1.7;
     max-width: 850px;
@@ -107,7 +112,7 @@
     width: 100%;
     max-width: 400px;
     height: 6px;
-    background: rgba(94, 93, 93, 0.637);
+    background: rgba(255, 255, 255, 0.2);
     border-radius: 3px;
     overflow: hidden;
     margin-top: 24px;
@@ -115,14 +120,15 @@
 
 .quizProgressFill {
     height: 100%;
-    background: rgb(30, 77, 158);
+    background: linear-gradient(90deg, #60a5fa, #93c5fd);
     border-radius: 3px;
     transition: width 0.6s ease;
+    box-shadow: 0 0 8px rgba(147, 197, 253, 0.6);
 }
 
 .quizProgressText {
     font-size: 12px;
-    color: rgba(12, 21, 75, 0.9);
+    color: rgba(255, 255, 255, 0.75);
     font-weight: 500;
     margin-top: 8px;
 }
@@ -534,8 +540,16 @@
     color: #475569;
 }
 
-.toolIconBtn span {
-    font-size: 28px;
+.toolIconBtn svg {
+    width: 22px;
+    height: 22px;
+    stroke: #475569;
+    transition: stroke 0.2s;
+    flex-shrink: 0;
+}
+
+.toolIconBtn:hover svg {
+    stroke: #1e40af;
 }
 
 .toolIconBtn:hover {

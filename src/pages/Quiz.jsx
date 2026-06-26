@@ -474,21 +474,34 @@ function Quiz() {
                         <div className={styles.toolsCard}>
                             <h3>Tools</h3>
                             
-                            <button 
+                            <button
                                 className={styles.toolIconBtn}
                                 onClick={() => setShowCalculator(true)}
                                 title="Calculator"
                             >
-                                <span></span>
+                                <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="3" y="3" width="16" height="16" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+                                    <rect x="6" y="6" width="4" height="2" rx="0.5" fill="currentColor"/>
+                                    <rect x="12" y="6" width="4" height="2" rx="0.5" fill="currentColor"/>
+                                    <rect x="6" y="10" width="4" height="2" rx="0.5" fill="currentColor"/>
+                                    <rect x="12" y="10" width="4" height="2" rx="0.5" fill="currentColor"/>
+                                    <rect x="6" y="14" width="4" height="2" rx="0.5" fill="currentColor"/>
+                                    <rect x="12" y="14" width="4" height="2" rx="0.5" fill="currentColor"/>
+                                </svg>
                                 Calculator
                             </button>
 
-                            <button 
+                            <button
                                 className={styles.toolIconBtn}
                                 onClick={() => setShowNotes(true)}
                                 title="Notes"
                             >
-                                <span></span>
+                                <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="4" y="2" width="14" height="18" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+                                    <line x1="7" y1="7" x2="15" y2="7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                                    <line x1="7" y1="11" x2="15" y2="11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                                    <line x1="7" y1="15" x2="11" y2="15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                                </svg>
                                 Notes
                             </button>
                         </div>

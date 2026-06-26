@@ -25,6 +25,7 @@ import Accessibility from './pages/Accessibility';
 import AdminDashboard from './pages/AdminDashboard';
 import Sources from './pages/Sources';
 import ProtectedRoute from './components/ProtectedRoute';
+import ChatBot from './components/ChatBot';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 
@@ -36,9 +37,11 @@ function DashboardRouter() {
 function AppContent() {
     const location = useLocation();
 
-    // Pages that should NOT have navbar/footer (standalone pages)
+    // Pages without navbar/footer
     const standalonePages = ['/quiz', '/problems', '/video', '/lesson', '/login'];
     const isStandalone = standalonePages.some(p => location.pathname === p || location.pathname.startsWith(p + '/'));
+    // Chatbot hidden only on login
+    const hideChatbot = location.pathname === '/login';
 
     return (
       <div className="app">
@@ -47,6 +50,7 @@ function AppContent() {
         {!isStandalone && <Navbar />}
         <main id="main-content" className={isStandalone ? "standalone-content" : "main-content"}>
           <ScrollToTop />
+          {!hideChatbot && <ChatBot />}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/schedule" element={<Schedule />} />

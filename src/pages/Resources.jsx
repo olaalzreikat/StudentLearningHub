@@ -352,45 +352,6 @@ const downloadFile = (guide) => {
                 )}
 
                 {/* CONTINUE LEARNING SECTION */}
-                {(() => {
-                    const inProgress = classesData.filter(c => {
-                        const p = classProgress[c.id];
-                        return p && p.started && p.percentage < 100;
-                    });
-                    if (inProgress.length === 0) return null;
-                    return (
-                        <div className="resource-section">
-                            <div className="section-header">
-                                <h2>Continue Learning</h2>
-                            </div>
-                            <div className="continue-grid">
-                                {inProgress.slice(0, 3).map(classItem => {
-                                    const prog = classProgress[classItem.id];
-                                    const accent = getSubjectColor(classItem.subject);
-                                    return (
-                                        <div key={classItem.id} className="continue-card" onClick={() => handleClassClick(classItem)}>
-                                            <div className="continue-card-stripe" style={{ background: accent }} />
-                                            <div className="continue-card-content">
-                                                <div className="continue-card-icon" style={{ background: accent + '18', color: accent }}>
-                                                    {classItem.title.charAt(0)}
-                                                </div>
-                                                <div className="continue-card-info">
-                                                    <div className="continue-card-title">{classItem.title}</div>
-                                                    <div className="continue-card-sub">{prog.completed}/{prog.total} lessons · {prog.percentage}%</div>
-                                                    <div className="continue-bar-wrap">
-                                                        <div className="continue-bar-fill" style={{ width: `${prog.percentage}%`, background: accent }} />
-                                                    </div>
-                                                </div>
-                                                <button className="continue-btn" style={{ background: accent }}>Continue →</button>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    );
-                })()}
-
                 {/* CLASSES SECTION */}
                 {filtered.classes.length > 0 && (
                     <div className="resource-section">
@@ -408,8 +369,18 @@ const downloadFile = (guide) => {
                                 const accent = getSubjectColor(classItem.subject);
 
                                 return (
-                                    <div key={classItem.id} className="lesson-card" onClick={() => handleClassClick(classItem)}>
+                                    <div key={classItem.id} className="lesson-card" style={{ '--card-accent': accent }} onClick={() => handleClassClick(classItem)}>
                                         <div className="class-card-banner" style={{ background: accent }}>
+                                            <div className="banner-math-bg" aria-hidden="true">
+                                                <span>π</span>
+                                                <span>∑</span>
+                                                <span>√</span>
+                                                <span>∫</span>
+                                                <span>±</span>
+                                                <span>Δ</span>
+                                                <span>∞</span>
+                                                <span>θ</span>
+                                            </div>
                                             <span className="class-banner-letter">{classItem.title.charAt(0)}</span>
                                             <div className="class-banner-right">
                                                 {classItem.level && (
@@ -480,10 +451,9 @@ const downloadFile = (guide) => {
                                 const isCompleted = isVideoCompleted(video.id);
                                 
                                 return (
-                                    <div key={video.id} className={`video-card${isCompleted ? ' video-card-done' : ''}`} style={{ borderTop: `3px solid ${getSubjectColor(video.topic || '')}` }} onClick={() => handleVideoClick(video)} role="button" tabIndex={0} aria-label={`Watch video: ${video.title}`} onKeyDown={e => e.key === 'Enter' && handleVideoClick(video)}>
-                                        <div className="video-background"></div>
+                                    <div key={video.id} className={`video-card${isCompleted ? ' video-card-done' : ''}`} style={{ '--card-accent': getSubjectColor(video.topic || '') }} onClick={() => handleVideoClick(video)} role="button" tabIndex={0} aria-label={`Watch video: ${video.title}`} onKeyDown={e => e.key === 'Enter' && handleVideoClick(video)}>
                                         <div className="video-card-top-row">
-                                            {video.class && <div className="video-class-badge" style={{ color: getSubjectColor(video.topic || ''), background: getSubjectColor(video.topic || '') + '15' }}>{video.class}</div>}
+                                            {video.class && <div className="video-class-badge" style={{ background: getSubjectColor(video.topic || ''), color: '#fff' }}>{video.class}</div>}
                                         </div>
                                         <div className="video-preview">
                                             {video.videoUrl ? (
@@ -495,10 +465,10 @@ const downloadFile = (guide) => {
                                             ) : (
                                                 <div className="play-icon"></div>
                                             )}
+                                            {video.duration && <span className="video-duration-badge">{video.duration}</span>}
                                         </div>
                                         <div className="video-info">
                                             <h4 className="video-title">{video.title}</h4>
-                                            <p className="video-duration"> {video.duration}</p>
                                         </div>
                                         <button className={`video-watch-btn${isCompleted ? ' video-watch-btn-done' : ''}`}>
                                             {isCompleted ? 'Rewatch' : 'Watch'}
@@ -553,7 +523,7 @@ const downloadFile = (guide) => {
                                         const color = getSubjectColor(quiz.topic);
                                         const letter = quiz.topic.charAt(0).toUpperCase();
                                         return (
-                                            <div key={quiz.id} className={`practice-card${isCompleted ? ' practice-card-done' : ''}`} style={{ '--practice-color': color, borderColor: color + '40', background: color + '06' }} onClick={() => handleQuizClick(quiz)} role="button" tabIndex={0} aria-label={`${isCompleted ? 'Retake' : 'Start'} quiz: ${quiz.title}`} onKeyDown={e => e.key === 'Enter' && handleQuizClick(quiz)}>
+                                            <div key={quiz.id} className={`practice-card${isCompleted ? ' practice-card-done' : ''}`} style={{ '--practice-color': color, background: color + '08' }} onClick={() => handleQuizClick(quiz)} role="button" tabIndex={0} aria-label={`${isCompleted ? 'Retake' : 'Start'} quiz: ${quiz.title}`} onKeyDown={e => e.key === 'Enter' && handleQuizClick(quiz)}>
                                                 <div className="practice-card-left">
                                                     <div className="practice-icon" style={{ background: color, color: 'white' }}>{letter}</div>
                                                     <div className="practice-info">
@@ -586,7 +556,7 @@ const downloadFile = (guide) => {
                                         const color = getSubjectColor(problem.topic);
                                         const letter = problem.topic.charAt(0).toUpperCase();
                                         return (
-                                            <div key={problem.id} className={`practice-card${isCompleted ? ' practice-card-done' : ''}`} style={{ '--practice-color': color, borderColor: color + '40', background: color + '06' }} onClick={() => handleProblemClick(problem)} role="button" tabIndex={0} aria-label={`${isCompleted ? 'Retake' : 'Start'} problems: ${problem.title}`} onKeyDown={e => e.key === 'Enter' && handleProblemClick(problem)}>
+                                            <div key={problem.id} className={`practice-card${isCompleted ? ' practice-card-done' : ''}`} style={{ '--practice-color': color, background: color + '08' }} onClick={() => handleProblemClick(problem)} role="button" tabIndex={0} aria-label={`${isCompleted ? 'Retake' : 'Start'} problems: ${problem.title}`} onKeyDown={e => e.key === 'Enter' && handleProblemClick(problem)}>
                                                 <div className="practice-card-left">
                                                     <div className="practice-icon" style={{ background: color, color: 'white' }}>{letter}</div>
                                                     <div className="practice-info">
@@ -635,7 +605,7 @@ const downloadFile = (guide) => {
                                 const isDownloaded = isGuideDownloaded(guide.id);
                                 
                                 return (
-                                    <div key={guide.id} className="download-card" style={{ borderTop: `3px solid ${getSubjectColor(guide.topic)}` }}>
+                                    <div key={guide.id} className="download-card" style={{ '--card-accent': getSubjectColor(guide.topic), background: getSubjectColor(guide.topic) + '08' }}>
                                         <div className="download-content">
                                             <h4 className="download-title">{guide.title}</h4>
                                             <p className="download-description">{guide.description}</p>

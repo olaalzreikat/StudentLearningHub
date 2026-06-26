@@ -23,7 +23,7 @@ function Contact() {
             <div className="contact-success">
                 <div className="contact-success-icon">✓</div>
                 <h2>Message Sent!</h2>
-                <p>Thanks for reaching out, <strong>{form.name}</strong>. We'll get back to you at <strong>{form.email}</strong> within 24 hours on school days.</p>
+                <p>Thanks for reaching out, <strong>{form.name}</strong>. Your message has been received and we'll follow up with you soon.</p>
                 <button onClick={() => { setForm({ name: '', email: '', subject: '', message: '' }); setSubmitted(false); }}>
                     Send another message
                 </button>

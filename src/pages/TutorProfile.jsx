@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { subjects } from '../utils/subjectColors';
@@ -9,9 +9,11 @@ const PROFILES_KEY = 'tutorProfiles';
 function TutorProfile() {
     const { user } = useAuth();
     const navigate = useNavigate();
+    const photoInputRef = useRef(null);
 
-    const [profile, setProfile] = useState({ name: '', bio: '', subjects: [], availability: '' });
+    const [profile, setProfile] = useState({ name: '', bio: '', subjects: [], availability: '', photo: '' });
     const [saved, setSaved] = useState(false);
+    const [photoError, setPhotoError] = useState('');
 
     useEffect(() => {
         const stored = localStorage.getItem(PROFILES_KEY);
@@ -20,6 +22,36 @@ function TutorProfile() {
             if (all[user?.uid]) setProfile(all[user.uid]);
         }
     }, [user]);
+
+    const handlePhotoChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (!file.type.startsWith('image/')) { setPhotoError('Please select an image file.'); return; }
+        setPhotoError('');
+
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const MAX = 320;
+                let { width, height } = img;
+                if (width > height) {
+                    if (width > MAX) { height = Math.round(height * MAX / width); width = MAX; }
+                } else {
+                    if (height > MAX) { width = Math.round(width * MAX / height); height = MAX; }
+                }
+                canvas.width = width;
+                canvas.height = height;
+                canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+                setProfile(prev => ({ ...prev, photo: dataUrl }));
+            };
+            img.src = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+        e.target.value = '';
+    };
 
     const handleSave = () => {
         const stored = localStorage.getItem(PROFILES_KEY);
@@ -47,14 +79,38 @@ function TutorProfile() {
                 </button>
 
                 <div className="profile-page-header">
-                    <div className="profile-page-avatar">
-                        {(profile.name || user?.email || '?').charAt(0).toUpperCase()}
+                    <div
+                        className="profile-page-avatar"
+                        onClick={() => photoInputRef.current.click()}
+                        title="Click to upload profile photo"
+                    >
+                        {profile.photo
+                            ? <img src={profile.photo} alt="Profile" className="avatar-photo" />
+                            : (profile.name || user?.email || '?').charAt(0).toUpperCase()
+                        }
+                        <div className="avatar-upload-overlay" aria-hidden="true">
+                            <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 14l3.5-3.5L8 13l4-5 5 6H2z" stroke="white" strokeWidth="1.4" strokeLinejoin="round"/>
+                                <circle cx="6.5" cy="7.5" r="1.5" stroke="white" strokeWidth="1.4"/>
+                                <rect x="1" y="4" width="18" height="13" rx="2" stroke="white" strokeWidth="1.4"/>
+                                <path d="M7 4V3a1 1 0 011-1h4a1 1 0 011 1v1" stroke="white" strokeWidth="1.4"/>
+                            </svg>
+                            <span>Change photo</span>
+                        </div>
                     </div>
+                    <input
+                        ref={photoInputRef}
+                        type="file"
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        onChange={handlePhotoChange}
+                    />
                     <div>
                         <h1 className="profile-page-title">My Tutor Profile</h1>
                         <p className="profile-page-subtitle">
                             Your profile is shown to students on the Schedule page so they can find and book you.
                         </p>
+                        {photoError && <p className="photo-error">{photoError}</p>}
                     </div>
                 </div>
 

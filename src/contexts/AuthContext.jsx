@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { setCurrentUser } from '../utils/localStorage';
@@ -79,12 +79,14 @@ export function AuthProvider({ children }) {
         return cred;
     };
 
+    const resetPassword = (email) => sendPasswordResetEmail(auth, email);
+
     const logout = () => signOut(auth);
 
     const loading = user === undefined || role === undefined;
 
     return (
-        <AuthContext.Provider value={{ user, role, login, signup, logout, switchRole, loading }}>
+        <AuthContext.Provider value={{ user, role, login, signup, logout, resetPassword, switchRole, loading }}>
             {children}
         </AuthContext.Provider>
     );

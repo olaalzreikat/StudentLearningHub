@@ -527,7 +527,10 @@ function Schedule() {
                 >
                   {classItem.isRegistered ? (
                     <div className="tutor-list-avatar">
-                      {classItem.title.charAt(0).toUpperCase()}
+                      {classItem.photo
+                        ? <img src={classItem.photo} alt={classItem.title} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                        : classItem.title.charAt(0).toUpperCase()
+                      }
                     </div>
                   ) : (
                     <img
@@ -590,7 +593,7 @@ function Schedule() {
             </div>
             {filtered.tutors.length > 4 && (
               <button className="show-more-btn" onClick={() => setShowAllTutors(prev => !prev)}>
-                {showAllTutors ? 'Show less ↑' : 'Show all tutors ↓'}
+                {showAllTutors ? 'Show less' : 'Show all tutors'}
               </button>
             )}
           </div>
@@ -718,7 +721,7 @@ function Schedule() {
             </div>
             {filtered.groupSessions.length > 6 && (
               <button className="show-more-btn" onClick={() => setShowAllSessions(prev => !prev)}>
-                {showAllSessions ? 'Show less ↑' : 'Show all sessions ↓'}
+                {showAllSessions ? 'Show less' : 'Show all sessions'}
               </button>
             )}
           </div>

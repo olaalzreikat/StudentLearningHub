@@ -229,7 +229,7 @@
     font-size: 0.8rem;
     color: #94a3b8;
     text-align: center;
-    margin: 0;
+    margin-top: 12px;
 }
 
 .tos-link {
@@ -246,6 +246,22 @@
 
 .tos-link:hover {
     color: #1e40af;
+}
+
+.login-forgot-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -4px;
+}
+
+.login-reset-sent {
+    font-size: 0.85rem;
+    color: #16a34a;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    text-align: center;
 }
 
 /* Terms modal */

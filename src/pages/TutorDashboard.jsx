@@ -664,9 +664,12 @@ function TutorDashboard() {
                         <div className="profile-form">
                             <div className="profile-avatar-section">
                                 <div className="profile-avatar-large">
-                                    {(profile.name || user?.email || '?').charAt(0).toUpperCase()}
+                                    {profile.photo
+                                        ? <img src={profile.photo} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                                        : (profile.name || user?.email || '?').charAt(0).toUpperCase()
+                                    }
                                 </div>
-                                <p className="avatar-hint">Your avatar is auto-generated from your name</p>
+                                <p className="avatar-hint">Edit your photo on the <a href="/tutor-profile" style={{ color: 'rgb(8,8,85)', fontWeight: 600 }}>Profile page</a></p>
                             </div>
 
                             <div className="form-group">
@@ -822,7 +825,7 @@ function TutorDashboard() {
                                 <p>Formatted for NHS, school records, or college applications. Opens a print-ready page — save as PDF from your browser.</p>
                             </div>
                             <button className="hours-download-btn" onClick={downloadCertificate}>
-                                ↓ Download Certificate
+                                Download Certificate
                             </button>
                         </div>
 

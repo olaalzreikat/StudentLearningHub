@@ -12,9 +12,21 @@ function Login() {
     const [loading, setLoading] = useState(false);
     const [termsAccepted, setTermsAccepted] = useState(false);
     const [showTerms, setShowTerms] = useState(false);
+    const [resetSent, setResetSent] = useState(false);
 
-    const { login, signup } = useAuth();
+    const { login, signup, resetPassword } = useAuth();
     const navigate = useNavigate();
+
+    async function handleForgotPassword() {
+        if (!email) { setError('Enter your email above first, then click Forgot password.'); return; }
+        try {
+            await resetPassword(email);
+            setResetSent(true);
+            setError('');
+        } catch (err) {
+            setError(friendlyError(err.code));
+        }
+    }
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -100,6 +112,18 @@ function Login() {
                                 </button>
                             </span>
                         </label>
+                    )}
+
+                    {mode === 'login' && (
+                        <div className="login-forgot-row">
+                            <button type="button" className="tos-link" onClick={handleForgotPassword}>
+                                Forgot password?
+                            </button>
+                        </div>
+                    )}
+
+                    {resetSent && (
+                        <p className="login-reset-sent">Password reset email sent — check your inbox.</p>
                     )}
 
                     {mode === 'login' && (

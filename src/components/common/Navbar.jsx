@@ -81,7 +81,10 @@ function Navbar() {
                                 aria-label="Account menu"
                             >
                                 <span className="account-avatar">
-                                    {user.email.charAt(0).toUpperCase()}
+                                    {tutorProfile?.photo
+                                        ? <img src={tutorProfile.photo} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                                        : user.email.charAt(0).toUpperCase()
+                                    }
                                 </span>
                                 <span className="account-role-label">
                                     {role === 'tutor' ? 'Tutor' : 'Student'}
@@ -94,7 +97,10 @@ function Navbar() {
                                     {/* Profile section */}
                                     <div className="dropdown-profile">
                                         <div className="dropdown-avatar">
-                                            {(tutorProfile?.name || user.email).charAt(0).toUpperCase()}
+                                            {tutorProfile?.photo
+                                                ? <img src={tutorProfile.photo} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                                                : (tutorProfile?.name || user.email).charAt(0).toUpperCase()
+                                            }
                                         </div>
                                         <div className="dropdown-profile-info">
                                             {tutorProfile?.name
