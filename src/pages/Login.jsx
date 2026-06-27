@@ -13,8 +13,9 @@ function Login() {
     const [termsAccepted, setTermsAccepted] = useState(false);
     const [showTerms, setShowTerms] = useState(false);
     const [resetSent, setResetSent] = useState(false);
+    const [loginRole, setLoginRole] = useState('student');
 
-    const { login, signup, resetPassword } = useAuth();
+    const { login, signup, resetPassword, switchRole } = useAuth();
     const navigate = useNavigate();
 
     async function handleForgotPassword() {
@@ -39,6 +40,7 @@ function Login() {
         try {
             if (mode === 'login') {
                 await login(email, password);
+                switchRole(loginRole);
             } else {
                 await signup(email, password, 'student');
             }
@@ -124,6 +126,28 @@ function Login() {
 
                     {resetSent && (
                         <p className="login-reset-sent">Password reset email sent — check your inbox.</p>
+                    )}
+
+                    {mode === 'login' && (
+                        <div className="login-role-toggle">
+                            <span className="login-role-label">I am a:</span>
+                            <div className="login-role-options">
+                                <button
+                                    type="button"
+                                    className={`login-role-btn ${loginRole === 'student' ? 'active' : ''}`}
+                                    onClick={() => setLoginRole('student')}
+                                >
+                                    Student
+                                </button>
+                                <button
+                                    type="button"
+                                    className={`login-role-btn ${loginRole === 'tutor' ? 'active' : ''}`}
+                                    onClick={() => setLoginRole('tutor')}
+                                >
+                                    Tutor
+                                </button>
+                            </div>
+                        </div>
                     )}
 
                     {mode === 'login' && (
