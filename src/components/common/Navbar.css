@@ -160,7 +160,7 @@
 .nav-dropdown-menu {
     display: none;
     position: absolute;
-    top: calc(100% + 8px);
+    top: 100%;
     left: 50%;
     transform: translateX(-50%);
     background: white;
@@ -170,9 +170,20 @@
     list-style: none;
     margin: 0;
     padding: 6px;
+    padding-top: 14px;
     min-width: 160px;
     z-index: 2000;
     animation: dropIn 0.15s ease;
+}
+
+.nav-dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background: transparent;
 }
 
 .nav-dropdown-parent:hover .nav-dropdown-menu {
