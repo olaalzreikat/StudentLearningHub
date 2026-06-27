@@ -167,7 +167,8 @@ function Messages() {
 
     return (
         <div className="messages-page">
-            {/* ── Sidebar ── */}
+
+            {/* ── Column 1: Sidebar nav ── */}
             <div className="messages-sidebar">
                 <button className="messages-compose-btn" onClick={startCompose}>
                     <svg viewBox="0 0 24 24" fill="none">
@@ -177,82 +178,93 @@ function Messages() {
                 </button>
 
                 <button
-                    className={`messages-nav-item ${tab === 'inbox' && !composing ? 'active' : ''}`}
-                    onClick={() => { setTab('inbox'); setComposing(false); setSelectedThreadId(null); }}
+                    className={`messages-nav-item ${tab === 'inbox' ? 'active' : ''}`}
+                    onClick={() => { setTab('inbox'); setComposing(false); }}
                 >
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7 3l5 5H7l5-5zm0 10H7v-1l5-5 5 5v1h-5z" fill="currentColor"/>
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm0 16H5v-3h3.55c.64 1.19 1.89 2 3.34 2h.22c1.45 0 2.7-.81 3.34-2H19v3zm0-5h-4a2 2 0 01-2 2h-.22a2 2 0 01-2-2H5V5h14v9z"/>
                     </svg>
                     <span className="messages-nav-label">Inbox</span>
                     {unreadCount > 0 && <span className="messages-nav-badge">{unreadCount}</span>}
                 </button>
 
                 <button
-                    className={`messages-nav-item ${tab === 'sent' && !composing ? 'active' : ''}`}
-                    onClick={() => { setTab('sent'); setComposing(false); setSelectedThreadId(null); }}
+                    className={`messages-nav-item ${tab === 'sent' ? 'active' : ''}`}
+                    onClick={() => { setTab('sent'); setComposing(false); }}
                 >
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="currentColor"/>
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                     </svg>
                     <span className="messages-nav-label">Sent</span>
                 </button>
             </div>
 
-            {/* ── Main ── */}
-            <div className="messages-main">
-                {/* Show thread list when not composing and no thread selected */}
-                {!composing && !selectedThreadId && (
-                    <>
-                        <div className="messages-toolbar">
-                            <div className="messages-search">
-                                <svg viewBox="0 0 24 24" fill="none">
-                                    <path d="M21 21l-4.35-4.35M17 11A6 6 0 111 11a6 6 0 0116 0z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                                </svg>
-                                <input
-                                    type="text"
-                                    placeholder={`Search ${tab}`}
-                                    value={search}
-                                    onChange={e => setSearch(e.target.value)}
-                                />
-                            </div>
+            {/* ── Column 2: Thread list (always visible) ── */}
+            <div className="messages-thread-pane">
+                <div className="messages-search">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M21 21l-4.35-4.35M17 11A6 6 0 111 11a6 6 0 0116 0z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    </svg>
+                    <input
+                        type="text"
+                        placeholder={`Search ${tab}`}
+                        value={search}
+                        onChange={e => setSearch(e.target.value)}
+                    />
+                </div>
+
+                <div className="messages-thread-list">
+                    {displayThreads.length === 0 ? (
+                        <div className="messages-empty-list">
+                            {search ? 'No results found.' : tab === 'inbox' ? 'Your inbox is empty.' : 'No sent messages yet.'}
                         </div>
-                        <div className="messages-thread-list">
-                            {displayThreads.length === 0 ? (
-                                <div className="messages-empty-list">
-                                    {search ? 'No results found.' : tab === 'inbox' ? 'Your inbox is empty.' : 'No sent messages yet.'}
-                                </div>
-                            ) : displayThreads.map(t => {
-                                const other = tab === 'inbox' ? (t.latest?.fromEmail || '') : (t.latest?.toEmail || '');
-                                return (
-                                    <div
-                                        key={t.threadId}
-                                        className={`messages-thread-row ${t.hasUnread ? 'unread' : ''} ${selectedThreadId === t.threadId ? 'selected' : ''}`}
-                                        onClick={() => openThread(t.threadId)}
-                                    >
-                                        {t.hasUnread && <div className="messages-unread-dot" />}
-                                        <div className="messages-row-sender">{other || '(no sender)'}</div>
-                                        <div className="messages-row-content">
-                                            <span className="messages-row-subject">{t.latest?.subject}</span>
-                                            <span className="messages-row-divider">—</span>
-                                            <span className="messages-row-preview">{t.latest?.body}</span>
-                                        </div>
+                    ) : displayThreads.map(t => {
+                        const other = tab === 'inbox' ? (t.latest?.fromEmail || '') : (t.latest?.toEmail || '');
+                        return (
+                            <div
+                                key={t.threadId}
+                                className={`messages-thread-row ${t.hasUnread ? 'unread' : ''} ${selectedThreadId === t.threadId ? 'selected' : ''}`}
+                                onClick={() => openThread(t.threadId)}
+                            >
+                                {t.hasUnread && <div className="messages-unread-dot" />}
+                                <div className="messages-row-body">
+                                    <div className="messages-row-top">
+                                        <span className="messages-row-sender">{other || '(no sender)'}</span>
                                         <span className="messages-row-date">{fmt(t.latest?.timestamp)}</span>
                                     </div>
-                                );
-                            })}
+                                    <div className="messages-row-bottom">
+                                        <span className="messages-row-subject">{t.latest?.subject}</span>
+                                        <span className="messages-row-divider">—</span>
+                                        <span className="messages-row-preview">{t.latest?.body}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+
+            {/* ── Column 3: Conversation / compose / empty ── */}
+            <div className="messages-main">
+
+                {/* Empty state */}
+                {!composing && !selectedThreadId && (
+                    <div className="messages-empty-state">
+                        <div className="messages-empty-icon">
+                            <svg viewBox="0 0 48 48" fill="none">
+                                <rect x="4" y="10" width="40" height="30" rx="4" stroke="#9aa0a6" strokeWidth="2.5"/>
+                                <path d="M4 16l20 13 20-13" stroke="#9aa0a6" strokeWidth="2.5" strokeLinecap="round"/>
+                            </svg>
                         </div>
-                    </>
+                        <p className="messages-empty-title">Select a conversation</p>
+                        <p className="messages-empty-sub">Choose a thread from the list, or compose a new message.</p>
+                    </div>
                 )}
 
-                {/* Thread / conversation view */}
+                {/* Thread view */}
                 {!composing && selectedThreadId && (
                     <div className="messages-conversation">
                         <div className="messages-conversation-header">
-                            <button className="messages-back-btn" onClick={() => setSelectedThreadId(null)} title="Back">
-                                <svg viewBox="0 0 24 24" fill="none">
-                                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/>
-                                </svg>
-                            </button>
                             <h2 className="messages-conversation-subject">{selectedSubject}</h2>
                             <span className="messages-conversation-count">{selectedSorted.length} message{selectedSorted.length !== 1 ? 's' : ''}</span>
                         </div>
@@ -300,13 +312,8 @@ function Messages() {
                 {composing && (
                     <div className="messages-compose-panel">
                         <div className="messages-compose-header">
-                            <button className="messages-back-btn" onClick={() => setComposing(false)} title="Close">
-                                <svg viewBox="0 0 24 24" fill="none">
-                                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/>
-                                </svg>
-                            </button>
                             <h2 className="messages-compose-title">New Message</h2>
-                            <button className="messages-cancel-btn" onClick={() => setComposing(false)}>✕</button>
+                            <button className="messages-cancel-btn" onClick={() => setComposing(false)} title="Cancel">✕</button>
                         </div>
                         {error && <div className="messages-error">{error}</div>}
                         <div className="messages-compose-form">
@@ -329,8 +336,6 @@ function Messages() {
                         </div>
                     </div>
                 )}
-
-                {/* Empty state (no thread selected, not composing — shown via thread list empty state above) */}
             </div>
         </div>
     );
