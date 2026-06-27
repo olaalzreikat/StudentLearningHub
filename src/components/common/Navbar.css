@@ -138,10 +138,12 @@
 /* Resources hover dropdown */
 .nav-dropdown-parent {
     position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .nav-dropdown-trigger {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 4px;
     cursor: pointer;
