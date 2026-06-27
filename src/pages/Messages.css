@@ -498,6 +498,10 @@
     flex-shrink: 0;
 }
 
+.messages-field label::after {
+    content: ':';
+}
+
 .messages-field input {
     flex: 1;
     border: none;
