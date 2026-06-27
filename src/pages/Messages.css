@@ -479,14 +479,22 @@
 .messages-field {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #f0f0f0;
     padding: 0 24px;
+    transition: border-color 0.2s;
+}
+
+.messages-field:focus-within {
+    border-bottom-color: #1a73e8;
 }
 
 .messages-field label {
-    font-size: 0.875rem;
-    color: #5f6368;
-    width: 60px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #9aa0a6;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    width: 64px;
     flex-shrink: 0;
 }
 
@@ -496,10 +504,12 @@
     outline: none;
     font-size: 0.9rem;
     color: #202124;
-    padding: 12px 8px;
+    padding: 14px 8px;
     font-family: inherit;
     background: transparent;
 }
+
+.messages-field input::placeholder { color: #c5c8cc; }
 
 .messages-field-body {
     flex: 1;
