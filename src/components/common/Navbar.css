@@ -55,7 +55,6 @@
     padding: 8px 14px;
     border-radius: 25px;
     font-weight: 500;
-    font-size: 0.9rem;
     transition: all 0.3s ease;
     white-space: nowrap;
 }
@@ -184,7 +183,6 @@
     display: block;
     padding: 9px 14px;
     border-radius: 8px;
-    font-size: 0.875rem;
     font-weight: 500;
     color: #1e293b;
     white-space: nowrap;
