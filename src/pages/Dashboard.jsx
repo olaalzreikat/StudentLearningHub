@@ -6,7 +6,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { subjects } from '../utils/subjectColors';
 import { videosData, quizzesData, problemsData, lessonsData, guidesData } from '../data/resourcesData';
 import ProgressCharts from '../components/ProgressCharts';
-import MessagesPanel from '../components/MessagesPanel';
 import './Dashboard.css';
 
 function Dashboard() {
@@ -1019,7 +1018,7 @@ function Dashboard() {
                                                     {booking.status === 'accepted' && (
                                                         <button
                                                             className="booking-chat-btn"
-                                                            onClick={() => setPreCompose({ to: booking.tutorEmail, subject: `Re: Our tutoring session` })}
+                                                            onClick={() => navigate('/messages', { state: { compose: { to: booking.tutorEmail, subject: `Re: Our tutoring session` } } })}
                                                         >
                                                             Message
                                                         </button>
@@ -1191,13 +1190,24 @@ function Dashboard() {
                     </div>
                 )}
 
-                {/* Messages */}
+                {/* Messages shortcut */}
                 <div className="dashboard-section">
-                    <MessagesPanel
-                        userEmail={user?.email}
-                        preCompose={preCompose}
-                        onClearPreCompose={() => setPreCompose(null)}
-                    />
+                    <div className="dashboard-messages-card">
+                        <div className="dashboard-messages-left">
+                            <div className="dashboard-messages-icon">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 className="dashboard-messages-title">Messages</h3>
+                                <p className="dashboard-messages-sub">Send and receive messages from tutors and students</p>
+                            </div>
+                        </div>
+                        <button className="dashboard-messages-btn" onClick={() => navigate('/messages')}>
+                            Open Inbox
+                        </button>
+                    </div>
                 </div>
 
                 {/* Review Modal */}

@@ -8,6 +8,7 @@ function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isAccountOpen, setIsAccountOpen] = useState(false);
     const [tutorProfile, setTutorProfile] = useState(null);
+    const [msgUnread, setMsgUnread] = useState(() => parseInt(localStorage.getItem('msg-unread-count') || '0', 10));
     const location = useLocation();
     const navigate = useNavigate();
     const { user, role, logout, switchRole } = useAuth();
@@ -43,6 +44,13 @@ function Navbar() {
         return () => document.removeEventListener('mousedown', handleClick);
     }, []);
 
+    // Sync unread count from localStorage when Messages page updates it
+    useEffect(() => {
+        const sync = () => setMsgUnread(parseInt(localStorage.getItem('msg-unread-count') || '0', 10));
+        window.addEventListener('msg-unread-update', sync);
+        return () => window.removeEventListener('msg-unread-update', sync);
+    }, []);
+
     const isActive = (path) => location.pathname === path ? 'active' : '';
 
     return (
@@ -64,6 +72,22 @@ function Navbar() {
                     }
                     {role !== 'tutor' && (
                         <li><Link to="/flashcards" className={isActive('/flashcards')} onClick={() => setIsMobileMenuOpen(false)}>Flashcards</Link></li>
+                    )}
+                    {user && (
+                        <li>
+                            <Link to="/messages" className={isActive('/messages')} onClick={() => setIsMobileMenuOpen(false)} style={{ position: 'relative' }}>
+                                Messages
+                                {msgUnread > 0 && (
+                                    <span style={{
+                                        position: 'absolute', top: '-4px', right: '-10px',
+                                        background: '#ef4444', color: 'white',
+                                        fontSize: '0.6rem', fontWeight: 800,
+                                        borderRadius: '20px', padding: '1px 5px',
+                                        lineHeight: 1.4, minWidth: '16px', textAlign: 'center'
+                                    }}>{msgUnread}</span>
+                                )}
+                            </Link>
+                        </li>
                     )}
                     {user?.email === 'admin@equalizer.edu' && (
                         <li><Link to="/admin" className={isActive('/admin')} onClick={() => setIsMobileMenuOpen(false)} style={{ color: '#f59e0b', fontWeight: 800 }}>Admin</Link></li>

@@ -24,6 +24,7 @@ import Privacy from './pages/Privacy';
 import Accessibility from './pages/Accessibility';
 import AdminDashboard from './pages/AdminDashboard';
 import Sources from './pages/Sources';
+import Messages from './pages/Messages';
 import ProtectedRoute from './components/ProtectedRoute';
 import ChatBot from './components/ChatBot';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -61,6 +62,7 @@ function AppContent() {
             <Route path="/apply" element={<ProtectedRoute><TutorApplication /></ProtectedRoute>} />
             <Route path="/apply/status" element={<ProtectedRoute><ApplicationStatus /></ProtectedRoute>} />
             <Route path="/flashcards" element={<ProtectedRoute><Flashcards /></ProtectedRoute>} />
+            <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
             <Route path="/resources" element={<Resources />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/faq" element={<FAQ />} />
