@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { setCurrentUser } from '../utils/localStorage';
 
@@ -24,11 +24,11 @@ async function fetchRoleFromFirestore(uid) {
 async function saveRoleToFirestore(uid, email, role) {
     try {
         await Promise.race([
-            setDoc(doc(db, 'users', uid), { role, email }),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 4000))
+            setDoc(doc(db, 'users', uid), { role, email }, { merge: true }),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 8000))
         ]);
     } catch {
-        // Firestore not enabled — role is already saved in localStorage below
+        // Firestore unavailable — role is saved in localStorage
     }
 }
 
@@ -71,11 +71,11 @@ export function AuthProvider({ children }) {
 
     const login = (email, password) => signInWithEmailAndPassword(auth, email, password);
 
-    const switchRole = (newRole) => {
+    const switchRole = async (newRole) => {
         if (!user) return;
         localStorage.setItem(roleKey(user.uid), newRole);
         setRole(newRole);
-        saveRoleToFirestore(user.uid, user.email, newRole);
+        await saveRoleToFirestore(user.uid, user.email, newRole);
     };
 
     const signup = async (email, password, selectedRole = 'student') => {
