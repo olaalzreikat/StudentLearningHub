@@ -4,7 +4,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { videosData, quizzesData, problemsData, guidesData } from '../data/resourcesData';
 import { lessonsData } from '../data/lessonsData';
 import { subjects } from '../utils/subjectColors';
-import MessagesPanel from '../components/MessagesPanel';
 import { db } from '../firebase';
 import './TutorDashboard.css';
 
@@ -38,10 +37,6 @@ function TutorDashboard() {
     const [meetingLink, setMeetingLink] = useState('');
     const [editLinkModal, setEditLinkModal] = useState(null);
     const [editLinkValue, setEditLinkValue] = useState('');
-
-    // Messages
-    const [preCompose, setPreCompose] = useState(null);
-    const [msgUnread, setMsgUnread] = useState(0);
 
     // Notification
     const [notif, setNotif] = useState('');
@@ -196,7 +191,6 @@ function TutorDashboard() {
         { id: 'requests', label: `Requests${pendingCount > 0 ? ` (${pendingCount})` : ''}` },
         { id: 'hours', label: 'Hours & Certificate' },
         { id: 'resources', label: 'Resource Library' },
-        { id: 'messages', label: `Messages${msgUnread > 0 ? ` (${msgUnread})` : ''}` },
     ];
 
     // ── Service Hours ─────────────────────────────────────────
@@ -776,10 +770,7 @@ function TutorDashboard() {
                                                 <>
                                                     <button
                                                         className="req-chat-btn"
-                                                        onClick={() => {
-                                                            setPreCompose({ to: req.studentEmail, subject: `Re: Your tutoring request` });
-                                                            setActiveTab('messages');
-                                                        }}
+                                                        onClick={() => navigate('/messages', { state: { compose: { to: req.studentEmail, subject: `Re: Your tutoring request` } } })}
                                                     >
                                                         Message
                                                     </button>
@@ -1029,18 +1020,6 @@ function TutorDashboard() {
                             <button className="submit-btn" onClick={handleConfirmAccept}>Confirm &amp; Accept</button>
                         </div>
                     </div>
-                </div>
-            )}
-
-            {/* ── MESSAGES ── */}
-            {activeTab === 'messages' && (
-                <div className="tutor-resources-view">
-                    <MessagesPanel
-                        userEmail={user?.email}
-                        preCompose={preCompose}
-                        onClearPreCompose={() => setPreCompose(null)}
-                        onUnreadChange={setMsgUnread}
-                    />
                 </div>
             )}
 
