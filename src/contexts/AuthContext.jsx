@@ -42,17 +42,26 @@ export function AuthProvider({ children }) {
             setCurrentUser(firebaseUser?.uid ?? null);
 
             if (firebaseUser) {
-                // Set role immediately from localStorage so the dashboard shows at once
-                const cached = localStorage.getItem(roleKey(firebaseUser.uid)) || 'student';
-                setRole(cached);
+                const cached = localStorage.getItem(roleKey(firebaseUser.uid));
 
-                // Sync from Firestore in the background without blocking
-                fetchRoleFromFirestore(firebaseUser.uid).then(firestoreRole => {
-                    if (firestoreRole && firestoreRole !== cached) {
-                        setRole(firestoreRole);
-                        localStorage.setItem(roleKey(firebaseUser.uid), firestoreRole);
-                    }
-                });
+                if (cached) {
+                    // Cached role available — show immediately, then verify with Firestore
+                    setRole(cached);
+                    fetchRoleFromFirestore(firebaseUser.uid).then(firestoreRole => {
+                        if (firestoreRole && firestoreRole !== cached) {
+                            setRole(firestoreRole);
+                            localStorage.setItem(roleKey(firebaseUser.uid), firestoreRole);
+                        }
+                    });
+                } else {
+                    // No local cache — wait for Firestore before deciding role
+                    // (avoids incorrectly defaulting tutors to 'student' on fresh browsers)
+                    fetchRoleFromFirestore(firebaseUser.uid).then(firestoreRole => {
+                        const finalRole = firestoreRole || 'student';
+                        setRole(finalRole);
+                        localStorage.setItem(roleKey(firebaseUser.uid), finalRole);
+                    });
+                }
             } else {
                 setRole(null);
             }
