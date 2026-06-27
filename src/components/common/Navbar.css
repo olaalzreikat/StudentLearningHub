@@ -10,9 +10,9 @@
 }
 
 .nav-container {
-    max-width: 1200px;
+    max-width: 1440px;
     margin: 0 auto;
-    padding: 20px 40px;
+    padding: 20px 32px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -44,7 +44,7 @@
 .nav-links {
     display: flex;
     list-style: none;
-    gap: 10px;
+    gap: 4px;
     margin: 0;
     padding: 0;
 }
@@ -52,10 +52,12 @@
 .nav-links a {
     text-decoration: none;
     color: var(--text-primary);
-    padding: 10px 20px;
+    padding: 8px 14px;
     border-radius: 25px;
     font-weight: 500;
+    font-size: 0.9rem;
     transition: all 0.3s ease;
+    white-space: nowrap;
 }
 
 .nav-links a:hover {
