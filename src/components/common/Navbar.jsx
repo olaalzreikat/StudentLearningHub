@@ -68,11 +68,30 @@ function Navbar() {
                     <li><Link to="/dashboard" className={isActive('/dashboard')} onClick={() => setIsMobileMenuOpen(false)}>Dashboard</Link></li>
                     {role === 'tutor'
                         ? <li><Link to="/students" className={isActive('/students')} onClick={() => setIsMobileMenuOpen(false)}>Students</Link></li>
-                        : <li><Link to="/resources" className={isActive('/resources')} onClick={() => setIsMobileMenuOpen(false)}>Resources</Link></li>
+                        : (
+                            <li className="nav-dropdown-parent">
+                                <Link
+                                    to="/resources"
+                                    className={`nav-dropdown-trigger${['/resources', '/flashcards'].includes(location.pathname) ? ' active' : ''}`}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                >
+                                    Resources <span className="nav-dropdown-caret">▾</span>
+                                </Link>
+                                <ul className="nav-dropdown-menu">
+                                    <li>
+                                        <Link to="/resources" className={isActive('/resources')} onClick={() => setIsMobileMenuOpen(false)}>
+                                            Browse Resources
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link to="/flashcards" className={isActive('/flashcards')} onClick={() => setIsMobileMenuOpen(false)}>
+                                            Flashcards
+                                        </Link>
+                                    </li>
+                                </ul>
+                            </li>
+                        )
                     }
-                    {role !== 'tutor' && (
-                        <li><Link to="/flashcards" className={isActive('/flashcards')} onClick={() => setIsMobileMenuOpen(false)}>Flashcards</Link></li>
-                    )}
                     {user && (
                         <li>
                             <Link to="/messages" className={isActive('/messages')} onClick={() => setIsMobileMenuOpen(false)} style={{ position: 'relative' }}>

@@ -136,6 +136,70 @@
     transform: translateY(-2px);
 }
 
+/* Resources hover dropdown */
+.nav-dropdown-parent {
+    position: relative;
+}
+
+.nav-dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.nav-dropdown-caret {
+    font-size: 0.7rem;
+    opacity: 0.65;
+    transition: transform 0.2s;
+}
+
+.nav-dropdown-parent:hover .nav-dropdown-caret {
+    transform: rotate(180deg);
+}
+
+.nav-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+    border: 1px solid #e2e8f0;
+    list-style: none;
+    margin: 0;
+    padding: 6px;
+    min-width: 160px;
+    z-index: 2000;
+    animation: dropIn 0.15s ease;
+}
+
+.nav-dropdown-parent:hover .nav-dropdown-menu {
+    display: block;
+}
+
+.nav-dropdown-menu li a {
+    display: block;
+    padding: 9px 14px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #1e293b;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+    text-decoration: none;
+}
+
+.nav-dropdown-menu li a:hover,
+.nav-dropdown-menu li a.active {
+    background: #eff6ff;
+    color: #1e40af;
+    transform: none;
+    box-shadow: none;
+}
+
 /* Account dropdown */
 .account-menu {
     position: relative;
