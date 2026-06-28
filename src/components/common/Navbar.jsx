@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import equalizerLogo from '../../assets/equalizer.png';
 import { useAuth } from '../../contexts/AuthContext';
@@ -9,6 +9,12 @@ function Navbar() {
     const [isAccountOpen, setIsAccountOpen] = useState(false);
     const [tutorProfile, setTutorProfile] = useState(null);
     const [msgUnread, setMsgUnread] = useState(() => parseInt(localStorage.getItem('msg-unread-count') || '0', 10));
+    const [lang, setLang] = useState(() => {
+        const match = document.cookie.match(/googtrans=\/en\/(\w+)/);
+        return (match && match[1] !== 'en') ? match[1] : 'en';
+    });
+    const [langOpen, setLangOpen] = useState(false);
+    const langRef = useRef(null);
     const location = useLocation();
     const navigate = useNavigate();
     const { user, role, logout, switchRole } = useAuth();
@@ -50,6 +56,24 @@ function Navbar() {
         window.addEventListener('msg-unread-update', sync);
         return () => window.removeEventListener('msg-unread-update', sync);
     }, []);
+
+    // Close lang dropdown when clicking outside
+    useEffect(() => {
+        function handleClick(e) {
+            if (langRef.current && !langRef.current.contains(e.target)) setLangOpen(false);
+        }
+        document.addEventListener('mousedown', handleClick);
+        return () => document.removeEventListener('mousedown', handleClick);
+    }, []);
+
+    const switchLanguage = (newLang) => {
+        const code = newLang === 'es' ? '/en/es' : '/en/en';
+        document.cookie = `googtrans=${code}; path=/`;
+        document.cookie = `googtrans=${code}; path=/; domain=.${window.location.hostname}`;
+        setLang(newLang);
+        setLangOpen(false);
+        window.location.reload();
+    };
 
     const isActive = (path) => location.pathname === path ? 'active' : '';
 
@@ -115,6 +139,23 @@ function Navbar() {
 
                 <div className="nav-auth">
                     <Link to="/contact" className={`nav-contact-btn${location.pathname === '/contact' ? ' active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>Contact</Link>
+
+                    {/* Language switcher */}
+                    <div className="nav-lang-switcher" ref={langRef}>
+                        <button className="nav-lang-btn" onClick={() => setLangOpen(!langOpen)}>
+                            🌐 {lang === 'es' ? 'ES' : 'EN'} <span className="nav-lang-caret">▾</span>
+                        </button>
+                        {langOpen && (
+                            <div className="nav-lang-dropdown">
+                                <button className={`nav-lang-option ${lang === 'en' ? 'active' : ''}`} onClick={() => switchLanguage('en')}>
+                                    🇺🇸 English
+                                </button>
+                                <button className={`nav-lang-option ${lang === 'es' ? 'active' : ''}`} onClick={() => switchLanguage('es')}>
+                                    🇪🇸 Español
+                                </button>
+                            </div>
+                        )}
+                    </div>
                     {user ? (
                         <div className="account-menu" ref={dropdownRef}>
                             <button
