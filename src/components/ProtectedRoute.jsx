@@ -40,37 +40,16 @@ function ProtectedRoute({ children }) {
             <p style={{ color: '#64748b', fontSize: '1rem', marginBottom: 28, maxWidth: 360 }}>
                 You need to sign in to view this page.
             </p>
+            <style>{`
+                .pr-btn { padding: 10px 28px; border-radius: 25px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease; display: inline-block; }
+                .pr-btn-primary { background: rgb(8,8,85); color: white; }
+                .pr-btn-primary:hover { background: #1e40af; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(8,8,85,0.35); }
+                .pr-btn-outline { background: transparent; color: rgb(8,8,85); border: 1.5px solid rgb(8,8,85); }
+                .pr-btn-outline:hover { background: rgb(8,8,85); color: white; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(8,8,85,0.25); }
+            `}</style>
             <div style={{ display: 'flex', gap: 12 }}>
-                <Link
-                    to="/login"
-                    style={{
-                        padding: '10px 24px',
-                        borderRadius: 25,
-                        background: 'rgb(8,8,85)',
-                        color: 'white',
-                        textDecoration: 'none',
-                        fontWeight: 600,
-                        fontSize: '0.9rem',
-                    }}
-                >
-                    Sign in
-                </Link>
-                <Link
-                    to="/login"
-                    state={{ mode: 'signup' }}
-                    style={{
-                        padding: '10px 24px',
-                        borderRadius: 25,
-                        background: 'transparent',
-                        color: 'rgb(8,8,85)',
-                        border: '1.5px solid rgb(8,8,85)',
-                        textDecoration: 'none',
-                        fontWeight: 600,
-                        fontSize: '0.9rem',
-                    }}
-                >
-                    Sign up
-                </Link>
+                <Link to="/login" className="pr-btn pr-btn-primary">Sign in</Link>
+                <Link to="/login" state={{ mode: 'signup' }} className="pr-btn pr-btn-outline">Sign up</Link>
             </div>
         </div>
     );
