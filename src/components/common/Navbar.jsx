@@ -9,10 +9,7 @@ function Navbar() {
     const [isAccountOpen, setIsAccountOpen] = useState(false);
     const [tutorProfile, setTutorProfile] = useState(null);
     const [msgUnread, setMsgUnread] = useState(() => parseInt(localStorage.getItem('msg-unread-count') || '0', 10));
-    const [lang, setLang] = useState(() => {
-        const match = document.cookie.match(/googtrans=\/en\/(\w+)/);
-        return (match && match[1] !== 'en') ? match[1] : 'en';
-    });
+    const [lang, setLang] = useState(() => localStorage.getItem('preferred-lang') || 'en');
     const [langOpen, setLangOpen] = useState(false);
     const langRef = useRef(null);
     const location = useLocation();
@@ -66,13 +63,28 @@ function Navbar() {
         return () => document.removeEventListener('mousedown', handleClick);
     }, []);
 
+    const applyGoogleTranslate = (langCode) => {
+        const select = document.querySelector('.goog-te-combo');
+        if (select) {
+            select.value = langCode === 'en' ? '' : langCode;
+            select.dispatchEvent(new Event('change'));
+        } else {
+            // Widget not ready yet — retry
+            setTimeout(() => applyGoogleTranslate(langCode), 150);
+        }
+    };
+
+    // Re-apply saved language after widget loads
+    useEffect(() => {
+        const saved = localStorage.getItem('preferred-lang') || 'en';
+        if (saved !== 'en') setTimeout(() => applyGoogleTranslate(saved), 800);
+    }, []);
+
     const switchLanguage = (newLang) => {
-        const code = newLang === 'es' ? '/en/es' : '/en/en';
-        document.cookie = `googtrans=${code}; path=/`;
-        document.cookie = `googtrans=${code}; path=/; domain=.${window.location.hostname}`;
+        applyGoogleTranslate(newLang);
         setLang(newLang);
         setLangOpen(false);
-        window.location.reload();
+        localStorage.setItem('preferred-lang', newLang);
     };
 
     const isActive = (path) => location.pathname === path ? 'active' : '';
