@@ -11,7 +11,7 @@ function Navbar() {
     const [msgUnread, setMsgUnread] = useState(() => parseInt(localStorage.getItem('msg-unread-count') || '0', 10));
     const [lang, setLang] = useState(() => localStorage.getItem('preferred-lang') || 'en');
     const [langOpen, setLangOpen] = useState(false);
-    const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
+    const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
     const langRef = useRef(null);
     const location = useLocation();
     const navigate = useNavigate();
