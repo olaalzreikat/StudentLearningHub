@@ -105,6 +105,12 @@
     margin: 0 0 4px;
 }
 
+.profile-page-email {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.72);
+    margin: 0 0 6px;
+}
+
 .profile-page-subtitle {
     font-size: 0.875rem;
     color: #64748b;

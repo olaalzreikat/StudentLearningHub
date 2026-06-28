@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { subjects } from '../utils/subjectColors';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 import './TutorProfile.css';
 
 const PROFILES_KEY = 'tutorProfiles';
@@ -16,11 +18,19 @@ function TutorProfile() {
     const [photoError, setPhotoError] = useState('');
 
     useEffect(() => {
-        const stored = localStorage.getItem(PROFILES_KEY);
-        if (stored) {
-            const all = JSON.parse(stored);
-            if (all[user?.uid]) setProfile(all[user.uid]);
+        if (!user) return;
+        async function load() {
+            try {
+                const snap = await getDoc(doc(db, 'tutorProfiles', user.uid));
+                if (snap.exists()) { setProfile(snap.data()); return; }
+            } catch {}
+            const stored = localStorage.getItem(PROFILES_KEY);
+            if (stored) {
+                const all = JSON.parse(stored);
+                if (all[user.uid]) setProfile(all[user.uid]);
+            }
         }
+        load();
     }, [user]);
 
     const handlePhotoChange = (e) => {
@@ -53,11 +63,13 @@ function TutorProfile() {
         e.target.value = '';
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
+        const profileData = { ...profile, email: user.email };
         const stored = localStorage.getItem(PROFILES_KEY);
         const all = stored ? JSON.parse(stored) : {};
-        all[user.uid] = { ...profile, email: user.email };
+        all[user.uid] = profileData;
         localStorage.setItem(PROFILES_KEY, JSON.stringify(all));
+        try { await setDoc(doc(db, 'tutorProfiles', user.uid), profileData); } catch {}
         setSaved(true);
         setTimeout(() => setSaved(false), 2500);
     };
@@ -107,6 +119,7 @@ function TutorProfile() {
                     />
                     <div>
                         <h1 className="profile-page-title">My Tutor Profile</h1>
+                        <p className="profile-page-email">{user?.email}</p>
                         <p className="profile-page-subtitle">
                             Your profile is shown to students on the Schedule page so they can find and book you.
                         </p>

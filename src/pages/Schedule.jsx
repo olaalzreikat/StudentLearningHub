@@ -20,6 +20,8 @@ import {
 } from "../utils/localStorage";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebase';
 import TutorModal from "../components/TutorModal";
 import tutor2 from "../assets/tutor2.jpg";
 import tutor3 from "../assets/tutor3.jpg";
@@ -82,7 +84,9 @@ function Schedule() {
 
   const progress = getProgress();
 
-  useEffect(() => {
+  useEffect(() => { loadData(); }, [refreshTrigger]);
+
+  async function loadData() {
     // Load joined sessions from localStorage (per-user)
     const savedAgenda = localStorage.getItem(getAgendaKey());
     if (savedAgenda) {
@@ -106,11 +110,17 @@ function Schedule() {
       localStorage.setItem('groupSessionCounts', JSON.stringify(initialCounts));
     }
 
-    // Load tutor-posted sessions (upcoming only)
-    const savedTutorSessions = localStorage.getItem('tutorPostedSessions');
-    if (savedTutorSessions) {
-      const all = JSON.parse(savedTutorSessions);
+    // Load tutor-posted sessions from Firestore (fall back to localStorage)
+    try {
+      const snap = await getDocs(collection(db, 'tutorSessions'));
+      const all = snap.docs.map(d => d.data());
       setTutorSessions(all.filter(s => new Date(`${s.date}T${s.time}`) >= new Date()));
+    } catch {
+      const savedTutorSessions = localStorage.getItem('tutorPostedSessions');
+      if (savedTutorSessions) {
+        const all = JSON.parse(savedTutorSessions);
+        setTutorSessions(all.filter(s => new Date(`${s.date}T${s.time}`) >= new Date()));
+      }
     }
 
     // Load accepted 1-on-1 requests for this tutor (upcoming only)
@@ -127,18 +137,22 @@ function Schedule() {
       );
     }
 
-    // Load registered tutor profiles (include uid from key)
-    const savedProfiles = localStorage.getItem('tutorProfiles');
-    if (savedProfiles) {
-      const profilesMap = JSON.parse(savedProfiles);
-      setRegisteredTutors(
-        Object.entries(profilesMap)
-          .filter(([, p]) => p.name)
-          .map(([uid, p]) => ({ ...p, uid }))
-      );
+    // Load registered tutor profiles from Firestore (fall back to localStorage)
+    try {
+      const snap = await getDocs(collection(db, 'tutorProfiles'));
+      setRegisteredTutors(snap.docs.map(d => ({ ...d.data(), uid: d.id })).filter(p => p.name));
+    } catch {
+      const savedProfiles = localStorage.getItem('tutorProfiles');
+      if (savedProfiles) {
+        const profilesMap = JSON.parse(savedProfiles);
+        setRegisteredTutors(
+          Object.entries(profilesMap)
+            .filter(([, p]) => p.name)
+            .map(([uid, p]) => ({ ...p, uid }))
+        );
+      }
     }
-
-  }, [refreshTrigger]);
+  }
 
   const showNotificationMessage = (message) => {
     setNotificationMessage(message);
@@ -550,6 +564,7 @@ function Schedule() {
                     </div>
                     {classItem.isRegistered ? (
                       <>
+                        {classItem.email && <p className="tutor-list-email">{classItem.email}</p>}
                         {classItem.subjects.length > 1 && (
                           <p className="tutor-list-meta">{classItem.subjects.map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' · ')}</p>
                         )}
@@ -668,6 +683,13 @@ function Schedule() {
                       <div className="gsc-header">
                         <h4 className="gsc-name">{group.title}</h4>
                         <p className="gsc-subject">{group.subject}</p>
+                        {(group.tutorName || group.instructor) && (
+                          <p className="gsc-host">
+                            <span className="gsc-host-label">By </span>
+                            {group.tutorName || group.instructor}
+                            {group.tutorEmail && <span className="gsc-host-email"> · {group.tutorEmail}</span>}
+                          </p>
+                        )}
                       </div>
                       <span className="gsc-topic-badge" style={{ background: getTopicColor(group.topic) + '18', color: getTopicColor(group.topic) }}>
                         {group.topic.split(' ')[0]}

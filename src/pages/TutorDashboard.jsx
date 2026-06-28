@@ -5,6 +5,7 @@ import { videosData, quizzesData, problemsData, guidesData } from '../data/resou
 import { lessonsData } from '../data/lessonsData';
 import { subjects } from '../utils/subjectColors';
 import { db } from '../firebase';
+import { doc, setDoc, deleteDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import './TutorDashboard.css';
 
 const SESSIONS_KEY = 'tutorPostedSessions';
@@ -54,13 +55,21 @@ function TutorDashboard() {
     };
 
     // ── Sessions ──────────────────────────────────────────────
-    const loadMySessions = () => {
+    const loadMySessions = async () => {
+        try {
+            const q = query(collection(db, 'tutorSessions'), where('tutorId', '==', user?.uid));
+            const snap = await getDocs(q);
+            const sessions = snap.docs.map(d => d.data());
+            setMySessions(sessions);
+            localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions));
+            return;
+        } catch {}
         const saved = localStorage.getItem(SESSIONS_KEY);
         const all = saved ? JSON.parse(saved) : [];
         setMySessions(all.filter(s => s.tutorId === user?.uid));
     };
 
-    const handlePostSession = () => {
+    const handlePostSession = async () => {
         const { title, subject, topic, date, time, totalSize, description } = newSession;
         if (!title || !subject || !topic || !date || !time) return;
         const session = {
@@ -68,8 +77,10 @@ function TutorDashboard() {
             title, subject, topic: topic.toLowerCase(), description,
             date, time, totalSize: parseInt(totalSize), currentSize: 0,
             tutorEmail: user.email, tutorId: user.uid,
+            tutorName: profile.name || user.email.split('@')[0],
             instructor: profile.name || user.email.split('@')[0],
         };
+        try { await setDoc(doc(db, 'tutorSessions', session.id), session); } catch {}
         const saved = localStorage.getItem(SESSIONS_KEY);
         const all = saved ? JSON.parse(saved) : [];
         all.push(session);
@@ -80,7 +91,8 @@ function TutorDashboard() {
         notify('Session posted! Students can see it on the Schedule page.');
     };
 
-    const handleCancelSession = (sessionId) => {
+    const handleCancelSession = async (sessionId) => {
+        try { await deleteDoc(doc(db, 'tutorSessions', sessionId)); } catch {}
         const saved = localStorage.getItem(SESSIONS_KEY);
         const all = saved ? JSON.parse(saved) : [];
         localStorage.setItem(SESSIONS_KEY, JSON.stringify(all.filter(s => s.id !== sessionId)));
