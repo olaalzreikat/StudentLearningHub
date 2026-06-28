@@ -11,6 +11,7 @@ function Navbar() {
     const [msgUnread, setMsgUnread] = useState(() => parseInt(localStorage.getItem('msg-unread-count') || '0', 10));
     const [lang, setLang] = useState(() => localStorage.getItem('preferred-lang') || 'en');
     const [langOpen, setLangOpen] = useState(false);
+    const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
     const langRef = useRef(null);
     const location = useLocation();
     const navigate = useNavigate();
@@ -79,6 +80,14 @@ function Navbar() {
         const saved = localStorage.getItem('preferred-lang') || 'en';
         if (saved !== 'en') setTimeout(() => applyGoogleTranslate(saved), 800);
     }, []);
+
+    // Apply theme on mount and change
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    }, [theme]);
+
+    const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : 'light');
 
     const switchLanguage = (newLang) => {
         applyGoogleTranslate(newLang);
@@ -149,6 +158,11 @@ function Navbar() {
                 </ul>
 
                 <div className="nav-auth">
+                    {/* Theme toggle */}
+                    <button className="nav-theme-btn" onClick={toggleTheme} title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
+                        {theme === 'dark' ? '☀' : '☾'}
+                    </button>
+
                     {/* Language switcher */}
                     <div className="nav-lang-switcher" ref={langRef}>
                         <button className="nav-lang-btn" onClick={() => setLangOpen(!langOpen)}>

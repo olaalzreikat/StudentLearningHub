@@ -150,6 +150,32 @@
     transform: translateY(-2px);
 }
 
+/* Theme toggle button */
+.nav-theme-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    border: 1.5px solid #bfdbfe;
+    color: rgb(8, 8, 85);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    font-family: inherit;
+}
+
+.nav-theme-btn:hover {
+    background: rgb(8, 8, 85);
+    color: white;
+    border-color: rgb(8, 8, 85);
+    transform: rotate(20deg) scale(1.1);
+}
+
 /* Language switcher */
 .nav-lang-switcher {
     position: relative;
