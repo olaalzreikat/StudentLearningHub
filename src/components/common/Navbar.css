@@ -104,18 +104,32 @@
     text-decoration: none;
     color: white;
     background: rgb(8, 8, 85);
-    padding: 10px 22px;
+    padding: 9px 20px;
     border-radius: 25px;
     font-weight: 600;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(8, 8, 85, 0.3);
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(8, 8, 85, 0.25);
+    white-space: nowrap;
 }
 
 .nav-login-btn:hover {
     background: #1e40af;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(8, 8, 85, 0.35);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(8, 8, 85, 0.3);
+}
+
+.nav-login-outline {
+    background: transparent;
+    color: rgb(8, 8, 85);
+    border: 1.5px solid rgb(8, 8, 85);
+    box-shadow: none;
+}
+
+.nav-login-outline:hover {
+    background: rgb(8, 8, 85);
+    color: white;
+    box-shadow: 0 4px 14px rgba(8, 8, 85, 0.25);
 }
 
 .nav-logout-btn {

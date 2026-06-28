@@ -189,7 +189,10 @@ function Navbar() {
                             )}
                         </div>
                     ) : (
-                        <Link to="/login" className="nav-login-btn" onClick={() => setIsMobileMenuOpen(false)}>Log in</Link>
+                        <>
+                            <Link to="/login" className="nav-login-btn nav-login-outline" onClick={() => setIsMobileMenuOpen(false)}>Log in</Link>
+                            <Link to="/login" state={{ mode: 'signup' }} className="nav-login-btn" onClick={() => setIsMobileMenuOpen(false)}>Sign up</Link>
+                        </>
                     )}
                 </div>
 

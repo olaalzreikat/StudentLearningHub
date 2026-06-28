@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import equalizerLogo from '../assets/equalizer.png';
 import './Login.css';
 
 function Login() {
-    const [mode, setMode] = useState('login'); // 'login' | 'signup'
+    const location = useLocation();
+    const [mode, setMode] = useState(location.state?.mode === 'signup' ? 'signup' : 'login');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
