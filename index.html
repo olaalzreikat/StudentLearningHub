@@ -5,6 +5,10 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Equalizer Learning Hub</title>
+    <script>
+      /* Apply saved theme before first paint to avoid flash */
+      document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+    </script>
     <style>
       /* Hide Google Translate UI — translation still works via cookie */
       iframe.goog-te-banner-frame { display: none !important; }

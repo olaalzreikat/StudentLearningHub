@@ -148,9 +148,9 @@ function Navbar() {
                 </ul>
 
                 <div className="nav-auth">
-                    {/* Theme toggle */}
+                    {/* Theme toggle — ☾ = dark mode active, ☀ = light mode active */}
                     <button className="nav-theme-btn" onClick={toggleTheme} title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
-                        {theme === 'dark' ? '☀' : '☾'}
+                        {theme === 'dark' ? '☾' : '☀'}
                     </button>
 
                     {/* Language switcher — translate="no" prevents GT from translating "English" to "Inglés" */}
