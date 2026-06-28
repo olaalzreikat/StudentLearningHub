@@ -270,10 +270,9 @@
 [data-theme="dark"] ::-webkit-scrollbar-thumb { background: #1e2d42; border-radius: 3px; }
 [data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: #2a3f5a; }
 
-/* Hide Google Translate banner/toolbar */
-.goog-te-banner-frame, .skiptranslate { display: none !important; }
-body { top: 0 !important; }
-.goog-te-gadget { font-size: 0 !important; }
+/* Hide only the GT banner iframe, not .skiptranslate broadly */
+iframe.goog-te-banner-frame { display: none !important; }
+body { top: 0px !important; }
 
 * {
   margin: 0;

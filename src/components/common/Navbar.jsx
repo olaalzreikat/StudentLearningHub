@@ -68,9 +68,8 @@ function Navbar() {
         const select = document.querySelector('.goog-te-combo');
         if (select) {
             select.value = langCode === 'en' ? '' : langCode;
-            select.dispatchEvent(new Event('change'));
+            select.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
         } else {
-            // Widget not ready yet — retry
             setTimeout(() => applyGoogleTranslate(langCode), 150);
         }
     };

@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Equalizer Learning Hub</title>
     <style>
-      /* Suppress Google Translate banner — must be inline so it loads before GT script */
-      .goog-te-banner-frame,
-      iframe.goog-te-banner-frame,
-      .skiptranslate { display: none !important; visibility: hidden !important; }
+      /* Only hide the banner iframe — do NOT hide .skiptranslate broadly
+         or the combo select inside it won't respond to programmatic events */
+      iframe.goog-te-banner-frame { display: none !important; }
+      #google_translate_element { display: none !important; }
+      .goog-te-gadget { visibility: hidden !important; height: 0 !important; overflow: hidden !important; }
       body { top: 0px !important; }
-      .goog-te-gadget { font-size: 0 !important; }
     </style>
   </head>
   <body>
@@ -28,18 +28,23 @@
     </script>
     <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <script>
-      // Keep GT banner hidden even after dynamic injection
+      // Keep GT banner hidden and body top reset after dynamic injection
       (function() {
         function hideGTBanner() {
           var f = document.querySelector('iframe.goog-te-banner-frame');
-          if (f) f.style.setProperty('display', 'none', 'important');
+          if (f && f.style.display !== 'none') f.style.setProperty('display', 'none', 'important');
+          // Undo Google Translate's body.top shift
           if (document.body && document.body.style.top && document.body.style.top !== '0px') {
-            document.body.style.setProperty('top', '0px', 'important');
+            document.body.style.top = '0px';
           }
         }
-        var obs = new MutationObserver(hideGTBanner);
+        // Only watch body's direct children and style attribute — avoids interfering with translation
         document.addEventListener('DOMContentLoaded', function() {
-          obs.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+          new MutationObserver(hideGTBanner).observe(document.body, {
+            childList: true,
+            attributes: true,
+            attributeFilter: ['style']
+          });
         });
       })();
     </script>
