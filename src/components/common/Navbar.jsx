@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import equalizerLogo from '../../assets/equalizer.png';
 import { useAuth } from '../../contexts/AuthContext';
@@ -64,22 +64,6 @@ function Navbar() {
         return () => document.removeEventListener('mousedown', handleClick);
     }, []);
 
-    const applyGoogleTranslate = (langCode) => {
-        const select = document.querySelector('.goog-te-combo');
-        if (select) {
-            select.value = langCode === 'en' ? '' : langCode;
-            select.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
-        } else {
-            setTimeout(() => applyGoogleTranslate(langCode), 150);
-        }
-    };
-
-    // Re-apply saved language after widget loads
-    useEffect(() => {
-        const saved = localStorage.getItem('preferred-lang') || 'en';
-        if (saved !== 'en') setTimeout(() => applyGoogleTranslate(saved), 800);
-    }, []);
-
     // Apply theme on mount and change
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
@@ -89,10 +73,17 @@ function Navbar() {
     const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : 'light');
 
     const switchLanguage = (newLang) => {
-        applyGoogleTranslate(newLang);
+        localStorage.setItem('preferred-lang', newLang);
         setLang(newLang);
         setLangOpen(false);
-        localStorage.setItem('preferred-lang', newLang);
+        if (newLang === 'es') {
+            document.cookie = 'googtrans=/en/es; path=/';
+            document.cookie = `googtrans=/en/es; path=/; domain=.${window.location.hostname}`;
+        } else {
+            document.cookie = 'googtrans=; path=/; max-age=0';
+            document.cookie = `googtrans=; path=/; domain=.${window.location.hostname}; max-age=0`;
+        }
+        window.location.reload();
     };
 
     const isActive = (path) => location.pathname === path ? 'active' : '';

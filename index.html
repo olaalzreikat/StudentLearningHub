@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Equalizer Learning Hub</title>
     <style>
-      /* Only hide the banner iframe — do NOT hide .skiptranslate broadly
-         or the combo select inside it won't respond to programmatic events */
+      /* Hide Google Translate UI — translation still works via cookie */
       iframe.goog-te-banner-frame { display: none !important; }
+      .goog-te-banner-frame { display: none !important; }
       #google_translate_element { display: none !important; }
-      .goog-te-gadget { visibility: hidden !important; height: 0 !important; overflow: hidden !important; }
+      .goog-te-gadget { display: none !important; }
       body { top: 0px !important; }
     </style>
   </head>
@@ -28,23 +28,15 @@
     </script>
     <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <script>
+      // Continuously force body.top to 0 so GT can't push content down
       (function() {
-        function hideGTBanner() {
-          var f = document.querySelector('iframe.goog-te-banner-frame');
-          if (f) f.style.setProperty('display', 'none', 'important');
-          if (document.body && document.body.style.top && document.body.style.top !== '0px') {
+        function fix() {
+          if (document.body && document.body.style.top && document.body.style.top !== '0px')
             document.body.style.setProperty('top', '0px', 'important');
-          }
         }
-        // Poll aggressively for 8 seconds after page load to catch GT injecting the banner
-        var _poll = setInterval(hideGTBanner, 50);
-        setTimeout(function() { clearInterval(_poll); }, 8000);
-        // Also use MutationObserver for long-running sessions
         document.addEventListener('DOMContentLoaded', function() {
-          hideGTBanner();
-          new MutationObserver(hideGTBanner).observe(document.body, {
-            childList: true, attributes: true, attributeFilter: ['style']
-          });
+          fix();
+          new MutationObserver(fix).observe(document.body, { attributes: true, attributeFilter: ['style'] });
         });
       })();
     </script>
