@@ -143,15 +143,15 @@ function Navbar() {
                     {/* Language switcher */}
                     <div className="nav-lang-switcher" ref={langRef}>
                         <button className="nav-lang-btn" onClick={() => setLangOpen(!langOpen)}>
-                            🌐 {lang === 'es' ? 'ES' : 'EN'} <span className="nav-lang-caret">▾</span>
+                            {lang === 'es' ? 'Español' : 'English'} <span className="nav-lang-caret">▾</span>
                         </button>
                         {langOpen && (
                             <div className="nav-lang-dropdown">
                                 <button className={`nav-lang-option ${lang === 'en' ? 'active' : ''}`} onClick={() => switchLanguage('en')}>
-                                    🇺🇸 English
+                                    English
                                 </button>
                                 <button className={`nav-lang-option ${lang === 'es' ? 'active' : ''}`} onClick={() => switchLanguage('es')}>
-                                    🇪🇸 Español
+                                    Español
                                 </button>
                             </div>
                         )}
