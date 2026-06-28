@@ -162,13 +162,13 @@ function Navbar() {
                         {theme === 'dark' ? '☀' : '☾'}
                     </button>
 
-                    {/* Language switcher */}
-                    <div className="nav-lang-switcher" ref={langRef}>
-                        <button className="nav-lang-btn" onClick={() => setLangOpen(!langOpen)}>
+                    {/* Language switcher — translate="no" prevents GT from translating "English" to "Inglés" */}
+                    <div className="nav-lang-switcher notranslate" ref={langRef} translate="no">
+                        <button className="nav-lang-btn notranslate" onClick={() => setLangOpen(!langOpen)} translate="no">
                             {lang === 'es' ? 'Español' : 'English'} <span className="nav-lang-caret">▾</span>
                         </button>
                         {langOpen && (
-                            <div className="nav-lang-dropdown">
+                            <div className="nav-lang-dropdown notranslate" translate="no">
                                 <button className={`nav-lang-option ${lang === 'en' ? 'active' : ''}`} onClick={() => switchLanguage('en')}>
                                     English
                                 </button>
