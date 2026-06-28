@@ -128,30 +128,27 @@ function Navbar() {
                             </li>
                         )
                     }
-                    {user && (
-                        <li>
-                            <Link to="/messages" className={isActive('/messages')} onClick={() => setIsMobileMenuOpen(false)} style={{ position: 'relative' }}>
-                                Messages
-                                {msgUnread > 0 && (
-                                    <span style={{
-                                        position: 'absolute', top: '-4px', right: '-10px',
-                                        background: '#ef4444', color: 'white',
-                                        fontSize: '0.6rem', fontWeight: 800,
-                                        borderRadius: '20px', padding: '1px 5px',
-                                        lineHeight: 1.4, minWidth: '16px', textAlign: 'center'
-                                    }}>{msgUnread}</span>
-                                )}
-                            </Link>
-                        </li>
-                    )}
+                    <li>
+                        <Link to="/messages" className={isActive('/messages')} onClick={() => setIsMobileMenuOpen(false)} style={{ position: 'relative' }}>
+                            Messages
+                            {msgUnread > 0 && (
+                                <span style={{
+                                    position: 'absolute', top: '-4px', right: '-10px',
+                                    background: '#ef4444', color: 'white',
+                                    fontSize: '0.6rem', fontWeight: 800,
+                                    borderRadius: '20px', padding: '1px 5px',
+                                    lineHeight: 1.4, minWidth: '16px', textAlign: 'center'
+                                }}>{msgUnread}</span>
+                            )}
+                        </Link>
+                    </li>
+                    <li><Link to="/contact" className={isActive('/contact')} onClick={() => setIsMobileMenuOpen(false)}>Contact</Link></li>
                     {user?.email === 'admin@equalizer.edu' && (
                         <li><Link to="/admin" className={isActive('/admin')} onClick={() => setIsMobileMenuOpen(false)} style={{ color: '#f59e0b', fontWeight: 800 }}>Admin</Link></li>
                     )}
                 </ul>
 
                 <div className="nav-auth">
-                    <Link to="/contact" className={`nav-contact-btn${location.pathname === '/contact' ? ' active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>Contact</Link>
-
                     {/* Language switcher */}
                     <div className="nav-lang-switcher" ref={langRef}>
                         <button className="nav-lang-btn" onClick={() => setLangOpen(!langOpen)}>
