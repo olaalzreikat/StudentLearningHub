@@ -25,6 +25,55 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* ─── HERO ENTRANCE ANIMATIONS ─────────────────────────────── */
+
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-eyebrow      { animation: heroFadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.15s both; }
+.home-hero-text h1 { animation: heroFadeUp 0.85s cubic-bezier(0.22,1,0.36,1) 0.35s both; }
+.home-hero-text p  { animation: heroFadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.55s both; }
+.hero-cta-row      { animation: heroFadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.72s both; }
+
+/* ─── FLOATING MATH SYMBOLS ─────────────────────────────────── */
+
+.hero-symbols {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+@keyframes floatSym {
+  0%, 100% { transform: translateY(0) rotate(var(--r0, 0deg)); }
+  50%       { transform: translateY(var(--dy, -28px)) rotate(var(--r1, 5deg)); }
+}
+
+.hero-sym {
+  position: absolute;
+  color: rgba(255,255,255,0.10);
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  line-height: 1;
+  user-select: none;
+  pointer-events: auto;
+  cursor: default;
+  animation: floatSym var(--dur, 9s) ease-in-out var(--delay, 0s) infinite;
+  transition: color 0.35s ease, text-shadow 0.35s ease;
+}
+
+.hero-sym:hover {
+  color: rgba(255,255,255,0.65);
+  text-shadow:
+    0 0 24px rgba(255,255,255,0.45),
+    0 0 60px rgba(129,140,248,0.5);
+  animation-play-state: paused;
+  z-index: 3;
+}
+
 /* ─── HERO ──────────────────────────────────────────────────── */
 
 .home-page {
@@ -54,7 +103,7 @@ body {
 
 .home-hero-blue {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   width: 100%;
   display: flex;
   align-items: center;
@@ -111,6 +160,23 @@ body {
   letter-spacing: -1.5px;
   white-space: nowrap;
   text-shadow: 0 2px 40px rgba(0, 0, 50, 0.3);
+}
+
+.hero-letter {
+  display: inline-block;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.22s ease, text-shadow 0.22s ease;
+  cursor: default;
+}
+
+.hero-letter:hover {
+  transform: translateY(-12px) scale(1.15);
+  color: #ffffff;
+  text-shadow: 0 0 32px rgba(255,255,255,0.9), 0 4px 20px rgba(255,255,255,0.4);
+}
+
+.hero-letter-space {
+  display: inline-block;
+  width: 0.3em;
 }
 
 .home-hero-text p {
@@ -246,14 +312,36 @@ body {
 
 /* ─── STEPS ──────────────────────────────────────────────────── */
 
+.steps-syms {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.steps-sym {
+  position: absolute;
+  color: rgba(79, 70, 229, 0.09);
+  font-family: 'Fraunces', serif;
+  font-weight: 900;
+  line-height: 1;
+  user-select: none;
+  animation: floatSym var(--dur, 10s) ease-in-out var(--delay, 0s) infinite;
+}
+
 .steps-wrapper {
+  position: relative;
   display: flex;
   justify-content: center;
   padding: 88px 5vw 96px;
   background: var(--white);
+  overflow: hidden;
 }
 
 .steps-container {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -278,6 +366,23 @@ body {
   letter-spacing: -1px;
   color: var(--text);
   margin: 0 0 14px;
+}
+
+.steps-letter {
+  display: inline-block;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.22s ease, text-shadow 0.22s ease;
+  cursor: default;
+}
+
+.steps-letter:hover {
+  transform: translateY(-10px) scale(1.15);
+  color: var(--blue);
+  text-shadow: 0 0 24px rgba(30, 64, 175, 0.35), 0 4px 16px rgba(30, 64, 175, 0.2);
+}
+
+.steps-letter-space {
+  display: inline-block;
+  width: 0.28em;
 }
 
 .steps-p {
@@ -307,11 +412,23 @@ body {
   border: 1.5px solid var(--border);
   border-top: 4px solid var(--blue);
   background: var(--white);
-  transition: all 0.25s ease;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.72s cubic-bezier(0.34,1.2,0.64,1), opacity 0.6s ease;
   position: relative;
   overflow: hidden;
   box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  opacity: 0.4;
 }
+
+/* Cards 1 and 3 start stacked at center (card 2's position) */
+.steps-boxes-container .steps-box:nth-child(1) { transform: translateX(calc(100% + 24px)); }
+.steps-boxes-container .steps-box:nth-child(2) { transform: translateX(0); }
+.steps-boxes-container .steps-box:nth-child(3) { transform: translateX(calc(-100% - 24px)); }
+
+.steps-box.visible {
+  opacity: 1;
+  transform: translateX(0) !important;
+}
+
 
 .steps-box:nth-child(1) { border-top-color: #1e40af; }
 .steps-box:nth-child(2) { border-top-color: #2563eb; }
@@ -445,17 +562,27 @@ body {
 }
 
 .home-tutor-image-container {
+  position: relative;
   width: 45%;
   min-width: 320px;
   height: 480px;
+  border-radius: 20px;
+  overflow: hidden;
 }
 
 .home-tutor-image {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 20px;
-  display: block;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.home-tutor-image.active {
+  opacity: 1;
 }
 
 /* ─── CTA — original gradient preserved ─────────────────────── */

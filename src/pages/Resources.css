@@ -1,7 +1,11 @@
 
 .resources-page {
     min-height: 100vh;
-    background: #FFFFFF;
+    background:
+        radial-gradient(ellipse 700px 550px at 95% 18%, rgba(79, 70, 229, 0.09) 0%, transparent 70%),
+        radial-gradient(ellipse 600px 500px at 5%  75%, rgba(30, 64, 175, 0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 400px 300px at 60% 90%, rgba(99, 102, 241, 0.06) 0%, transparent 70%),
+        #f0f4ff;
 }
 
 .resources-hero {
@@ -18,9 +22,17 @@
     overflow: hidden;
 }
 
+.resources-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(13,27,110,0.72) 0%, rgba(30,64,175,0.58) 100%);
+    z-index: 1;
+}
+
 .hero-content {
     position: relative;
-    z-index: 10;
+    z-index: 2;
     width: 100%;
     max-width: 1400px;
     padding: 0;
@@ -31,21 +43,52 @@
 
 .hero-text {
     text-align: center;
-    color: #1e293b;
+    color: white;
+}
+
+.resources-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 100px;
+    padding: 7px 18px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 22px;
+}
+
+.resources-eyebrow-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #60d4ff;
+    animation: pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.5; transform: scale(0.75); }
 }
 
 .hero-text h1 {
-    font-size: 56px;
-    font-weight: 700;
-    margin-bottom: 12px;
-    color: #1e293b;
-    letter-spacing: -0.5px;
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 800;
+    margin-bottom: 14px;
+    color: white;
+    letter-spacing: -1px;
+    line-height: 1.05;
 }
 
 .hero-text p {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 400;
-    color: #475569;
+    color: rgba(255,255,255,0.82);
 }
 
 .resources-container {
@@ -134,7 +177,7 @@
 
 .resource-section + .resource-section {
     padding-top: 48px;
-    border-top: 1.5px solid #e8edf4;
+    border-top: 1.5px solid rgba(79,70,229,0.12);
 }
 
 .section-header {
@@ -212,26 +255,23 @@
     overflow: hidden;
     border-radius: 14px;
     cursor: pointer;
-    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-    border: 2px solid #e8edf4;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+    border: none;
     background: #FFFFFF;
     padding: 0;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 0 0 1.5px rgba(79,70,229,0.15), 0 2px 12px rgba(79,70,229,0.1), 0 4px 20px rgba(0,0,0,0.08);
 }
 
 .lesson-card:hover {
-    transform: translateY(-8px);
-    border-color: var(--card-accent, #1e40af);
-    box-shadow:
-        0 20px 48px rgba(0, 0, 0, 0.13),
-        0 0 0 2px var(--card-accent, #1e40af);
+    transform: translateY(-6px);
+    box-shadow: 0 0 0 2px rgba(79,70,229,0.5), 0 12px 36px rgba(79,70,229,0.13);
 }
 
 .lesson-card:active {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0 1.5px rgba(79,70,229,0.3), 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .lesson-background {
@@ -402,22 +442,19 @@
     padding: 14px;
     border-radius: 16px;
     cursor: pointer;
-    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
     background: #FFFFFF;
-    border: 2px solid #e8edf4;
+    border: none;
     border-top: 3px solid var(--card-accent, #1e40af);
     display: flex;
     flex-direction: column;
     gap: 10px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 0 0 1.5px rgba(79,70,229,0.15), 0 2px 12px rgba(79,70,229,0.1), 0 4px 20px rgba(0,0,0,0.08);
 }
 
 .video-card:hover {
-    transform: translateY(-8px);
-    border-color: var(--card-accent, #1e40af);
-    box-shadow:
-        0 20px 48px rgba(0, 0, 0, 0.13),
-        0 0 0 2px var(--card-accent, #1e40af);
+    transform: translateY(-6px);
+    box-shadow: 0 0 0 2px rgba(79,70,229,0.5), 0 12px 36px rgba(79,70,229,0.13);
 }
 
 .video-background {
@@ -729,23 +766,47 @@
 }
 
 .download-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 16px;
     padding: 20px;
-    border: 2px solid #e8edf4;
-    border-top: 3px solid var(--card-accent, #1e40af);
+    border: none;
     border-radius: 12px;
-    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+    box-shadow: 0 0 0 1.5px rgba(79,70,229,0.2), 0 4px 24px rgba(79,70,229,0.14), 0 8px 32px rgba(0,0,0,0.1);
+    background: #FFFFFF;
 }
 
 .download-card:hover {
-    transform: translateY(-8px);
-    border-color: var(--card-accent, #1e40af);
-    box-shadow:
-        0 20px 48px rgba(0, 0, 0, 0.13),
-        0 0 0 2px var(--card-accent, #1e40af);
+    transform: translateY(-6px);
+    box-shadow: 0 0 0 2px rgba(79,70,229,0.5), 0 12px 36px rgba(79,70,229,0.13);
+}
+
+.download-icon-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 4px;
+}
+
+.download-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.download-topic-pill {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 10px;
+    border-radius: 99px;
 }
 
 .download-content {
@@ -1137,6 +1198,7 @@
     align-items: flex-end;
     gap: 6px;
     position: relative;
+    margin-top: 36px;
     z-index: 1;
 }
 
@@ -1336,14 +1398,15 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px 22px;
-    border: 2px solid #e8edf4;
+    border: none;
     border-radius: 16px;
     cursor: pointer;
     transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
     gap: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 0 0 1.5px rgba(79,70,229,0.2), 0 4px 24px rgba(79,70,229,0.14), 0 8px 32px rgba(0,0,0,0.1);
     position: relative;
     overflow: hidden;
+    background: #FFFFFF;
 }
 
 .practice-card::before {
@@ -1358,11 +1421,8 @@
 }
 
 .practice-card:hover {
-    transform: translateY(-8px);
-    border-color: var(--practice-color, #3b82f6);
-    box-shadow:
-        0 20px 48px rgba(0, 0, 0, 0.13),
-        0 0 0 2px var(--practice-color, #3b82f6);
+    transform: translateY(-6px);
+    box-shadow: 0 0 0 2px rgba(79,70,229,0.5), 0 12px 36px rgba(79,70,229,0.13);
 }
 
 .practice-card-done {
@@ -1379,17 +1439,40 @@
 }
 
 .practice-icon {
-    width: 46px;
-    height: 46px;
-    border-radius: 12px;
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
-    font-weight: 900;
     flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
-    letter-spacing: -1px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+}
+
+.practice-type-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.practice-type-badge {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    border-radius: 99px;
+}
+
+.practice-topic-pill {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: capitalize;
+    color: #64748b;
+    background: rgba(100,116,139,0.1);
+    padding: 2px 8px;
+    border-radius: 99px;
 }
 
 .practice-info {
@@ -1473,4 +1556,241 @@
 @media (max-width: 640px) {
     .practice-card { flex-direction: column; align-items: flex-start; }
     .practice-start-btn { width: 100%; text-align: center; }
+}
+
+/* ── FAVORITES BUTTONS ── */
+@keyframes heartPop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.45); }
+    70%  { transform: scale(0.88); }
+    100% { transform: scale(1); }
+}
+
+.fav-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: #94a3b8;
+    transition: color 0.2s ease, background 0.2s ease;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.fav-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.fav-btn:hover {
+    color: #f43f5e;
+    background: rgba(244, 63, 94, 0.08);
+}
+
+.fav-btn.fav-active {
+    color: #f43f5e;
+    animation: heartPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.fav-btn-card {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 3;
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+    backdrop-filter: blur(4px);
+}
+
+.fav-btn-card:hover {
+    background: rgba(255, 255, 255, 1);
+    color: #f43f5e;
+}
+
+.fav-btn-video {
+    margin-left: auto;
+}
+
+.fav-btn-download {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+}
+
+.fav-btn-download:hover {
+    background: white;
+}
+
+.practice-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.practice-card-actions .practice-start-btn {
+    flex: 1;
+}
+
+.saved-filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #f43f5e !important;
+    border-color: #fecdd3 !important;
+}
+
+.saved-filter-btn.active {
+    background: #fff1f2 !important;
+    color: #f43f5e !important;
+    border-color: #f43f5e !important;
+}
+
+/* ── FAVORITES SECTION ── */
+.favorites-section {
+    margin-bottom: 36px;
+    background: linear-gradient(135deg, #fff8f9 0%, #fdf4ff 100%);
+    border: 1.5px solid #fecdd3;
+    border-radius: 18px;
+    padding: 22px 26px 24px;
+}
+
+.favorites-section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #be123c;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.favorites-section-header svg {
+    width: 17px;
+    height: 17px;
+    color: #f43f5e;
+}
+
+.fav-section-count {
+    background: #f43f5e;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 99px;
+    padding: 2px 7px;
+    margin-left: 2px;
+    letter-spacing: 0;
+}
+
+.favorites-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.fav-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    border: 1.5px solid #fecdd3;
+    border-radius: 99px;
+    padding: 6px 6px 6px 10px;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.18s ease;
+    max-width: 260px;
+}
+
+.fav-chip:hover {
+    box-shadow: 0 3px 12px rgba(244, 63, 94, 0.18);
+    border-color: #f43f5e;
+    transform: translateY(-1px);
+}
+
+.fav-chip-type {
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #f43f5e;
+    background: #fff1f2;
+    border-radius: 99px;
+    padding: 2px 7px;
+    flex-shrink: 0;
+}
+
+.fav-chip-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #334155;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 160px;
+}
+
+.fav-chip-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    color: #f43f5e;
+    transition: background 0.18s ease;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.fav-chip-remove:hover {
+    background: #fff1f2;
+}
+
+.fav-chip-remove svg {
+    width: 13px;
+    height: 13px;
+}
+
+/* download-card already declared above with position relative via fav-btn-download */
+
+/* empty saved state */
+.saved-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 64px 24px;
+    text-align: center;
+    color: #94a3b8;
+}
+
+.saved-empty svg {
+    width: 48px;
+    height: 48px;
+    color: #fca5a5;
+    opacity: 0.6;
+}
+
+.saved-empty p {
+    font-size: 15px;
+    margin: 0;
+}
+
+.saved-empty span {
+    font-size: 13px;
+    color: #cbd5e1;
 }

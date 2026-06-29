@@ -70,6 +70,7 @@ function TutorProfile() {
         all[user.uid] = profileData;
         localStorage.setItem(PROFILES_KEY, JSON.stringify(all));
         try { await setDoc(doc(db, 'tutorProfiles', user.uid), profileData); } catch {}
+        window.dispatchEvent(new CustomEvent('tutor-data-updated'));
         setSaved(true);
         setTimeout(() => setSaved(false), 2500);
     };

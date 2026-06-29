@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, query, where, orderBy, onSnapshot, setDoc, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, setDoc, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import './MessagesPanel.css';
 
@@ -28,14 +28,14 @@ function MessagesPanel({ userEmail, preCompose, onClearPreCompose, onUnreadChang
     // Subscribe to inbox
     useEffect(() => {
         if (!userEmail) return;
-        const q = query(collection(db, 'messages'), where('toEmail', '==', userEmail), orderBy('timestamp', 'desc'));
+        const q = query(collection(db, 'messages'), where('toEmail', '==', userEmail));
         return onSnapshot(q, snap => setInbox(snap.docs.map(d => ({ id: d.id, ...d.data() }))), err => console.warn('Inbox error:', err));
     }, [userEmail]);
 
     // Subscribe to sent
     useEffect(() => {
         if (!userEmail) return;
-        const q = query(collection(db, 'messages'), where('fromEmail', '==', userEmail), orderBy('timestamp', 'desc'));
+        const q = query(collection(db, 'messages'), where('fromEmail', '==', userEmail));
         return onSnapshot(q, snap => setSent(snap.docs.map(d => ({ id: d.id, ...d.data() }))), err => console.warn('Sent error:', err));
     }, [userEmail]);
 
@@ -87,6 +87,8 @@ function MessagesPanel({ userEmail, preCompose, onClearPreCompose, onUnreadChang
         markRead(threadId);
     };
 
+    const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms));
+
     const handleSend = async () => {
         if (!form.to.trim() || !form.subject.trim() || !form.body.trim()) {
             setError('Please fill in all fields.');
@@ -100,22 +102,27 @@ function MessagesPanel({ userEmail, preCompose, onClearPreCompose, onUnreadChang
         setError('');
         try {
             const ref = doc(collection(db, 'messages'));
-            await setDoc(ref, {
-                fromEmail: userEmail,
-                toEmail: form.to.trim().toLowerCase(),
-                subject: form.subject.trim(),
-                body: form.body.trim(),
-                threadId: ref.id,
-                parentId: null,
-                timestamp: serverTimestamp(),
-                read: false,
-            });
+            await Promise.race([
+                setDoc(ref, {
+                    fromEmail: userEmail,
+                    toEmail: form.to.trim().toLowerCase(),
+                    subject: form.subject.trim(),
+                    body: form.body.trim(),
+                    threadId: ref.id,
+                    parentId: null,
+                    timestamp: serverTimestamp(),
+                    read: false,
+                }),
+                timeout(8000),
+            ]);
             setComposing(false);
             setForm({ to: '', subject: '', body: '' });
             setTab('sent');
             setSelectedThreadId(ref.id);
         } catch (e) {
-            setError('Failed to send. Please try again.');
+            setError(e?.message === 'timeout'
+                ? 'Connection timed out. Check your internet and try again.'
+                : 'Failed to send. Please try again.');
         } finally {
             setSending(false);
         }
@@ -128,16 +135,19 @@ function MessagesPanel({ userEmail, preCompose, onClearPreCompose, onUnreadChang
         const replyTo = first?.fromEmail === userEmail ? first?.toEmail : first?.fromEmail;
         try {
             const ref = doc(collection(db, 'messages'));
-            await setDoc(ref, {
-                fromEmail: userEmail,
-                toEmail: replyTo,
-                subject: `Re: ${selectedSubject.replace(/^Re:\s*/i, '')}`,
-                body: replyBody.trim(),
-                threadId: selectedThreadId,
-                parentId: selectedSorted[selectedSorted.length - 1]?.id || null,
-                timestamp: serverTimestamp(),
-                read: false,
-            });
+            await Promise.race([
+                setDoc(ref, {
+                    fromEmail: userEmail,
+                    toEmail: replyTo,
+                    subject: `Re: ${selectedSubject.replace(/^Re:\s*/i, '')}`,
+                    body: replyBody.trim(),
+                    threadId: selectedThreadId,
+                    parentId: selectedSorted[selectedSorted.length - 1]?.id || null,
+                    timestamp: serverTimestamp(),
+                    read: false,
+                }),
+                timeout(8000),
+            ]);
             setReplyBody('');
         } catch (e) {
             console.error(e);

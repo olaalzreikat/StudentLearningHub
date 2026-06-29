@@ -27,7 +27,9 @@ import Sources from './pages/Sources';
 import Messages from './pages/Messages';
 import ProtectedRoute from './components/ProtectedRoute';
 import ChatBot from './components/ChatBot';
+import AccessibilityWidget from './components/AccessibilityWidget';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { FavoritesProvider } from './contexts/FavoritesContext';
 
 
 function DashboardRouter() {
@@ -52,9 +54,10 @@ function AppContent() {
         <main id="main-content" className={isStandalone ? "standalone-content" : "main-content"}>
           <ScrollToTop />
           {!hideChatbot && <ChatBot />}
+          {!hideChatbot && <AccessibilityWidget />}
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/schedule" element={<Schedule />} />
+            <Route path="/schedule" element={<ProtectedRoute><Schedule /></ProtectedRoute>} />
             <Route path="/login" element={<Login />} />
             <Route path="/dashboard" element={<ProtectedRoute><DashboardRouter /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><TutorProfile /></ProtectedRoute>} />
@@ -63,18 +66,18 @@ function AppContent() {
             <Route path="/apply/status" element={<ProtectedRoute><ApplicationStatus /></ProtectedRoute>} />
             <Route path="/flashcards" element={<ProtectedRoute><Flashcards /></ProtectedRoute>} />
             <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
-            <Route path="/resources" element={<Resources />} />
+            <Route path="/resources" element={<ProtectedRoute><Resources /></ProtectedRoute>} />
+            <Route path="/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/faq" element={<FAQ />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/accessibility" element={<Accessibility />} />
             <Route path="/sources" element={<Sources />} />
             <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-            <Route path="/quiz" element={<Quiz />} />
-            <Route path="/problems" element={<Problems />} />
-            <Route path="/video" element={<Video />} />
-            <Route path="/lesson" element={<Lesson />} />
+            <Route path="/quiz" element={<ProtectedRoute><Quiz /></ProtectedRoute>} />
+            <Route path="/problems" element={<ProtectedRoute><Problems /></ProtectedRoute>} />
+            <Route path="/video" element={<ProtectedRoute><Video /></ProtectedRoute>} />
+            <Route path="/lesson" element={<ProtectedRoute><Lesson /></ProtectedRoute>} />
           </Routes>
         </main>
         {!isStandalone && <Footer />}
@@ -86,7 +89,9 @@ function App() {
     return (
         <Router>
             <AuthProvider>
-                <AppContent />
+                <FavoritesProvider>
+                    <AppContent />
+                </FavoritesProvider>
             </AuthProvider>
         </Router>
     );

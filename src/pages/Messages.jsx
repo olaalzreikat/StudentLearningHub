@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { collection, query, where, orderBy, onSnapshot, setDoc, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, setDoc, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 import './Messages.css';
@@ -20,6 +20,19 @@ function Messages() {
     const [sending, setSending] = useState(false);
     const [error, setError]   = useState('');
     const [search, setSearch] = useState('');
+    const [expandedMsgId, setExpandedMsgId] = useState(null);
+
+    const avatarColor = (email = '') => {
+        const colors = ['#1a73e8','#34a853','#9c27b0','#00bcd4','#ff5722','#607d8b','#e91e63','#ff9800'];
+        let h = 0;
+        for (let i = 0; i < email.length; i++) h = email.charCodeAt(i) + ((h << 5) - h);
+        return colors[Math.abs(h) % colors.length];
+    };
+
+    const displayName = (email = '') => {
+        const local = email.split('@')[0];
+        return local.replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    };
 
     useEffect(() => {
         if (location.state?.compose) {
@@ -33,13 +46,13 @@ function Messages() {
 
     useEffect(() => {
         if (!userEmail) return;
-        const q = query(collection(db, 'messages'), where('toEmail', '==', userEmail), orderBy('timestamp', 'desc'));
+        const q = query(collection(db, 'messages'), where('toEmail', '==', userEmail));
         return onSnapshot(q, snap => setInbox(snap.docs.map(d => ({ id: d.id, ...d.data() }))), err => console.warn(err));
     }, [userEmail]);
 
     useEffect(() => {
         if (!userEmail) return;
-        const q = query(collection(db, 'messages'), where('fromEmail', '==', userEmail), orderBy('timestamp', 'desc'));
+        const q = query(collection(db, 'messages'), where('fromEmail', '==', userEmail));
         return onSnapshot(q, snap => setSent(snap.docs.map(d => ({ id: d.id, ...d.data() }))), err => console.warn(err));
     }, [userEmail]);
 
@@ -108,28 +121,36 @@ function Messages() {
         setError('');
     };
 
+    const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms));
+
     const handleSend = async () => {
         if (!form.to.trim() || !form.subject.trim() || !form.body.trim()) { setError('Please fill in all fields.'); return; }
         if (!form.to.includes('@')) { setError('Please enter a valid email address.'); return; }
         setSending(true); setError('');
         try {
             const ref = doc(collection(db, 'messages'));
-            await setDoc(ref, {
-                fromEmail: userEmail,
-                toEmail: form.to.trim().toLowerCase(),
-                subject: form.subject.trim(),
-                body: form.body.trim(),
-                threadId: ref.id,
-                parentId: null,
-                timestamp: serverTimestamp(),
-                read: false,
-            });
+            await Promise.race([
+                setDoc(ref, {
+                    fromEmail: userEmail,
+                    toEmail: form.to.trim().toLowerCase(),
+                    subject: form.subject.trim(),
+                    body: form.body.trim(),
+                    threadId: ref.id,
+                    parentId: null,
+                    timestamp: serverTimestamp(),
+                    read: false,
+                }),
+                timeout(8000),
+            ]);
             setComposing(false);
             setForm({ to: '', subject: '', body: '' });
             setTab('sent');
             setSelectedThreadId(ref.id);
-        } catch { setError('Failed to send. Please try again.'); }
-        finally { setSending(false); }
+        } catch (e) {
+            setError(e?.message === 'timeout'
+                ? 'Connection timed out. Check your internet and try again.'
+                : 'Failed to send. Please try again.');
+        } finally { setSending(false); }
     };
 
     const handleReply = async () => {
@@ -139,16 +160,19 @@ function Messages() {
         const replyTo = first?.fromEmail === userEmail ? first?.toEmail : first?.fromEmail;
         try {
             const ref = doc(collection(db, 'messages'));
-            await setDoc(ref, {
-                fromEmail: userEmail,
-                toEmail: replyTo,
-                subject: `Re: ${selectedSubject.replace(/^Re:\s*/i, '')}`,
-                body: replyBody.trim(),
-                threadId: selectedThreadId,
-                parentId: selectedSorted[selectedSorted.length - 1]?.id || null,
-                timestamp: serverTimestamp(),
-                read: false,
-            });
+            await Promise.race([
+                setDoc(ref, {
+                    fromEmail: userEmail,
+                    toEmail: replyTo,
+                    subject: `Re: ${selectedSubject.replace(/^Re:\s*/i, '')}`,
+                    body: replyBody.trim(),
+                    threadId: selectedThreadId,
+                    parentId: selectedSorted[selectedSorted.length - 1]?.id || null,
+                    timestamp: serverTimestamp(),
+                    read: false,
+                }),
+                timeout(8000),
+            ]);
             setReplyBody('');
         } catch (e) { console.error(e); }
         finally { setSending(false); }
@@ -272,16 +296,19 @@ function Messages() {
                         <div className="messages-message-list">
                             {selectedSorted.map(m => {
                                 const isMine = m.fromEmail === userEmail;
+                                const senderEmail = isMine ? userEmail : (m.fromEmail || '?');
                                 return (
-                                    <div key={m.id} className={`messages-message ${isMine ? 'mine' : ''}`}>
-                                        <div className="messages-message-meta">
-                                            <div className="messages-message-avatar">
-                                                {(isMine ? userEmail : m.fromEmail || '?').charAt(0).toUpperCase()}
+                                    <div key={m.id} className={`messages-message ${isMine ? 'mine' : 'theirs'}`}>
+                                        {!isMine && (
+                                            <div className="messages-bubble-avatar" style={{ background: avatarColor(senderEmail) }}>
+                                                {senderEmail.charAt(0).toUpperCase()}
                                             </div>
-                                            <span className="messages-message-from">{isMine ? 'Me' : m.fromEmail}</span>
-                                            <span className="messages-message-date">{fmt(m.timestamp)}</span>
+                                        )}
+                                        <div className="messages-bubble-wrap">
+                                            {!isMine && <span className="messages-bubble-name">{displayName(m.fromEmail)}</span>}
+                                            <div className="messages-bubble">{m.body}</div>
+                                            <span className="messages-bubble-time">{fmt(m.timestamp)}</span>
                                         </div>
-                                        <div className="messages-message-body">{m.body}</div>
                                     </div>
                                 );
                             })}

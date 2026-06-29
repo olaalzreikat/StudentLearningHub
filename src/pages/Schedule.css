@@ -1,3 +1,13 @@
+/* ── Page background ─────────────────────────────────────── */
+.schedule-page {
+  background:
+    radial-gradient(ellipse 700px 550px at 95% 18%, rgba(79, 70, 229, 0.09) 0%, transparent 70%),
+    radial-gradient(ellipse 600px 500px at 5%  75%, rgba(30, 64, 175, 0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 300px at 60% 90%, rgba(99, 102, 241, 0.06) 0%, transparent 70%),
+    #f0f4ff;
+  min-height: 100vh;
+}
+
 /* ─── Announcements Banner ─── */
 .announcements-banner {
     background: linear-gradient(135deg, #fffbeb, #fef3c7);
@@ -109,9 +119,17 @@
     overflow: hidden;
 }
 
+.schedule-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(13,27,110,0.72) 0%, rgba(30,64,175,0.58) 100%);
+    z-index: 1;
+}
+
 .hero-content {
     position: relative;
-    z-index: 10;
+    z-index: 2;
     width: 100%;
     max-width: 1400px;
     padding: 0;
@@ -122,21 +140,89 @@
 
 .hero-text {
     text-align: center;
-    color: #1e293b;
+    color: white;
 }
 
 .hero-text h1 {
-    font-size: 56px;
-    font-weight: 700;
-    margin-bottom: 12px;
-    color: #1e293b;
-    letter-spacing: -0.5px;
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 800;
+    margin-bottom: 14px;
+    color: white;
+    letter-spacing: -1px;
+    line-height: 1.05;
 }
 
 .hero-text p {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 400;
-    color: #475569;
+    color: rgba(255,255,255,0.82);
+}
+
+/* Eyebrow pill */
+.schedule-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 100px;
+    padding: 7px 18px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 22px;
+}
+
+.schedule-eyebrow-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #60d4ff;
+    animation: pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+/* Stats bar */
+.schedule-stats-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    background: white;
+    border-bottom: 1px solid #e8edf4;
+    padding: 18px 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+
+.sched-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 36px;
+}
+
+.sched-stat-num {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: #0d1b6e;
+    line-height: 1;
+    margin-bottom: 3px;
+}
+
+.sched-stat-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #64748b;
+    white-space: nowrap;
+}
+
+.sched-stat-div {
+    width: 1px;
+    height: 36px;
+    background: #e2e8f0;
+    flex-shrink: 0;
 }
 
 .book-btn {
@@ -326,30 +412,45 @@
     100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.5) rotate(360deg); opacity: 0; }
 }
 
-/* Tutor list card Preply style */
+/* ── Tutor list cards ─────────────────────────────────────── */
 
 .tutor-list-grid {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .tutor-list-card {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
   background: #fff;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 20px 24px;
+  border: none;
+  border-radius: 20px;
+  padding: 24px 28px;
   cursor: pointer;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 0 1.5px rgba(79, 70, 229, 0.18), 0 4px 16px rgba(0,0,0,0.06);
 }
 
+.tutor-list-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #0d1b6e, #3b82f6);
+  border-radius: 20px 0 0 20px;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.tutor-list-card:hover::before { opacity: 1; }
+
 .tutor-list-card:hover {
-  border-color: #93c5fd;
-  box-shadow: 0 8px 28px rgba(30, 64, 175, 0.1);
-  transform: translateY(-2px);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.5), 0 12px 36px rgba(79, 70, 229, 0.13);
+  transform: translateY(-3px);
 }
 
 .tutor-list-card:active {
@@ -358,27 +459,28 @@
 }
 
 .tutor-list-photo {
-  width: 80px;
-  height: 80px;
+  width: 88px;
+  height: 88px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
-  border: 3px solid #e2e8f0;
+  border: 3px solid white;
+  box-shadow: 0 0 0 3px #bfdbfe, 0 4px 14px rgba(30,64,175,0.15);
 }
 
 .tutor-list-avatar {
-  width: 80px;
-  height: 80px;
+  width: 88px;
+  height: 88px;
   border-radius: 50%;
-  background: rgb(8, 8, 85);
+  background: linear-gradient(135deg, #0d1b6e 0%, #1e40af 100%);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: 800;
   flex-shrink: 0;
-  border: 3px solid rgba(8, 8, 85, 0.2);
+  box-shadow: 0 0 0 3px #bfdbfe, 0 4px 16px rgba(13,27,110,0.25);
 }
 
 .registered-tutor-card { cursor: pointer; }
@@ -430,54 +532,68 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
+  flex-wrap: wrap;
 }
 
 .tutor-list-name {
-  font-size: 17px;
-  font-weight: 700;
+  font-size: 19px;
+  font-weight: 800;
   color: #0f172a;
   margin: 0;
+  letter-spacing: -0.3px;
 }
 
 .tutor-list-badge {
   font-size: 11px;
-  font-weight: 600;
-  padding: 3px 10px;
+  font-weight: 700;
+  padding: 4px 12px;
   border-radius: 100px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   white-space: nowrap;
+  text-transform: capitalize;
+}
+
+.tutor-list-email {
+  font-size: 12.5px;
+  color: #1e40af;
+  margin: 0 0 5px;
+  font-weight: 500;
 }
 
 .tutor-list-meta {
   font-size: 13px;
   color: #64748b;
-  margin: 0 0 6px;
+  margin: 0 0 7px;
   font-weight: 500;
 }
 
 .tutor-list-desc {
   font-size: 14px;
   color: #475569;
-  margin: 0 0 6px;
-  line-height: 1.5;
+  margin: 0 0 8px;
+  line-height: 1.6;
 }
 
 .tutor-list-avail {
-  font-size: 13px;
-  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: #475569;
+  background: #f1f5f9;
+  border-radius: 100px;
+  padding: 4px 12px;
   margin: 0;
 }
 
-.tutor-list-email {
+.tutor-list-avail::before {
+  content: '🗓';
   font-size: 12px;
-  color: #1e40af;
-  margin: 0 0 4px;
-  font-weight: 500;
 }
 
 .avail-label {
-  font-weight: 600;
+  font-weight: 700;
   color: #334155;
 }
 
@@ -490,24 +606,24 @@
 }
 
 .tutor-list-btn {
-  padding: 10px 26px;
-  background: #1e40af;
+  padding: 13px 32px;
+  background: linear-gradient(135deg, #0d1b6e 0%, #1e40af 100%);
   color: white;
   border: none;
   border-radius: 100px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
   white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  box-shadow: 0 4px 16px rgba(13, 27, 110, 0.35);
+  font-family: inherit;
+  letter-spacing: 0.02em;
 }
 
 .tutor-list-btn:hover {
-  background: #2563eb;
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 8px 20px rgba(30, 64, 175, 0.45);
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 10px 28px rgba(13, 27, 110, 0.45);
 }
 
 .show-more-btn {
@@ -574,40 +690,50 @@
 
 .group-session-card {
   background: #fff;
-  border: 1px solid #E5E7EB;
-  border-top: 3px solid var(--accent);
-  border-radius: 14px;
-  padding: 20px;
+  border: none;
+  border-radius: 20px;
+  padding: 22px 22px 20px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  gap: 16px;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+  box-shadow: 0 0 0 1.5px rgba(79, 70, 229, 0.18), 0 4px 14px rgba(0,0,0,0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.group-session-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 20px 20px 0 0;
 }
 
 .group-session-card:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.5), 0 12px 36px rgba(79, 70, 229, 0.13);
   transform: translateY(-4px);
-  border-color: #CBD5E1;
 }
 
 .gsc-top {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  align-items: flex-start;
+  gap: 14px;
 }
 
 .gsc-avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
-  font-size: 18px;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  font-size: 20px;
   font-weight: 800;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.18);
 }
 
 .gsc-header {
@@ -617,13 +743,14 @@
 
 .gsc-name {
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 800;
   color: #0f172a;
   margin: 0 0 2px;
+  letter-spacing: -0.2px;
 }
 
 .gsc-subject {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 600;
   color: #334155;
   margin: 0;
@@ -631,14 +758,12 @@
 
 .gsc-host {
   font-size: 12px;
-  color: #64748b;
-  margin: 3px 0 0;
+  color: #94a3b8;
+  margin: 4px 0 0;
   font-weight: 400;
 }
 
-.gsc-host-label {
-  color: #94a3b8;
-}
+.gsc-host-label { color: #b0bac8; }
 
 .gsc-host-email {
   color: #1e40af;
@@ -646,12 +771,14 @@
 }
 
 .gsc-topic-badge {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 3px 10px;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 4px 11px;
   border-radius: 100px;
   white-space: nowrap;
   flex-shrink: 0;
+  letter-spacing: 0.04em;
+  margin-top: 2px;
 }
 
 .gsc-pills {
@@ -663,26 +790,34 @@
 .gsc-pill {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   background: #f1f5f9;
   color: #475569;
-  font-size: 13px;
-  font-weight: 500;
-  padding: 5px 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 5px 13px;
   border-radius: 100px;
+  border: 1px solid #e2e8f0;
+}
+
+.gsc-pill-icon {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  color: #64748b;
 }
 
 .gsc-desc {
-  font-size: 14px;
+  font-size: 13.5px;
   color: #64748b;
   margin: 0;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
 .gsc-spots {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 7px;
 }
 
 .gsc-spots-row {
@@ -692,8 +827,8 @@
 }
 
 .gsc-spots-text {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12.5px;
+  font-weight: 600;
   color: #475569;
 }
 
@@ -708,48 +843,64 @@
   color: #9ca3af;
 }
 
+.session-progress {
+  height: 6px;
+  background: #f1f5f9;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.session-progress-bar {
+  height: 100%;
+  border-radius: 10px;
+  background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 70%, white));
+  transition: width 0.4s ease;
+}
+
 .gsc-btn {
   width: 100%;
-  padding: 9px 16px;
+  padding: 11px 16px;
   border: none;
-  border-radius: 8px;
-  font-size: 13px;
+  border-radius: 100px;
+  font-size: 13.5px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.2s ease;
+  font-family: inherit;
   color: white;
   text-align: center;
+  letter-spacing: 0.02em;
 }
 
 .gsc-btn-join {
-  background: #1e40af;
-  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.25);
+  background: linear-gradient(135deg, #0d1b6e 0%, #1e40af 100%);
+  box-shadow: 0 4px 14px rgba(13,27,110,0.3);
 }
 
 .gsc-btn-join:hover {
-  background: #1e3a8a;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(13,27,110,0.42);
 }
 
 .gsc-btn-cancel {
   background: transparent;
   color: #dc2626;
-  border: 1.5px solid #dc2626;
+  border: 1.5px solid #fca5a5;
 }
 
 .gsc-btn-cancel:hover {
   background: #dc2626;
+  border-color: #dc2626;
   color: white;
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(220,38,38,0.35);
 }
 
 .gsc-btn-full {
-  background: #e2e8f0;
+  background: #f1f5f9;
   color: #94a3b8;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 /* ── 1-on-1 session cards (tutor Schedule view) ── */
@@ -935,31 +1086,17 @@
     transition: width 0.3s ease;
 }
 @media (max-width: 1024px) {
-    .schedule-hero {
-        height: 300px;
-    }
-
-    .hero-text h1 {
-        font-size: 40px;
-    }
-
-    .hero-text p {
-        font-size: 16px;
-    }
+    .schedule-hero { height: 320px; }
 }
 
 @media (max-width: 768px) {
-    .schedule-hero {
-        height: 240px;
-    }
+    .schedule-stats-bar { gap: 0; flex-wrap: wrap; }
+    .sched-stat { padding: 10px 20px; }
+    .sched-stat-div { display: none; }
+}
 
-    .hero-text h1 {
-        font-size: 28px;
-    }
-
-    .hero-text p {
-        font-size: 14px;
-    }
+@media (max-width: 768px) {
+    .schedule-hero { height: 260px; }
 
     .tutor-list-card {
         flex-wrap: wrap;

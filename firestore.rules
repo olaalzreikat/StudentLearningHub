@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users: each user can read/write only their own doc
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Messages: sender can create, sender/recipient can read, recipient can update (mark read)
+    match /messages/{messageId} {
+      allow read: if request.auth != null && (
+        resource.data.fromEmail == request.auth.token.email ||
+        resource.data.toEmail   == request.auth.token.email
+      );
+      allow create: if request.auth != null &&
+        request.resource.data.fromEmail == request.auth.token.email;
+      allow update: if request.auth != null &&
+        resource.data.toEmail == request.auth.token.email;
+    }
+
+    // Tutor sessions: any authenticated user can read; tutors write their own
+    match /tutorSessions/{sessionId} {
+      allow read: if request.auth != null;
+      allow create, update, delete: if request.auth != null &&
+        request.resource.data.tutorId == request.auth.uid;
+    }
+
+    // Tutor profiles: any authenticated user can read; each tutor writes their own
+    match /tutorProfiles/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}

@@ -20,7 +20,7 @@ import {
 } from "../utils/localStorage";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import TutorModal from "../components/TutorModal";
 import tutor2 from "../assets/tutor2.jpg";
@@ -84,46 +84,74 @@ function Schedule() {
 
   const progress = getProgress();
 
-  useEffect(() => { loadData(); }, [refreshTrigger]);
-
-  async function loadData() {
-    // Load joined sessions from localStorage (per-user)
+  // Sync localStorage data immediately on mount (zero delay)
+  useEffect(() => {
     const savedAgenda = localStorage.getItem(getAgendaKey());
     if (savedAgenda) {
       const agendaItems = JSON.parse(savedAgenda);
-      const groupSessionIds = agendaItems
-        .filter(item => item.type === 'group')
-        .map(item => item.groupId);
-      setJoinedSessions(groupSessionIds);
+      setJoinedSessions(agendaItems.filter(i => i.type === 'group').map(i => i.groupId));
     }
 
-    // Load session counts from localStorage
     const savedCounts = localStorage.getItem('groupSessionCounts');
     if (savedCounts) {
       setSessionCounts(JSON.parse(savedCounts));
     } else {
-      const initialCounts = {};
-      groupSessionData.forEach(session => {
-        initialCounts[session.id] = session.currentSize;
-      });
-      setSessionCounts(initialCounts);
-      localStorage.setItem('groupSessionCounts', JSON.stringify(initialCounts));
+      const initial = {};
+      groupSessionData.forEach(s => { initial[s.id] = s.currentSize; });
+      setSessionCounts(initial);
+      localStorage.setItem('groupSessionCounts', JSON.stringify(initial));
     }
 
-    // Load tutor-posted sessions from Firestore (fall back to localStorage)
-    try {
-      const snap = await getDocs(collection(db, 'tutorSessions'));
-      const all = snap.docs.map(d => d.data());
-      setTutorSessions(all.filter(s => new Date(`${s.date}T${s.time}`) >= new Date()));
-    } catch {
-      const savedTutorSessions = localStorage.getItem('tutorPostedSessions');
-      if (savedTutorSessions) {
-        const all = JSON.parse(savedTutorSessions);
-        setTutorSessions(all.filter(s => new Date(`${s.date}T${s.time}`) >= new Date()));
-      }
-    }
+    // Seed tutor sessions from localStorage immediately so page isn't blank
+    const savedSessions = localStorage.getItem('tutorPostedSessions');
+    const localSessions = savedSessions ? JSON.parse(savedSessions) : [];
+    const now = new Date();
+    setTutorSessions(localSessions.filter(s => new Date(`${s.date}T${s.time}`) >= now));
 
-    // Load accepted 1-on-1 requests for this tutor (upcoming only)
+    // Seed tutor profiles from localStorage immediately
+    const savedProfiles = localStorage.getItem('tutorProfiles');
+    const localMap = savedProfiles ? JSON.parse(savedProfiles) : {};
+    setRegisteredTutors(Object.entries(localMap).filter(([, p]) => p.name).map(([uid, p]) => ({ ...p, uid })));
+  }, []);
+
+  // Real-time Firestore listeners — push updates automatically, no polling needed
+  useEffect(() => {
+    const unsubSessions = onSnapshot(collection(db, 'tutorSessions'), (snap) => {
+      const firestoreSessions = snap.docs.map(d => d.data());
+      const savedSessions = localStorage.getItem('tutorPostedSessions');
+      const localSessions = savedSessions ? JSON.parse(savedSessions) : [];
+      const firestoreIds = new Set(firestoreSessions.map(s => s.id));
+      const merged = [...firestoreSessions, ...localSessions.filter(s => !firestoreIds.has(s.id))];
+      localStorage.setItem('tutorPostedSessions', JSON.stringify(merged));
+      const now = new Date();
+      setTutorSessions(merged.filter(s => new Date(`${s.date}T${s.time}`) >= now));
+    }, () => {});
+
+    const unsubProfiles = onSnapshot(collection(db, 'tutorProfiles'), (snap) => {
+      const firestoreProfiles = snap.docs.map(d => ({ ...d.data(), uid: d.id })).filter(p => p.name);
+      if (firestoreProfiles.length === 0) return;
+      const savedProfiles = localStorage.getItem('tutorProfiles');
+      const localMap = savedProfiles ? JSON.parse(savedProfiles) : {};
+      const localProfiles = Object.entries(localMap).filter(([, p]) => p.name).map(([uid, p]) => ({ ...p, uid }));
+      const firestoreUids = new Set(firestoreProfiles.map(p => p.uid));
+      const merged = [...firestoreProfiles, ...localProfiles.filter(p => !firestoreUids.has(p.uid))];
+      // Update localStorage cache
+      const newMap = {};
+      merged.forEach(p => { newMap[p.uid] = p; });
+      localStorage.setItem('tutorProfiles', JSON.stringify(newMap));
+      setRegisteredTutors(merged);
+    }, () => {});
+
+    return () => { unsubSessions(); unsubProfiles(); };
+  }, []);
+
+  // Reload agenda/progress/1-on-1 requests when triggered (e.g. after modal close)
+  useEffect(() => {
+    const savedAgenda = localStorage.getItem(getAgendaKey());
+    if (savedAgenda) {
+      const agendaItems = JSON.parse(savedAgenda);
+      setJoinedSessions(agendaItems.filter(i => i.type === 'group').map(i => i.groupId));
+    }
     const savedRequests = localStorage.getItem('oneOnOneRequests');
     if (savedRequests) {
       const allReqs = JSON.parse(savedRequests);
@@ -136,23 +164,7 @@ function Schedule() {
         ).sort((a, b) => new Date(a.preferredDate) - new Date(b.preferredDate))
       );
     }
-
-    // Load registered tutor profiles from Firestore (fall back to localStorage)
-    try {
-      const snap = await getDocs(collection(db, 'tutorProfiles'));
-      setRegisteredTutors(snap.docs.map(d => ({ ...d.data(), uid: d.id })).filter(p => p.name));
-    } catch {
-      const savedProfiles = localStorage.getItem('tutorProfiles');
-      if (savedProfiles) {
-        const profilesMap = JSON.parse(savedProfiles);
-        setRegisteredTutors(
-          Object.entries(profilesMap)
-            .filter(([, p]) => p.name)
-            .map(([uid, p]) => ({ ...p, uid }))
-        );
-      }
-    }
-  }
+  }, [refreshTrigger]);
 
   const showNotificationMessage = (message) => {
     setNotificationMessage(message);
@@ -346,6 +358,22 @@ function Schedule() {
     const all = saved ? JSON.parse(saved) : [];
     all.push(req);
     localStorage.setItem('oneOnOneRequests', JSON.stringify(all));
+
+    const agendaItem = {
+      title: `1-on-1 with ${req.tutorName}`,
+      subject: req.subject.charAt(0).toUpperCase() + req.subject.slice(1),
+      date: req.preferredDate,
+      time: req.preferredTime,
+      type: 'one-on-one',
+      requestId: req.id,
+    };
+    const savedAgenda = localStorage.getItem(getAgendaKey());
+    const existingAgenda = savedAgenda ? JSON.parse(savedAgenda) : [];
+    const updatedAgenda = [...existingAgenda, agendaItem].sort((a, b) =>
+      new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`)
+    );
+    localStorage.setItem(getAgendaKey(), JSON.stringify(updatedAgenda));
+
     setRequestModal(null);
     setRequestForm({ subject: '', message: '', date: '', time: '' });
     showNotificationMessage(`Request sent to ${requestModal.title || requestModal.name}!`);
@@ -418,7 +446,7 @@ function Schedule() {
   const hasResults = filtered.tutors.length > 0 || filtered.groupSessions.length > 0;
 
   return (
-    <div className="resources-page">
+    <div className="resources-page schedule-page">
       {/* Notification aria-live announces it to screen readers automatically */}
       <div role="status" aria-live="polite" aria-atomic="true">
         {showNotification && (
@@ -446,6 +474,7 @@ function Schedule() {
           </div>
         </div>
       </div>
+
 
       {/* Main Container */}
       <div className="resources-container">
@@ -697,7 +726,16 @@ function Schedule() {
                     </div>
 
                     <div className="gsc-pills">
-                      <span className="gsc-pill">{new Date(group.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                      <span className="gsc-pill">
+                        <svg viewBox="0 0 16 16" fill="none" className="gsc-pill-icon"><rect x="1" y="2" width="14" height="13" rx="2" stroke="currentColor" strokeWidth="1.4"/><path d="M1 6h14" stroke="currentColor" strokeWidth="1.4"/><path d="M5 1v2M11 1v2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>
+                        {new Date(group.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                      </span>
+                      {group.time && (
+                        <span className="gsc-pill">
+                          <svg viewBox="0 0 16 16" fill="none" className="gsc-pill-icon"><circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.4"/><path d="M8 5v3.5l2.5 1.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                          {group.time}
+                        </span>
+                      )}
                     </div>
 
                     <p className="gsc-desc">{group.description.split(',').slice(1).join(',').trim()}</p>

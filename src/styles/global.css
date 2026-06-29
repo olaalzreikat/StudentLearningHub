@@ -9,6 +9,8 @@
 body {
     font-family: 'Poppins', Arial, sans-serif;
     background: var(--background);
+    color: var(--text-primary);
+    transition: background-color 0.25s ease, color 0.15s ease;
 }
 
 .app {

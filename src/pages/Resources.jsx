@@ -4,6 +4,7 @@ import { videosData, quizzesData, problemsData, guidesData } from '../data/resou
 import { classesData } from '../data/classesData';
 import { lessonsData } from '../data/lessonsData';
 import { getProgress, markAsComplete, addActivity, checkAndAwardAchievements } from '../utils/localStorage';
+import { useFavorites } from '../contexts/FavoritesContext';
 import { getSubjectColor } from '../utils/subjectColors';
 import ClassModal from '../components/ClassModal';
 import './Resources.css';
@@ -29,6 +30,14 @@ function Resources() {
 
     // Trigger to reread progress after returning from a lesson/quiz tab
     const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+    // Favorites — Firestore-backed via context
+    const { favorites, toggleFavorite: _toggleFav, isFav } = useFavorites();
+
+    const toggleFav = (type, id, e) => {
+        e.stopPropagation();
+        _toggleFav(type, id);
+    };
 
     // Toast notification
     const [showNotification, setShowNotification] = useState(false);
@@ -234,7 +243,14 @@ const downloadFile = (guide) => {
         let guides = guidesData;
 
         // Apply category filter
-        if (activeFilter !== 'all') {
+        if (activeFilter === 'saved') {
+            const favs = getFavorites();
+            classes  = classes.filter(c  => (favs.classes  || []).includes(String(c.id)));
+            videos   = videos.filter(v   => (favs.videos   || []).includes(String(v.id)));
+            quizzes  = quizzes.filter(q  => (favs.quizzes  || []).includes(String(q.id)));
+            problems = problems.filter(p => (favs.problems  || []).includes(String(p.id)));
+            guides   = guides.filter(g   => (favs.guides   || []).includes(String(g.id)));
+        } else if (activeFilter !== 'all') {
             classes = classes.filter(c => c.subject.toLowerCase() === activeFilter);
             videos = videos.filter(v => v.topic && v.topic.toLowerCase() === activeFilter);
             quizzes = quizzes.filter(q => q.topic.toLowerCase() === activeFilter);
@@ -282,6 +298,9 @@ const downloadFile = (guide) => {
             <div className="resources-hero">
                 <div className="hero-content">
                     <div className="hero-text">
+                        <div className="resources-eyebrow">
+                            Student Resources
+                        </div>
                         <h1>Learning Resources</h1>
                         <p>Everything you need to master mathematics</p>
                     </div>
@@ -329,7 +348,15 @@ const downloadFile = (guide) => {
                         >
                             Trigonometry
                         </button>
-
+                        <button
+                            className={`category-btn saved-filter-btn ${activeFilter === 'saved' ? 'active' : ''}`}
+                            onClick={() => setActiveFilter('saved')}
+                        >
+                            <svg viewBox="0 0 24 24" fill={activeFilter === 'saved' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 14, height: 14 }}>
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                            </svg>
+                            Saved
+                        </button>
                     </div>
 
                     <div className="search-box">
@@ -345,11 +372,49 @@ const downloadFile = (guide) => {
                 </div>
 
                 {/* No Results */}
-                {!hasResults && (
+                {!hasResults && activeFilter !== 'saved' && (
                     <div className="no-resources">
                         No resources found. Try adjusting your filters.
                     </div>
                 )}
+                {!hasResults && activeFilter === 'saved' && (
+                    <div className="saved-empty">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        <p>No saved resources yet</p>
+                        <span>Tap the heart icon on any class, video, quiz, or guide to save it here</span>
+                    </div>
+                )}
+
+                {/* FAVORITES SECTION — shown whenever anything is saved, hidden on 'saved' filter tab */}
+                {activeFilter !== 'saved' && Object.values(favorites).some(arr => arr.length > 0) && (() => {
+                    const HEART = <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>;
+                    const chips = [
+                        ...(favorites.classes  || []).map(id => { const item = classesData.find(c => String(c.id) === id);  return item ? { type: 'Class',   label: item.title,  onClick: () => handleClassClick(item), onRemove: e => toggleFav('classes',  item.id,  e) } : null; }),
+                        ...(favorites.videos   || []).map(id => { const item = videosData.find(v => String(v.id)   === id); return item ? { type: 'Video',   label: item.title,  onClick: () => handleVideoClick(item), onRemove: e => toggleFav('videos',   item.id,  e) } : null; }),
+                        ...(favorites.quizzes  || []).map(id => { const item = quizzesData.find(q => String(q.id)  === id); return item ? { type: 'Quiz',    label: item.title,  onClick: null,                         onRemove: e => toggleFav('quizzes',  item.id,  e) } : null; }),
+                        ...(favorites.problems || []).map(id => { const item = problemsData.find(p => String(p.id) === id); return item ? { type: 'Problem', label: item.title,  onClick: null,                         onRemove: e => toggleFav('problems', item.id,  e) } : null; }),
+                        ...(favorites.guides   || []).map(id => { const item = guidesData.find(g => String(g.id)   === id); return item ? { type: 'Guide',   label: item.title,  onClick: null,                         onRemove: e => toggleFav('guides',   item.id,  e) } : null; }),
+                    ].filter(Boolean);
+                    if (!chips.length) return null;
+                    return (
+                        <div className="favorites-section">
+                            <div className="favorites-section-header">
+                                <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                                Saved
+                                <span className="fav-section-count">{chips.length}</span>
+                            </div>
+                            <div className="favorites-strip">
+                                {chips.map((chip, i) => (
+                                    <div key={i} className="fav-chip" onClick={chip.onClick || undefined} role={chip.onClick ? 'button' : undefined} tabIndex={chip.onClick ? 0 : undefined} onKeyDown={chip.onClick ? e => e.key === 'Enter' && chip.onClick() : undefined}>
+                                        <span className="fav-chip-type">{chip.type}</span>
+                                        <span className="fav-chip-title">{chip.label}</span>
+                                        <button className="fav-chip-remove" onClick={chip.onRemove} aria-label="Remove from saved">{HEART}</button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    );
+                })()}
 
                 {/* CONTINUE LEARNING SECTION */}
                 {/* CLASSES SECTION */}
@@ -370,6 +435,9 @@ const downloadFile = (guide) => {
 
                                 return (
                                     <div key={classItem.id} className="lesson-card" style={{ '--card-accent': accent }} onClick={() => handleClassClick(classItem)}>
+                                        <button className={`fav-btn fav-btn-card${isFav('classes', classItem.id) ? ' fav-active' : ''}`} onClick={e => toggleFav('classes', classItem.id, e)} aria-label={isFav('classes', classItem.id) ? 'Remove from saved' : 'Save'}>
+                                            <svg viewBox="0 0 24 24" fill={isFav('classes', classItem.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                                        </button>
                                         <div className="class-card-banner" style={{ background: accent }}>
                                             <div className="banner-math-bg" aria-hidden="true">
                                                 <span>π</span>
@@ -454,6 +522,9 @@ const downloadFile = (guide) => {
                                     <div key={video.id} className={`video-card${isCompleted ? ' video-card-done' : ''}`} style={{ '--card-accent': getSubjectColor(video.topic || '') }} onClick={() => handleVideoClick(video)} role="button" tabIndex={0} aria-label={`Watch video: ${video.title}`} onKeyDown={e => e.key === 'Enter' && handleVideoClick(video)}>
                                         <div className="video-card-top-row">
                                             {video.class && <div className="video-class-badge" style={{ background: getSubjectColor(video.topic || ''), color: '#fff' }}>{video.class}</div>}
+                                            <button className={`fav-btn fav-btn-video${isFav('videos', video.id) ? ' fav-active' : ''}`} onClick={e => toggleFav('videos', video.id, e)} aria-label={isFav('videos', video.id) ? 'Remove from saved' : 'Save'}>
+                                                <svg viewBox="0 0 24 24" fill={isFav('videos', video.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                                            </button>
                                         </div>
                                         <div className="video-preview">
                                             {video.videoUrl ? (
@@ -525,13 +596,20 @@ const downloadFile = (guide) => {
                                         return (
                                             <div key={quiz.id} className={`practice-card${isCompleted ? ' practice-card-done' : ''}`} style={{ '--practice-color': color, background: color + '08' }} onClick={() => handleQuizClick(quiz)} role="button" tabIndex={0} aria-label={`${isCompleted ? 'Retake' : 'Start'} quiz: ${quiz.title}`} onKeyDown={e => e.key === 'Enter' && handleQuizClick(quiz)}>
                                                 <div className="practice-card-left">
-                                                    <div className="practice-icon" style={{ background: color, color: 'white' }}>{letter}</div>
                                                     <div className="practice-info">
+                                                        <div className="practice-type-row">
+                                                            <span className="practice-type-badge" style={{ color, background: color + '22' }}>Quiz</span>
+                                                            <span className="practice-topic-pill">{quiz.topic}</span>
+                                                        </div>
                                                         <h4 className="quiz-title">{quiz.title}</h4>
                                                         <p className="quiz-description">{quiz.description}</p>
                                                         <p className="quiz-duration">{quiz.questions} questions · {quiz.duration}</p>
                                                     </div>
                                                 </div>
+                                                <div className="practice-card-actions">
+                                                <button className={`fav-btn${isFav('quizzes', quiz.id) ? ' fav-active' : ''}`} onClick={e => toggleFav('quizzes', quiz.id, e)} aria-label={isFav('quizzes', quiz.id) ? 'Remove from saved' : 'Save'}>
+                                                    <svg viewBox="0 0 24 24" fill={isFav('quizzes', quiz.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                                                </button>
                                                 <button
                                                     className={`practice-start-btn${isCompleted ? ' practice-start-done' : ''}`}
                                                     style={!isCompleted ? { background: color } : {}}
@@ -539,6 +617,7 @@ const downloadFile = (guide) => {
                                                 >
                                                     {isCompleted ? 'Retake' : 'Start'}
                                                 </button>
+                                            </div>
                                             </div>
                                         );
                                     })}
@@ -558,13 +637,20 @@ const downloadFile = (guide) => {
                                         return (
                                             <div key={problem.id} className={`practice-card${isCompleted ? ' practice-card-done' : ''}`} style={{ '--practice-color': color, background: color + '08' }} onClick={() => handleProblemClick(problem)} role="button" tabIndex={0} aria-label={`${isCompleted ? 'Retake' : 'Start'} problems: ${problem.title}`} onKeyDown={e => e.key === 'Enter' && handleProblemClick(problem)}>
                                                 <div className="practice-card-left">
-                                                    <div className="practice-icon" style={{ background: color, color: 'white' }}>{letter}</div>
                                                     <div className="practice-info">
+                                                        <div className="practice-type-row">
+                                                            <span className="practice-type-badge" style={{ color, background: color + '22' }}>Problem Set</span>
+                                                            <span className="practice-topic-pill">{problem.topic}</span>
+                                                        </div>
                                                         <h4 className="quiz-title">{problem.title}</h4>
                                                         <p className="quiz-description">{problem.description}</p>
                                                         <p className="quiz-duration">{problem.problems.length} problems · {problem.duration}</p>
                                                     </div>
                                                 </div>
+                                                <div className="practice-card-actions">
+                                                <button className={`fav-btn${isFav('problems', problem.id) ? ' fav-active' : ''}`} onClick={e => toggleFav('problems', problem.id, e)} aria-label={isFav('problems', problem.id) ? 'Remove from saved' : 'Save'}>
+                                                    <svg viewBox="0 0 24 24" fill={isFav('problems', problem.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                                                </button>
                                                 <button
                                                     className={`practice-start-btn${isCompleted ? ' practice-start-done' : ''}`}
                                                     style={!isCompleted ? { background: color } : {}}
@@ -572,6 +658,7 @@ const downloadFile = (guide) => {
                                                 >
                                                     {isCompleted ? 'Retake' : 'Start'}
                                                 </button>
+                                            </div>
                                             </div>
                                         );
                                     })}
@@ -606,6 +693,9 @@ const downloadFile = (guide) => {
                                 
                                 return (
                                     <div key={guide.id} className="download-card" style={{ '--card-accent': getSubjectColor(guide.topic), background: getSubjectColor(guide.topic) + '08' }}>
+                                        <button className={`fav-btn fav-btn-download${isFav('guides', guide.id) ? ' fav-active' : ''}`} onClick={e => toggleFav('guides', guide.id, e)} aria-label={isFav('guides', guide.id) ? 'Remove from saved' : 'Save'}>
+                                            <svg viewBox="0 0 24 24" fill={isFav('guides', guide.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                                        </button>
                                         <div className="download-content">
                                             <h4 className="download-title">{guide.title}</h4>
                                             <p className="download-description">{guide.description}</p>

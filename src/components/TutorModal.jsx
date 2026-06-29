@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getAgendaKey } from '../utils/localStorage';
 import './ClassModal.css';
 import './TutorModal.css';
 import '../pages/Dashboard.css';
@@ -16,7 +17,7 @@ function TutorModal({ tutorsData, onClose, onBook, readOnly = false }) {
 
     useEffect(() => {
         try {
-            const savedAgenda = localStorage.getItem('agendaItems');
+            const savedAgenda = localStorage.getItem(getAgendaKey());
             if (savedAgenda) setAgendaItems(JSON.parse(savedAgenda));
         } catch (error) {
             console.error('Error loading agenda:', error);
@@ -43,7 +44,7 @@ function TutorModal({ tutorsData, onClose, onBook, readOnly = false }) {
                 new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`)
             );
             setAgendaItems(updatedAgenda);
-            localStorage.setItem('agendaItems', JSON.stringify(updatedAgenda));
+            localStorage.setItem(getAgendaKey(), JSON.stringify(updatedAgenda));
             setNewAgendaItem({ title: '', subject: '', date: '', time: '' });
             setShowAgendaModal(false);
             showNotificationMessage('Session scheduled successfully!');

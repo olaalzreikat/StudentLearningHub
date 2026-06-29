@@ -87,6 +87,7 @@ function TutorDashboard() {
         localStorage.setItem(SESSIONS_KEY, JSON.stringify(all));
         setNewSession({ title: '', subject: '', topic: '', description: '', date: '', time: '', totalSize: 6 });
         setShowPostModal(false);
+        window.dispatchEvent(new CustomEvent('tutor-data-updated'));
         loadMySessions();
         notify('Session posted! Students can see it on the Schedule page.');
     };
@@ -96,6 +97,7 @@ function TutorDashboard() {
         const saved = localStorage.getItem(SESSIONS_KEY);
         const all = saved ? JSON.parse(saved) : [];
         localStorage.setItem(SESSIONS_KEY, JSON.stringify(all.filter(s => s.id !== sessionId)));
+        window.dispatchEvent(new CustomEvent('tutor-data-updated'));
         loadMySessions();
         notify('Session cancelled.');
     };
@@ -132,11 +134,14 @@ function TutorDashboard() {
         if (all[user?.uid]) setProfile(all[user.uid]);
     };
 
-    const handleSaveProfile = () => {
+    const handleSaveProfile = async () => {
+        const profileData = { ...profile, email: user.email };
         const saved = localStorage.getItem(PROFILES_KEY);
         const all = saved ? JSON.parse(saved) : {};
-        all[user.uid] = { ...profile, email: user.email };
+        all[user.uid] = profileData;
         localStorage.setItem(PROFILES_KEY, JSON.stringify(all));
+        try { await setDoc(doc(db, 'tutorProfiles', user.uid), profileData); } catch {}
+        window.dispatchEvent(new CustomEvent('tutor-data-updated'));
         setProfileSaved(true);
         setTimeout(() => setProfileSaved(false), 2500);
         notify('Profile saved! Students can now see you on the Schedule page.');

@@ -653,55 +653,54 @@ function Dashboard() {
 
     return (
         <div className="dashboard-page">
-            <div className="dashboard-container">
-                {/* Notification aria-live makes screen readers announce it automatically */}
+                {/* Fixed notification */}
                 <div role="status" aria-live="polite" aria-atomic="true">
-                    {showNotification && (
-                        <div className="notification">
-                            {notificationMessage}
-                        </div>
-                    )}
+                    {showNotification && <div className="notification">{notificationMessage}</div>}
                 </div>
 
-                {/* Welcome Banner Enhanced */}
-                <div className="welcome-banner-enhanced">
-                    <div className="welcome-content-enhanced">
-                        <div className="welcome-text-section">
-                            <h1>{getGreeting()}</h1>
-                            <p>Welcome back to your learning journey</p>
-                            <div className="welcome-stats">
-                                <div className="stat-bubble">
-                                    <span className="stat-number">{completedTasksCount}/{totalTasksCount}</span>
-                                    <span className="stat-label">Tasks Today</span>
-                                </div>
-                                <div className="stat-bubble">
-                                    <span className="stat-number">{completedResources}</span>
-                                    <span className="stat-label">Completed</span>
-                                </div>
-                                <div className="stat-bubble">
-                                    <span className="stat-number">{overallProgress}%</span>
-                                    <span className="stat-label">Overall Progress</span>
-                                </div>
-                                <div className="stat-bubble streak-bubble">
-                                    <span className="stat-number">{progress.streak || 0}</span>
-                                    <span className="stat-label">Day Streak</span>
-                                </div>
+                {/* Hero */}
+                <div className="dashboard-hero">
+                    <div className="hero-content">
+                        <div className="hero-text">
+                            <div className="dash-eyebrow">
+                                Student Dashboard
                             </div>
+                            <h1>{getGreeting()}</h1>
+                            <p>{getCurrentDate()}</p>
                         </div>
                     </div>
                 </div>
 
+                {/* Stats bar */}
+                <div className="dash-stats-bar">
+                    <div className="sched-stat">
+                        <span className="sched-stat-num">{completedTasksCount}/{totalTasksCount}</span>
+                        <span className="sched-stat-label">Tasks Today</span>
+                    </div>
+                    <div className="sched-stat-div" />
+                    <div className="sched-stat">
+                        <span className="sched-stat-num">{completedResources}</span>
+                        <span className="sched-stat-label">Completed</span>
+                    </div>
+                    <div className="sched-stat-div" />
+                    <div className="sched-stat">
+                        <span className="sched-stat-num">{overallProgress}%</span>
+                        <span className="sched-stat-label">Overall Progress</span>
+                    </div>
+                    <div className="sched-stat-div" />
+                    <div className="sched-stat">
+                        <span className="sched-stat-num">{progress.streak || 0}</span>
+                        <span className="sched-stat-label">Day Streak</span>
+                    </div>
+                </div>
+
+            <div className="dashboard-container">
                 {/* Quick Actions */}
                 <div className="quick-actions-section">
                     <h2 className="section-title">Quick Actions</h2>
                     <div className="quick-actions-grid">
                         {quickActions.map((action, index) => (
-                            <button
-                                key={index}
-                                className="quick-action-card"
-                                onClick={action.action}
-                                style={{ background: action.tint, borderLeftColor: action.accent }}
-                            >
+                            <button key={index} className="quick-action-card" onClick={action.action} style={{ borderLeftColor: action.accent }}>
                                 <span className="action-label" style={{ color: action.accent }}>{action.label}</span>
                                 <span className="action-arrow" style={{ color: action.accent }}>→</span>
                             </button>
@@ -806,74 +805,6 @@ function Dashboard() {
                             </div>
                         </div>
 
-                        {/* Recent Activity */}
-                        <div className="section">
-                            <div className="section-header">
-                                <h2>Recent Activity</h2>
-                                <button 
-                                    className="more-btn"
-                                    onClick={() => setShowAllLessons(!showAllLessons)}
-                                >
-                                    {showAllLessons ? 'Less' : 'More'}
-                                </button>
-                            </div>
-                            <div className="lessons-list">
-                                {lessonsToDisplay && lessonsToDisplay.map((activity, index) => {
-                                    if (!activity || !activity.type || !activity.title) return null;
-                                    
-                                    const icons = {
-                                        video: 'V',
-                                        lesson: 'L',
-                                        quiz: 'Q',
-                                        problems: 'P',
-                                        guide: 'G'
-                                    };
-
-                                    const colors = {
-                                        video: '#1e40af',
-                                        lesson: '#0d1b6e',
-                                        quiz: '#2451c7',
-                                        problems: '#dc2626',
-                                        guide: '#059669'
-                                    };
-
-                                    return (
-                                        <div
-                                            key={index}
-                                            className="lesson-item"
-                                            onClick={() => navigate('/resources')}
-                                            role="button"
-                                            tabIndex={0}
-                                            aria-label={`${capitalizeFirst(activity.type)}: ${activity.title}`}
-                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate('/resources'); }}
-                                            style={{ cursor: 'pointer' }}
-                                        >
-                                            <div className="lesson-icon" style={{ background: colors[activity.type] || '#6B7280' }}>
-                                                {icons[activity.type] || ''}
-                                            </div>
-                                            <div className="lesson-info">
-                                                <h4>{activity.title}</h4>
-                                                <span className="lesson-meta">
-                                                    {capitalizeFirst(activity.type)} • {activity.topic ? capitalizeFirst(activity.topic) : 'Mathematics'}
-                                                </span>
-                                            </div>
-                                            <div className="lesson-date">
-                                                {activity.timestamp ? new Date(activity.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Recent'}
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                                {(!progress.recentActivity || progress.recentActivity.length === 0) && (
-                                    <div className="no-lessons">
-                                        <p>Start learning to see your recent activity here!</p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Progress Charts */}
-                        <ProgressCharts progress={progress} />
-
                     </div>
 
                     {/* Right Column */}
@@ -932,38 +863,6 @@ function Dashboard() {
                         </div>
                         )}
 
-                        {/* Statistics */}
-                        <div className="statistics-card">
-                            <div className="stats-header">
-                                <h3>Your Statistics</h3>
-                                <button className="export-report-btn" onClick={downloadProgressReport} title="Download progress report">
-                                    Export
-                                </button>
-                            </div>
-                            
-                            <div className="stats-grid-small">
-                                <div className="stat-box" style={{ borderBottom: '3px solid #1e40af' }}>
-                                    <div className="stat-box-label">Videos</div>
-                                    <div className="stat-box-number" style={{ color: '#1e40af' }}>{completedVideos}</div>
-                                    <div className="stat-box-sublabel">of {totalVideos}</div>
-                                </div>
-                                <div className="stat-box" style={{ borderBottom: '3px solid #1e40af' }}>
-                                    <div className="stat-box-label">Lessons</div>
-                                    <div className="stat-box-number" style={{ color: '#1e40af' }}>{completedLessons}</div>
-                                    <div className="stat-box-sublabel">of {totalLessons}</div>
-                                </div>
-                                <div className="stat-box" style={{ borderBottom: '3px solid #1e40af' }}>
-                                    <div className="stat-box-label">Quizzes</div>
-                                    <div className="stat-box-number" style={{ color: '#1e40af' }}>{completedQuizzes}</div>
-                                    <div className="stat-box-sublabel">of {totalQuizzes}</div>
-                                </div>
-                                <div className="stat-box" style={{ borderBottom: '3px solid #1e40af' }}>
-                                    <div className="stat-box-label">Problems</div>
-                                    <div className="stat-box-number" style={{ color: '#1e40af' }}>{completedProblems}</div>
-                                    <div className="stat-box-sublabel">of {totalProblems}</div>
-                                </div>
-                            </div>
-                        </div>
 
                                 {/* Become a Tutor CTA */}
                         <div className="become-tutor-card" onClick={() => navigate('/apply')} role="button" tabIndex={0} onKeyDown={e => e.key === 'Enter' && navigate('/apply')}>
@@ -1145,6 +1044,54 @@ function Dashboard() {
                     </div>
                 </div>
 
+                {/* Recent Activity + Progress Charts — full width below grid */}
+                <div className="activity-charts-row">
+                    <div className="section activity-section">
+                        <div className="section-header">
+                            <h2>Recent Activity</h2>
+                        </div>
+                        <div className="lessons-list">
+                            {(progress.recentActivity || []).slice(0, 5).map((activity, index) => {
+                                if (!activity || !activity.type || !activity.title) return null;
+                                const icons = { video: 'V', lesson: 'L', quiz: 'Q', problems: 'P', guide: 'G' };
+                                const colors = { video: '#1e40af', lesson: '#0d1b6e', quiz: '#2451c7', problems: '#dc2626', guide: '#059669' };
+                                return (
+                                    <div key={index} className="lesson-item" onClick={() => navigate('/resources')} role="button" tabIndex={0} style={{ cursor: 'pointer' }}>
+                                        <div className="lesson-icon" style={{ background: colors[activity.type] || '#6B7280' }}>{icons[activity.type] || ''}</div>
+                                        <div className="lesson-info">
+                                            <h4>{activity.title}</h4>
+                                            <span className="lesson-meta">{activity.type ? activity.type.charAt(0).toUpperCase() + activity.type.slice(1) : ''} • {activity.topic ? activity.topic.charAt(0).toUpperCase() + activity.topic.slice(1) : 'Mathematics'}</span>
+                                        </div>
+                                        <div className="lesson-date">{activity.timestamp ? new Date(activity.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Recent'}</div>
+                                    </div>
+                                );
+                            })}
+                            {(!progress.recentActivity || progress.recentActivity.length === 0) && (
+                                <div className="no-lessons"><p>Start learning to see your recent activity here!</p></div>
+                            )}
+                        </div>
+                    </div>
+                    <div className="charts-section">
+                        <ProgressCharts progress={progress} />
+                        <div className="dashboard-messages-card dashboard-messages-card--compact">
+                            <div className="dashboard-messages-left">
+                                <div className="dashboard-messages-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 className="dashboard-messages-title">Messages</h3>
+                                    <p className="dashboard-messages-sub">Send and receive messages from tutors and students</p>
+                                </div>
+                            </div>
+                            <button className="dashboard-messages-btn" onClick={() => navigate('/messages')}>
+                                Open Inbox
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Task Modal */}
                 {showTaskModal && (
                     <div className="modal-overlay" onClick={() => setShowTaskModal(false)} role="presentation">
@@ -1189,26 +1136,6 @@ function Dashboard() {
                         </div>
                     </div>
                 )}
-
-                {/* Messages shortcut */}
-                <div className="dashboard-section">
-                    <div className="dashboard-messages-card">
-                        <div className="dashboard-messages-left">
-                            <div className="dashboard-messages-icon">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 className="dashboard-messages-title">Messages</h3>
-                                <p className="dashboard-messages-sub">Send and receive messages from tutors and students</p>
-                            </div>
-                        </div>
-                        <button className="dashboard-messages-btn" onClick={() => navigate('/messages')}>
-                            Open Inbox
-                        </button>
-                    </div>
-                </div>
 
                 {/* Review Modal */}
                 {reviewModal && (
