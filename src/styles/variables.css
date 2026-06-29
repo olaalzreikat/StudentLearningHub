@@ -27,18 +27,3 @@
     --surface-elevated: #eef2ff;
     --border:         #dde3f0;
 }
-
-/* ── Dark mode: deep-navy palette ─────────────────────────────
-   bg:       #0d1117   surface: #161c2d   elevated: #1e2540
-   text:     #e8edf5   muted:   #8a96b5   border:   #2d3a5e
-   accent:   #818cf8   accent-bg: #1a1f45
-   ──────────────────────────────────────────────────────────── */
-[data-theme="dark"] {
-    --text-primary:    #e8edf5;
-    --text-secondary:  #8a96b5;
-    --text-tertiary:   #404868;
-    --background:      #0d1117;
-    --surface:         #161c2d;
-    --surface-elevated:#1e2540;
-    --border:          #2d3a5e;
-}
