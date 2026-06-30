@@ -244,7 +244,7 @@ const downloadFile = (guide) => {
 
         // Apply category filter
         if (activeFilter === 'saved') {
-            const favs = getFavorites();
+            const favs = favorites;
             classes  = classes.filter(c  => (favs.classes  || []).includes(String(c.id)));
             videos   = videos.filter(v   => (favs.videos   || []).includes(String(v.id)));
             quizzes  = quizzes.filter(q  => (favs.quizzes  || []).includes(String(q.id)));

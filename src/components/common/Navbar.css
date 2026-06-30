@@ -640,3 +640,45 @@
         display: flex;
     }
 }
+
+@media (max-width: 480px) {
+    .nav-container {
+        padding: 10px 12px;
+    }
+
+    .logo-text img {
+        height: 32px;
+    }
+
+    .nav-lang-btn {
+        padding: 6px 10px;
+        font-size: 0.78rem;
+    }
+
+    .nav-lang-caret {
+        display: none;
+    }
+
+    /* Hide text on login/signup buttons, keep them as compact icons */
+    .nav-login-btn {
+        padding: 7px 12px;
+        font-size: 0.78rem;
+    }
+
+    /* On very small screens, hide the outline "Log in" and only show "Sign up" */
+    .nav-login-outline {
+        display: none;
+    }
+
+    .account-role-label {
+        display: none;
+    }
+
+    .account-chevron {
+        display: none;
+    }
+
+    .account-btn {
+        padding: 6px;
+    }
+}

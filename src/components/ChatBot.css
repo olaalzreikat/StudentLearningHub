@@ -204,31 +204,28 @@
 
 @media (max-width: 520px) {
   #chatbot-toggler {
-    right: 20px;
-    bottom: 20px;
+    right: 16px;
+    bottom: 16px;
+  }
+
+  .chatbot-popup {
+    width: calc(100vw - 24px);
+    right: 12px;
+    bottom: 76px;
   }
 
   .chatbot-popup .chat-header {
     padding: 12px 15px;
   }
   .chat-body {
-    padding: 25px 15px;
+    padding: 20px 14px;
+    height: 55vh;
   }
   .chat-footer {
-    padding: 10px 15px 15px;
+    padding: 10px 14px 14px;
   }
-}
 
-@media (max-width: 500px){
-  .chatbot-popup{
-    width: 320px;
+  .header-info .logo-text {
+    font-size: 1.1rem;
   }
-}
-@media (max-width: 400px){
-  .chatbot-popup{
-    width: 220px;
-  }
-  .chat-header .header-info {
-  text-align: center;
-}
 }
