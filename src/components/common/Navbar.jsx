@@ -221,17 +221,19 @@ function Navbar() {
                                         </button>
                                     )}
 
-                                    <div className="dropdown-divider" />
-                                    <button
-                                        className="dropdown-role-switch-btn"
-                                        onClick={async () => {
-                                            setIsAccountOpen(false);
-                                            await switchRole(role === 'tutor' ? 'student' : 'tutor');
-                                            navigate('/dashboard');
-                                        }}
-                                    >
-                                        {role === 'tutor' ? 'Switch to Student view' : 'Switch to Tutor view'}
-                                    </button>
+                                    {(role === 'tutor' || user?.email === 'oalzreikat@gmail.com') && (<>
+                                        <div className="dropdown-divider" />
+                                        <button
+                                            className="dropdown-role-switch-btn"
+                                            onClick={async () => {
+                                                setIsAccountOpen(false);
+                                                await switchRole(role === 'tutor' ? 'student' : 'tutor');
+                                                navigate('/dashboard');
+                                            }}
+                                        >
+                                            {role === 'tutor' ? 'Switch to Student view' : 'Switch to Tutor view'}
+                                        </button>
+                                    </>)}
                                     <div className="dropdown-divider" />
                                     <button className="dropdown-logout-btn" onClick={handleLogout}>
                                         Log out
