@@ -6,7 +6,8 @@ import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { subjects } from '../utils/subjectColors';
-import { videosData, quizzesData, problemsData, lessonsData, guidesData } from '../data/resourcesData';
+import { videosData, quizzesData, problemsData, guidesData } from '../data/resourcesData';
+import { lessonsData } from '../data/lessonsData';
 import ProgressCharts from '../components/ProgressCharts';
 import './Dashboard.css';
 
