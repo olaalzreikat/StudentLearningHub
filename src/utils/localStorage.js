@@ -192,7 +192,6 @@ export const addActivity = (type, title, topic) => {
     }
     
     // Update streak: increment if yesterday, reset if gap, keep if already active today
-    const today = new Date().toDateString();
     const yesterday = new Date(Date.now() - 86400000).toDateString();
     const lastDay = progress.lastActivity ? new Date(progress.lastActivity).toDateString() : null;
     if (lastDay === today) {
