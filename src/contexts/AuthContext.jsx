@@ -42,8 +42,8 @@ export function AuthProvider({ children }) {
             setCurrentUser(firebaseUser?.uid ?? null);
 
             if (firebaseUser) {
-                // oalzreikat1@gmail.com is always student — fix any stale tutor role
-                if (firebaseUser.email === 'oalzreikat1@gmail.com') {
+                // Only oalzreikat@gmail.com can ever be tutor — everyone else is always student
+                if (firebaseUser.email !== 'oalzreikat@gmail.com') {
                     setRole('student');
                     localStorage.setItem(roleKey(firebaseUser.uid), 'student');
                     saveRoleToFirestore(firebaseUser.uid, firebaseUser.email, 'student');
@@ -57,19 +57,15 @@ export function AuthProvider({ children }) {
                     setRole(cached);
                     fetchRoleFromFirestore(firebaseUser.uid).then(firestoreRole => {
                         if (firestoreRole && firestoreRole !== cached) {
-                            // Firestore has a different role — use it (admin may have changed it)
                             setRole(firestoreRole);
                             localStorage.setItem(roleKey(firebaseUser.uid), firestoreRole);
                         } else if (!firestoreRole) {
-                            // Firestore missing the role — re-save from localStorage so other devices get it
                             saveRoleToFirestore(firebaseUser.uid, firebaseUser.email, cached);
                         }
                     });
                 } else {
-                    // No local cache — wait for Firestore before deciding role
-                    // (avoids incorrectly defaulting tutors to 'student' on fresh browsers)
                     fetchRoleFromFirestore(firebaseUser.uid).then(firestoreRole => {
-                        const finalRole = firestoreRole || 'student';
+                        const finalRole = firestoreRole || 'tutor';
                         setRole(finalRole);
                         localStorage.setItem(roleKey(firebaseUser.uid), finalRole);
                     });
