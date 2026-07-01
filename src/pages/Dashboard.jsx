@@ -121,12 +121,11 @@ function Dashboard() {
             const fresh = getProgress();
             if (fresh) setProgress(fresh);
         };
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible') reload();
-        });
+        const onVisibility = () => { if (document.visibilityState === 'visible') reload(); };
+        document.addEventListener('visibilitychange', onVisibility);
         window.addEventListener('focus', reload);
         return () => {
-            document.removeEventListener('visibilitychange', reload);
+            document.removeEventListener('visibilitychange', onVisibility);
             window.removeEventListener('focus', reload);
         };
     }, []);
@@ -134,6 +133,12 @@ function Dashboard() {
     // Firestore cross-device sync — runs after local load
     useEffect(() => {
         if (!user?.uid) return;
+
+        // Auth uid is now available — re-read localStorage with the user-specific key.
+        // The initial useEffect ran before auth fired and may have used the generic key.
+        const localProgress = getProgress();
+        setProgress(localProgress);
+
         loadProgressFromFirestore(user.uid).then(firestoreProgress => {
             if (!firestoreProgress) return;
             setProgress(local => {
