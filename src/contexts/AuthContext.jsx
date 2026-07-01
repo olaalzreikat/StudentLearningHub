@@ -42,6 +42,14 @@ export function AuthProvider({ children }) {
             setCurrentUser(firebaseUser?.uid ?? null);
 
             if (firebaseUser) {
+                // oalzreikat1@gmail.com is always student — fix any stale tutor role
+                if (firebaseUser.email === 'oalzreikat1@gmail.com') {
+                    setRole('student');
+                    localStorage.setItem(roleKey(firebaseUser.uid), 'student');
+                    saveRoleToFirestore(firebaseUser.uid, firebaseUser.email, 'student');
+                    return;
+                }
+
                 const cached = localStorage.getItem(roleKey(firebaseUser.uid));
 
                 if (cached) {

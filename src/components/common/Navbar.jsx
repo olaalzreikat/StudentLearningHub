@@ -221,7 +221,7 @@ function Navbar() {
                                         </button>
                                     )}
 
-                                    {(role === 'tutor' || user?.email === 'oalzreikat@gmail.com') && (<>
+                                    {user?.email === 'oalzreikat@gmail.com' && (<>
                                         <div className="dropdown-divider" />
                                         <button
                                             className="dropdown-role-switch-btn"
