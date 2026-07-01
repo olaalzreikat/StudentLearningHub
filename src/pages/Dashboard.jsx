@@ -892,7 +892,6 @@ function Dashboard() {
                         <div className="badges-card">
                             <div className="badges-header">
                                 <h3>Badges & Achievements</h3>
-                                <span className="badges-count">{(progress.achievements?.length || 0) + (completedVideos > 0 ? 1 : 0) + ((progress.streak||0)>=3 ? 1:0) + (completedQuizzes>0?1:0) + (completedLessons>0?1:0)}</span>
                             </div>
                             <div className="badges-grid">
                                 {completedVideos > 0 && (
