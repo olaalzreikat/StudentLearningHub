@@ -1,3 +1,6 @@
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
+
 let _currentUserId = null;
 export const setCurrentUser = (uid) => { _currentUserId = uid; };
 const getProgressKey = () => _currentUserId ? `mathmaster-progress-${_currentUserId}` : 'mathmaster-progress';
@@ -6,6 +9,22 @@ const getDailyTasksKey = () => _currentUserId ? `dailyTasks-${_currentUserId}` :
 const getQuizScoresKey = () => _currentUserId ? `quizScores-${_currentUserId}` : 'quizScores';
 
 export { getAgendaKey, getDailyTasksKey, getQuizScoresKey };
+
+export const loadProgressFromFirestore = async (uid) => {
+    try {
+        const snap = await Promise.race([
+            getDoc(doc(db, 'users', uid)),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
+        ]);
+        if (snap.exists()) {
+            const data = snap.data();
+            return data.progress || null;
+        }
+    } catch {
+        // Firestore unavailable — localStorage is the source of truth
+    }
+    return null;
+};
 
 // Initial progress structure
 const INITIAL_PROGRESS = {
@@ -59,9 +78,12 @@ export const getProgress = () => {
     }
 };
 
-// Save progress to localStorage
+// Save progress to localStorage and fire-and-forget sync to Firestore
 export const saveProgress = (progress) => {
     localStorage.setItem(getProgressKey(), JSON.stringify(progress));
+    if (_currentUserId) {
+        setDoc(doc(db, 'users', _currentUserId), { progress }, { merge: true }).catch(() => {});
+    }
 };
 
 // Check if an item is completed

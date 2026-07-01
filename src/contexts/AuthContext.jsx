@@ -12,7 +12,7 @@ async function fetchRoleFromFirestore(uid) {
     try {
         const snap = await Promise.race([
             getDoc(doc(db, 'users', uid)),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 4000))
+            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
         ]);
         if (snap.exists()) return snap.data().role;
     } catch {
@@ -49,8 +49,12 @@ export function AuthProvider({ children }) {
                     setRole(cached);
                     fetchRoleFromFirestore(firebaseUser.uid).then(firestoreRole => {
                         if (firestoreRole && firestoreRole !== cached) {
+                            // Firestore has a different role — use it (admin may have changed it)
                             setRole(firestoreRole);
                             localStorage.setItem(roleKey(firebaseUser.uid), firestoreRole);
+                        } else if (!firestoreRole) {
+                            // Firestore missing the role — re-save from localStorage so other devices get it
+                            saveRoleToFirestore(firebaseUser.uid, firebaseUser.email, cached);
                         }
                     });
                 } else {

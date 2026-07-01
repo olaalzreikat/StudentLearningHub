@@ -1,7 +1,9 @@
 // Dashboard page — shows the user's progress overview, quick actions, and upcoming schedule
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getProgress, getAgendaKey, getDailyTasksKey, getQuizScoresKey } from '../utils/localStorage';
+import { getProgress, saveProgress, getAgendaKey, getDailyTasksKey, getQuizScoresKey, loadProgressFromFirestore } from '../utils/localStorage';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { subjects } from '../utils/subjectColors';
 import { videosData, quizzesData, problemsData, lessonsData, guidesData } from '../data/resourcesData';
@@ -113,6 +115,59 @@ function Dashboard() {
         }
     }, []);
 
+    // Firestore cross-device sync — runs after local load
+    useEffect(() => {
+        if (!user?.uid) return;
+        loadProgressFromFirestore(user.uid).then(firestoreProgress => {
+            if (!firestoreProgress) return;
+            setProgress(local => {
+                const merged = {
+                    ...local,
+                    ...firestoreProgress,
+                    completedVideos:    [...new Set([...(local?.completedVideos    || []), ...(firestoreProgress.completedVideos    || [])])],
+                    completedLessons:   [...new Set([...(local?.completedLessons   || []), ...(firestoreProgress.completedLessons   || [])])],
+                    completedQuizzes:   [...new Set([...(local?.completedQuizzes   || []), ...(firestoreProgress.completedQuizzes   || [])])],
+                    completedProblems:  [...new Set([...(local?.completedProblems  || []), ...(firestoreProgress.completedProblems  || [])])],
+                    completedGuides:    [...new Set([...(local?.completedGuides    || []), ...(firestoreProgress.completedGuides    || [])])],
+                    completedActivities: Math.max(local?.completedActivities || 0, firestoreProgress.completedActivities || 0),
+                    streak: Math.max(local?.streak || 0, firestoreProgress.streak || 0),
+                    lastActivity: [local?.lastActivity, firestoreProgress.lastActivity]
+                        .filter(Boolean)
+                        .sort()
+                        .pop() || null,
+                    achievements: Object.values(
+                        [...(local?.achievements || []), ...(firestoreProgress.achievements || [])]
+                            .reduce((acc, a) => { acc[a.name] = a; return acc; }, {})
+                    ),
+                    recentActivity: [...(local?.recentActivity || []), ...(firestoreProgress.recentActivity || [])]
+                        .filter((a, i, arr) => a && a.title && arr.findIndex(b => b?.title === a.title && b?.timestamp === a.timestamp) === i)
+                        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                        .slice(0, 20),
+                };
+                saveProgress(merged);
+                return merged;
+            });
+        });
+
+        // Also load agenda items from Firestore
+        getDoc(doc(db, 'users', user.uid)).then(snap => {
+            if (!snap.exists()) return;
+            const data = snap.data();
+            if (data.agendaItems?.length) {
+                setAgendaItems(prev => {
+                    const merged = [...prev];
+                    data.agendaItems.forEach(item => {
+                        if (!merged.find(x => x.title === item.title && x.date === item.date && x.time === item.time)) {
+                            merged.push(item);
+                        }
+                    });
+                    const sorted = merged.sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`));
+                    localStorage.setItem(getAgendaKey(), JSON.stringify(sorted));
+                    return sorted;
+                });
+            }
+        }).catch(() => {});
+    }, [user?.uid]);
 
     const showNotificationMessage = (message) => {
         setNotificationMessage(message);
@@ -227,6 +282,7 @@ function Dashboard() {
             });
             setAgendaItems(updatedAgenda);
             localStorage.setItem(getAgendaKey(), JSON.stringify(updatedAgenda));
+            if (user?.uid) setDoc(doc(db, 'users', user.uid), { agendaItems: updatedAgenda }, { merge: true }).catch(() => {});
             setNewAgendaItem({ title: '', subject: '', date: '', time: '' });
             setShowAgendaModal(false);
             showNotificationMessage('Session scheduled successfully!');

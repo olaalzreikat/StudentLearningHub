@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { collection, getDocs, doc, setDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 import './AdminDashboard.css';
 
 // Admin access: log in with admin@equalizer.edu / any password
@@ -25,9 +27,26 @@ function AdminDashboard() {
         loadData();
     }, [isAdmin]);
 
-    function loadData() {
-        const apps = JSON.parse(localStorage.getItem(APPS_KEY) || '{}');
-        setApplications(Object.values(apps).sort((a, b) => new Date(b.appliedAt) - new Date(a.appliedAt)));
+    async function loadData() {
+        // Load from localStorage first (fast)
+        const localApps = JSON.parse(localStorage.getItem(APPS_KEY) || '{}');
+        if (Object.keys(localApps).length > 0) {
+            setApplications(Object.values(localApps).sort((a, b) => new Date(b.appliedAt) - new Date(a.appliedAt)));
+        }
+        // Then fetch from Firestore (cross-device applications)
+        try {
+            const snap = await getDocs(collection(db, 'tutorApplications'));
+            if (!snap.empty) {
+                const firestoreApps = {};
+                snap.forEach(d => { firestoreApps[d.id] = d.data(); });
+                // Merge: Firestore wins for each userId (more authoritative)
+                const merged = { ...localApps, ...firestoreApps };
+                localStorage.setItem(APPS_KEY, JSON.stringify(merged));
+                setApplications(Object.values(merged).sort((a, b) => new Date(b.appliedAt) - new Date(a.appliedAt)));
+            }
+        } catch {
+            // Firestore unavailable — show localStorage data
+        }
         const msgs = JSON.parse(localStorage.getItem('contactMessages') || '[]');
         setContactMessages(msgs.sort((a, b) => new Date(b.date) - new Date(a.date)));
     }
@@ -37,29 +56,35 @@ function AdminDashboard() {
         setTimeout(() => setNotif(''), 3000);
     }
 
-    function approveApp(userId) {
+    async function approveApp(userId) {
+        const reviewedAt = new Date().toISOString();
         const apps = JSON.parse(localStorage.getItem(APPS_KEY) || '{}');
         if (apps[userId]) {
             apps[userId].status = 'approved';
-            apps[userId].reviewedAt = new Date().toISOString();
+            apps[userId].reviewedAt = reviewedAt;
             localStorage.setItem(APPS_KEY, JSON.stringify(apps));
-            loadData();
-            showNotif('Application approved. Applicant can now complete training.');
         }
+        // Save to Firestore so the applicant sees the approval from any device
+        setDoc(doc(db, 'tutorApplications', userId), { status: 'approved', reviewedAt }, { merge: true }).catch(() => {});
+        loadData();
+        showNotif('Application approved. Applicant can now complete training.');
     }
 
-    function rejectApp(userId) {
+    async function rejectApp(userId) {
+        const reviewedAt = new Date().toISOString();
         const apps = JSON.parse(localStorage.getItem(APPS_KEY) || '{}');
         if (apps[userId]) {
             apps[userId].status = 'rejected';
-            apps[userId].reviewedAt = new Date().toISOString();
+            apps[userId].reviewedAt = reviewedAt;
             apps[userId].reviewNote = rejectNote;
             localStorage.setItem(APPS_KEY, JSON.stringify(apps));
-            setRejectModal(null);
-            setRejectNote('');
-            loadData();
-            showNotif('Application rejected.');
         }
+        // Save to Firestore so the applicant sees the rejection from any device
+        setDoc(doc(db, 'tutorApplications', userId), { status: 'rejected', reviewedAt, reviewNote: rejectNote }, { merge: true }).catch(() => {});
+        setRejectModal(null);
+        setRejectNote('');
+        loadData();
+        showNotif('Application rejected.');
     }
 
     function deleteMessage(idx) {

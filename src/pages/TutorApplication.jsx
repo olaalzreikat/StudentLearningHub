@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 import './TutorApplication.css';
 
 const PASS_THRESHOLD = 4; // 4 out of 5 per subject (80%)
@@ -212,8 +214,7 @@ const GRADES = ['9th', '10th', '11th', '12th'];
 const APPS_KEY = 'tutorApplications';
 
 function saveApplication(userId, email, info, subjectScores, passedSubjects) {
-    const apps = JSON.parse(localStorage.getItem(APPS_KEY) || '{}');
-    apps[userId] = {
+    const appData = {
         userId,
         email,
         name: info.name,
@@ -226,7 +227,12 @@ function saveApplication(userId, email, info, subjectScores, passedSubjects) {
         status: passedSubjects.length > 0 ? 'pending_review' : 'failed_quiz',
         appliedAt: new Date().toISOString(),
     };
+    // Save to localStorage for immediate access
+    const apps = JSON.parse(localStorage.getItem(APPS_KEY) || '{}');
+    apps[userId] = appData;
     localStorage.setItem(APPS_KEY, JSON.stringify(apps));
+    // Save to Firestore so admin and student can access from any device
+    setDoc(doc(db, 'tutorApplications', userId), appData, { merge: true }).catch(() => {});
 }
 
 function TutorApplication() {

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 import './ApplicationStatus.css';
 
 const APPS_KEY = 'tutorApplications';
@@ -44,10 +46,24 @@ function ApplicationStatus() {
 
     useEffect(() => {
         if (!user) return;
-        const apps = JSON.parse(localStorage.getItem(APPS_KEY) || '{}');
-        setApp(apps[user.uid] || null);
+        // Load training checklist from localStorage
         const savedChecked = JSON.parse(localStorage.getItem(`training-checked-${user.uid}`) || '{}');
         setChecked(savedChecked);
+
+        // Load application from localStorage first (fast), then check Firestore for latest
+        const localApps = JSON.parse(localStorage.getItem(APPS_KEY) || '{}');
+        if (localApps[user.uid]) setApp(localApps[user.uid]);
+
+        getDoc(doc(db, 'tutorApplications', user.uid)).then(snap => {
+            if (snap.exists()) {
+                const firestoreApp = snap.data();
+                setApp(firestoreApp);
+                // Sync back to localStorage so it's available offline
+                const apps = JSON.parse(localStorage.getItem(APPS_KEY) || '{}');
+                apps[user.uid] = firestoreApp;
+                localStorage.setItem(APPS_KEY, JSON.stringify(apps));
+            }
+        }).catch(() => {});
     }, [user]);
 
     function toggleCheck(id) {
@@ -63,6 +79,8 @@ function ApplicationStatus() {
             apps[user.uid].status = 'active';
             localStorage.setItem(APPS_KEY, JSON.stringify(apps));
         }
+        // Update Firestore application status to 'active'
+        setDoc(doc(db, 'tutorApplications', user.uid), { status: 'active' }, { merge: true }).catch(() => {});
         await switchRole('tutor');
         navigate('/dashboard');
     }
