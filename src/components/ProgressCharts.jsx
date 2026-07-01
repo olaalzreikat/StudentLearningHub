@@ -19,20 +19,23 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 function ProgressCharts({ progress }) {
-    // Weekly activity (last 5 weeks)
+    // Daily activity — last 7 days so today's completions show on today's bar
     const weeklyData = (() => {
         const activities = progress.recentActivity || [];
         const now = new Date();
-        return Array.from({ length: 5 }, (_, i) => {
-            const weekStart = new Date(now);
-            weekStart.setDate(now.getDate() - now.getDay() - (4 - i) * 7);
-            weekStart.setHours(0, 0, 0, 0);
-            const weekEnd = new Date(weekStart);
-            weekEnd.setDate(weekStart.getDate() + 7);
-            const label = weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        return Array.from({ length: 7 }, (_, i) => {
+            const day = new Date(now);
+            day.setDate(now.getDate() - (6 - i));
+            day.setHours(0, 0, 0, 0);
+            const dayEnd = new Date(day);
+            dayEnd.setDate(day.getDate() + 1);
+            const isToday = i === 6;
+            const label = isToday
+                ? 'Today'
+                : day.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
             const count = activities.filter(a => {
                 const t = new Date(a.timestamp);
-                return t >= weekStart && t < weekEnd;
+                return t >= day && t < dayEnd;
             }).length;
             return { week: label, activities: count };
         });
@@ -55,7 +58,7 @@ function ProgressCharts({ progress }) {
             <h2 className="section-title">Progress Charts</h2>
 
             <div className="chart-card">
-                <h3 className="chart-title">Weekly Activity</h3>
+                <h3 className="chart-title">Daily Activity (Last 7 Days)</h3>
                 <ResponsiveContainer width="100%" height={150}>
                     <BarChart data={weeklyData} margin={{ top: 4, right: 8, left: -20, bottom: 4 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
