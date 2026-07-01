@@ -1,7 +1,7 @@
 // Lesson page opens in a new tab, walks the student through a 5 section lesson
 // Sections: Warm Up, Instruction, Guided Practice, Independent Practice, Exit Ticket
 import { useState, useEffect } from 'react';
-import { addActivity, checkAndAwardAchievements, getProgress } from '../utils/localStorage';
+import { addActivity, checkAndAwardAchievements, getProgress, saveProgress } from '../utils/localStorage';
 import styles from './Lesson.module.css';
 
 function Lesson() {
@@ -122,12 +122,9 @@ function Lesson() {
         
         if (!progress.completedLessons.includes(currentLesson.id)) {
             progress.completedLessons.push(currentLesson.id);
-            
-            localStorage.setItem('mathmaster-progress', JSON.stringify(progress));
-            
-            console.log(' Lesson saved to localStorage:', currentLesson.id);
-            console.log('Current progress:', progress.completedLessons);
-            
+
+            saveProgress(progress);
+
             addActivity('lesson', currentLesson.title, currentLesson.topic);
             checkAndAwardAchievements();
         }
@@ -141,9 +138,8 @@ function Lesson() {
         const progress = getProgress();
         if (progress.completedLessons) {
             progress.completedLessons = progress.completedLessons.filter(id => id !== currentLesson.id);
-            localStorage.setItem('mathmaster-progress', JSON.stringify(progress));
+            saveProgress(progress);
             setIsCompleted(false);
-            console.log('Lesson unmarked for testing:', currentLesson.id);
             alert('Reset! You can now mark this lesson complete again.');
         }
     };

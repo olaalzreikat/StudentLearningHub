@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { addActivity, checkAndAwardAchievements, getProgress } from '../utils/localStorage';
+import { addActivity, checkAndAwardAchievements, getProgress, saveProgress } from '../utils/localStorage';
 import styles from './Problems.module.css';
 
 function Problems() {
@@ -176,7 +176,7 @@ function Problems() {
         const progress = getProgress();
         if (percentage === 100 && !progress.completedProblems.includes(currentProblemSet.id)) {
             progress.completedProblems.push(currentProblemSet.id);
-            localStorage.setItem('mathmaster-progress', JSON.stringify(progress));
+            saveProgress(progress);
         }
 
         addActivity('problems', currentProblemSet.title, currentProblemSet.topic);

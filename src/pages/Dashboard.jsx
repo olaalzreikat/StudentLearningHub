@@ -115,6 +115,22 @@ function Dashboard() {
         }
     }, []);
 
+    // Refresh progress when the tab regains focus (user completes resource in new tab and switches back)
+    useEffect(() => {
+        const reload = () => {
+            const fresh = getProgress();
+            if (fresh) setProgress(fresh);
+        };
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') reload();
+        });
+        window.addEventListener('focus', reload);
+        return () => {
+            document.removeEventListener('visibilitychange', reload);
+            window.removeEventListener('focus', reload);
+        };
+    }, []);
+
     // Firestore cross-device sync — runs after local load
     useEffect(() => {
         if (!user?.uid) return;

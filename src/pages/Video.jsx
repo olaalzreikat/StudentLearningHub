@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { addActivity, checkAndAwardAchievements, getProgress } from '../utils/localStorage';
+import { addActivity, checkAndAwardAchievements, getProgress, saveProgress } from '../utils/localStorage';
 import { videosData, problemsData } from '../data/resourcesData';
 import styles from './Video.module.css';
 
@@ -59,7 +59,7 @@ function Video() {
         
         if (!progress.completedVideos.includes(currentVideo.id)) {
             progress.completedVideos.push(currentVideo.id);
-            localStorage.setItem('mathmaster-progress', JSON.stringify(progress));
+            saveProgress(progress);
             addActivity('video', currentVideo.title, currentVideo.topic);
             checkAndAwardAchievements();
         }
