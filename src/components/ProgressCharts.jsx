@@ -33,10 +33,12 @@ function ProgressCharts({ progress }) {
             const label = isToday
                 ? 'Today'
                 : day.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-            const count = activities.filter(a => {
+            const dayActivities = activities.filter(a => {
                 const t = new Date(a.timestamp);
                 return t >= day && t < dayEnd;
-            }).length;
+            });
+            // Deduplicate: same resource title counts once per day
+            const count = new Set(dayActivities.map(a => a.title)).size;
             return { week: label, activities: count };
         });
     })();

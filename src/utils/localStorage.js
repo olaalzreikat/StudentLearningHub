@@ -171,20 +171,24 @@ export const markAsComplete = (id, type, title = '', topic = '') => {
 // Add activity to recent activity
 export const addActivity = (type, title, topic) => {
     const progress = getProgress();
-    
-    const activity = {
-        type,
-        title,
-        topic,
-        timestamp: new Date().toISOString()
-    };
-    
-    // Add to beginning of array
-    progress.recentActivity = [activity, ...(progress.recentActivity || [])];
-    
-    // Keep only last 20 activities
-    if (progress.recentActivity.length > 20) {
-        progress.recentActivity = progress.recentActivity.slice(0, 20);
+
+    // Skip duplicate: same resource already logged today
+    const today = new Date().toDateString();
+    const alreadyToday = (progress.recentActivity || []).some(a =>
+        a.title === title && new Date(a.timestamp).toDateString() === today
+    );
+
+    if (!alreadyToday) {
+        const activity = {
+            type,
+            title,
+            topic,
+            timestamp: new Date().toISOString()
+        };
+        progress.recentActivity = [activity, ...(progress.recentActivity || [])];
+        if (progress.recentActivity.length > 20) {
+            progress.recentActivity = progress.recentActivity.slice(0, 20);
+        }
     }
     
     // Update streak: increment if yesterday, reset if gap, keep if already active today
