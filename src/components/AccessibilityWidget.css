@@ -1,3 +1,6 @@
+/* Dyslexia font — must be at top for PostCSS */
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap');
+
 /* ═══════════════════════════════════════════════════════════
    ACCESSIBILITY WIDGET
    ══════���════════════════════════════════════════════════════ */
@@ -386,8 +389,7 @@ body.a11y-high-contrast { filter: contrast(1.55) !important; }
 body.a11y-high-contrast img,
 body.a11y-high-contrast video { filter: contrast(0.9) !important; }
 
-/* Dyslexia font */
-@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap');
+/* Dyslexia font (imported at top of file) */
 
 body.a11y-dyslexia-font,
 body.a11y-dyslexia-font p,
